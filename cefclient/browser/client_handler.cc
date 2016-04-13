@@ -584,7 +584,7 @@ void ClientHandler::OnLoadEnd(CefRefPtr< CefBrowser > browser, CefRefPtr< CefFra
   var div = $(\"<div />\", {\
   html: '&shy;<style>' + rule + '</style>'\
   }).appendTo(\"body\");\
-}", "http://tweetdeck.twitter.com/", 0);
+}", L"http://tweetdeck.twitter.com/", 1);
 
 	std::wstring styleCmd;
 	GetPrivateProfileString(L"timeline", L"fontFamily", L"", buff, 255, path.c_str());
@@ -595,7 +595,7 @@ void ClientHandler::OnLoadEnd(CefRefPtr< CefBrowser > browser, CefRefPtr< CefFra
 		styleCmd += buff;
 		styleCmd += L",Verdana,sans-serif; }');";
 		browser->GetMainFrame()->ExecuteJavaScript(
-			styleCmd.c_str(), "http://tweetdeck.twitter.com/", 0);
+			styleCmd.c_str(), L"http://tweetdeck.twitter.com/", 2);
 	}
 
 	GetPrivateProfileString(L"timeline", L"fontSize", L"", buff, 255, path.c_str());
@@ -606,7 +606,7 @@ void ClientHandler::OnLoadEnd(CefRefPtr< CefBrowser > browser, CefRefPtr< CefFra
 		styleCmd += buff;
 		styleCmd += L"rem; }');";
 		browser->GetMainFrame()->ExecuteJavaScript(
-			styleCmd.c_str(), "http://tweetdeck.twitter.com/", 0);
+			styleCmd.c_str(), L"http://tweetdeck.twitter.com/", 3);
 	}
 }
 

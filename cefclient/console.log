@@ -1,0 +1,362 @@
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=657091180.1460513739&jid=1148719258&_v=j41&z=469963447&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 02:15:48 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 02:15:48 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 02:16:09 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=1356259430.1460513880&jid=2101494840&_v=j41&z=1241567961&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 02:18:07 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 02:18:08 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 02:18:28 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=804136672.1460514426&jid=411849690&_v=j41&z=606228670&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 02:27:17 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 02:27:17 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 02:27:37 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=350766130.1460514701&jid=259590770&_v=j41&z=1064267768&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/.
+Source: 
+Line: 0
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=801028344.1460515420&jid=432727236&_v=j41&z=1826263221&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 02:43:48 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 02:43:48 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: The 'referrer' Content Security Policy directive has the invalid value "always". Valid values are "no-referrer", "no-referrer-when-downgrade", "origin", "origin-when-cross-origin", and "unsafe-url".
+Source: https://t.co/cnDRLDcMSW
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 02:44:08 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/.
+Source: 
+Line: 0
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=1001831324.1460515481&jid=292160300&_v=j41&z=1028046639&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 02:44:49 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 02:44:50 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: The 'referrer' Content Security Policy directive has the invalid value "always". Valid values are "no-referrer", "no-referrer-when-downgrade", "origin", "origin-when-cross-origin", and "unsafe-url".
+Source: https://t.co/cnDRLDcMSW
+Line: 0
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=1960773512.1460515572&jid=146071984&_v=j41&z=1660480006&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 02:46:20 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 02:46:21 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 02:46:39 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=1937517117.1460515849&jid=1359075958&_v=j41&z=298384588&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 02:50:56 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 02:50:56 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 02:51:17 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=938994961.1460516622&jid=1546054302&_v=j41&z=1930956248&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/.
+Source: 
+Line: 0
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=1861735013.1460516641&jid=677097487&_v=j41&z=327820299&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 03:04:12 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:04:12 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=1760442079.1460516722&jid=1779430874&_v=j41&z=1668723648&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 03:05:31 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:05:31 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:05:51 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=1797443628.1460517531&jid=1518577957&_v=j41&z=422882215&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 03:18:59 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:18:59 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=1636675207.1460517586&jid=791986093&_v=j41&z=800909916&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 03:19:54 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:19:54 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=1380907379.1460517719&jid=1451508076&_v=j41&z=1900646474&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 03:22:07 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:22:07 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=1975951931.1460518826&jid=1344906757&_v=j41&z=1538441548&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 03:40:33 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:40:33 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:40:40 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:40:40 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=445982437.1460519204&jid=673268586&_v=j41&z=1468419320&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 03:47:00 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:47:00 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:47:21 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:47:25 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:47:25 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=1176099746.1460519283&jid=1558156512&_v=j41&z=1180367868&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/.
+Source: 
+Line: 0
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=2107703736.1460519340&jid=1084778529&_v=j41&z=117679091&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 03:49:08 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:49:08 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:49:28 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=838434335.1460519480&jid=2143873552&_v=j41&z=556677926&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 03:51:28 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:51:29 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 03:51:48 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Uncaught TypeError: Cannot read property 'model' of null
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 31
+-----------------------
+Message: Uncaught TypeError: Cannot read property 'model' of null
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 31
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=206867196.1460520280&jid=320591780&_v=j41&z=2027485995&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 04:04:49 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 04:04:49 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 04:05:09 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=15588958.1460520653&jid=1444865431&_v=j41&z=126105937&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 04:11:02 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 04:11:02 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 04:11:22 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Refused to load the image 'https://www.google.co.kr/ads/ga-audiences?v=1&aip=1&t=sr&_r=4&tid=UA-30775-6&cid=469968846.1460522724&jid=1582654079&_v=j41&z=465100471&ipr=y' because it violates the following Content Security Policy directive: "img-src https://graph.facebook.com https://*.giphy.com https://twitter.com https://*.twimg.com data: https://fbcdn-profile-a.akamaihd.net https://www.facebook.com https://ton.twitter.com https://*.fbcdn.net https://syndication.twitter.com https://media.riffsy.com https://www.google.com https://stats.g.doubleclick.net https://*.tiles.mapbox.com https://www.google-analytics.com blob: 'self'".
+
+Source: https://twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue
+Line: 0
+-----------------------
+Message: Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/.
+Source: 
+Line: 0
+-----------------------
+Message: Wed, 13 Apr 2016 04:45:41 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------
+Message: Wed, 13 Apr 2016 04:45:43 GMT
+Source: https://ton.twimg.com/tweetdeck-web/web/dist/bundle.82389bd594.js
+Line: 46
+-----------------------

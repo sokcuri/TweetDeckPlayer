@@ -357,8 +357,8 @@ void RootWindowWin::CreateRootWindow(const CefBrowserSettings& settings) {
 	  always_on_top_ = true;
 	  info.fState = MFS_CHECKED;
 	  SetMenuItemInfo(hMenu, ID_ALWAYSONTOP, false, &info);
+	  SetWindowPos(hwnd_, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
   }
-  SetWindowPos(hwnd_, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
   // Associate |this| with the main window.
   SetUserDataPtr(hwnd_, this);

@@ -15,7 +15,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// ??(??) resources
+// 영어(미국) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -145,8 +145,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,2680,1395,0
- PRODUCTVERSION 3,2680,1395,0
+ FILEVERSION 1,1,0,0
+ PRODUCTVERSION 1,1,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -161,13 +161,14 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
+            VALUE "CompanyName", "???"
             VALUE "FileDescription", "TweetDeck Player"
-            VALUE "FileVersion", "1.00.160413"
+            VALUE "FileVersion", "1.1.0.160413"
             VALUE "InternalName", "tweetdeckplayer"
             VALUE "LegalCopyright", "Copyright (C) 2016 Sokcuri."
             VALUE "OriginalFilename", "TweetDeckPlayer.exe"
             VALUE "ProductName", "TweetDeck Player"
-            VALUE "ProductVersion", "1.00.160413"
+            VALUE "ProductVersion", "1.1.0.160413"
         END
     END
     BLOCK "VarFileInfo"
@@ -217,7 +218,7 @@ BEGIN
     IDS_OSR_WIDGET_CLASS    "TWEETDECKPLAYER-OSR-WIDGET"
 END
 
-#endif    // ??(??) resources
+#endif    // 영어(미국) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

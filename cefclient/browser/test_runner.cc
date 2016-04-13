@@ -90,7 +90,8 @@ void RunGetTextTest(CefRefPtr<CefBrowser> browser) {
 }
 
 void RunRequestTest(CefRefPtr<CefBrowser> browser) {
-  // Create a new request
+	
+	// Create a new request
   CefRefPtr<CefRequest> request(CefRequest::Create());
 
   // Set the request URL
@@ -124,8 +125,8 @@ void RunNewWindowTest(CefRefPtr<CefBrowser> browser) {
 }
 
 void RunPopupWindowTest(CefRefPtr<CefBrowser> browser) {
-  browser->GetMainFrame()->ExecuteJavaScript(
-      "window.open('http://www.google.com');", "about:blank", 0);
+	browser->GetMainFrame()->ExecuteJavaScript(
+		"window.open('http://www.google.com');", "about:blank", 0);	
 }
 
 void RunPluginInfoTest(CefRefPtr<CefBrowser> browser) {
@@ -171,6 +172,7 @@ void ModifyZoom(CefRefPtr<CefBrowser> browser, double delta) {
 
   browser->GetHost()->SetZoomLevel(
       browser->GetHost()->GetZoomLevel() + delta);
+  
 }
 
 const char kPrompt[] = "Prompt.";

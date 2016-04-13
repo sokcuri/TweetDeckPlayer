@@ -202,6 +202,7 @@ class ClientHandler : public CefClient,
                    ErrorCode errorCode,
                    const CefString& errorText,
                    const CefString& failedUrl) OVERRIDE;
+  void OnLoadEnd(CefRefPtr< CefBrowser > browser, CefRefPtr< CefFrame > frame, int httpStatusCode) OVERRIDE;
 
   // CefRequestHandler methods
   bool OnBeforeBrowse(CefRefPtr<CefBrowser> browser,

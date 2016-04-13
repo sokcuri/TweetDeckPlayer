@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++?? ??? ?? ?????.
-// cefclient.rc?? ???? ????.
+// Microsoft Visual C++에서 생성한 포함 파일입니다.
+// cefclient.rc에서 사용되고 있습니다.
 //
 #define IDC_MYICON                      2
 #define IDD_CEFCLIENT_DIALOG            102

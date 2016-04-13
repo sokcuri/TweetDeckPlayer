@@ -539,26 +539,75 @@ void ClientHandler::OnLoadingStateChange(CefRefPtr<CefBrowser> browser,
 }
 
 void ClientHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
-                                CefRefPtr<CefFrame> frame,
-                                ErrorCode errorCode,
-                                const CefString& errorText,
-                                const CefString& failedUrl) {
-  CEF_REQUIRE_UI_THREAD();
+	CefRefPtr<CefFrame> frame,
+	ErrorCode errorCode,
+	const CefString& errorText,
+	const CefString& failedUrl) {
+	CEF_REQUIRE_UI_THREAD();
 
-  // Don't display an error for downloaded files.
-  if (errorCode == ERR_ABORTED)
-    return;
+	// Don't display an error for downloaded files.
+	if (errorCode == ERR_ABORTED)
+		return;
 
-  // Don't display an error for external protocols that we allow the OS to
-  // handle. See OnProtocolExecution().
-  if (errorCode == ERR_UNKNOWN_URL_SCHEME) {
-    std::string urlStr = frame->GetURL();
-    if (urlStr.find("spotify:") == 0)
-      return;
-  }
+	// Don't display an error for external protocols that we allow the OS to
+	// handle. See OnProtocolExecution().
+	if (errorCode == ERR_UNKNOWN_URL_SCHEME) {
+		std::string urlStr = frame->GetURL();
+		if (urlStr.find("spotify:") == 0)
+			return;
+	}
 
-  // Load the error page.
-  LoadErrorPage(frame, failedUrl, errorCode, errorText);
+	// Load the error page.
+	LoadErrorPage(frame, failedUrl, errorCode, errorText);
+}
+
+//
+// inject style, modify font-size
+void ClientHandler::OnLoadEnd(CefRefPtr< CefBrowser > browser, CefRefPtr< CefFrame > frame, int httpStatusCode) {
+	CEF_REQUIRE_UI_THREAD();
+	//browser->GetMainFrame()->ExecuteJavaScript("alert(document.getElementsByClassName(\"column\"))", "http://tweetdeck.twitter.com/", 0);
+
+	// get path
+	std::wstring path;
+	wchar_t buff[255];
+	wchar_t p[MAX_PATH + 1];
+	int len;
+	GetModuleFileName(0, p, MAX_PATH);
+	for (len = wcslen(p) - 1; p[len] != L'\\'; len--);
+	p[len] = 0;
+	path = p;
+	path += L"\\appdata.ini";
+
+	// inject to style
+	browser->GetMainFrame()->ExecuteJavaScript(
+		"function injectStyles(rule) {\
+  var div = $(\"<div />\", {\
+  html: '&shy;<style>' + rule + '</style>'\
+  }).appendTo(\"body\");\
+}", "http://tweetdeck.twitter.com/", 0);
+
+	std::wstring styleCmd;
+	GetPrivateProfileString(L"timeline", L"fontFamily", L"", buff, 255, path.c_str());
+	WritePrivateProfileString(L"timeline", L"fontFamily", buff, path.c_str());
+	if (buff != 0)
+	{
+		styleCmd = L"injectStyles('.os-windows {font-family: Arial,";
+		styleCmd += buff;
+		styleCmd += L",Verdana,sans-serif; }');";
+		browser->GetMainFrame()->ExecuteJavaScript(
+			styleCmd.c_str(), "http://tweetdeck.twitter.com/", 0);
+	}
+
+	GetPrivateProfileString(L"timeline", L"fontSize", L"", buff, 255, path.c_str());
+	WritePrivateProfileString(L"timeline", L"fontSize", buff, path.c_str());
+	if (buff != 0)
+	{
+		styleCmd = L"injectStyles('.column {font-size: ";
+		styleCmd += buff;
+		styleCmd += L"rem; }');";
+		browser->GetMainFrame()->ExecuteJavaScript(
+			styleCmd.c_str(), "http://tweetdeck.twitter.com/", 0);
+	}
 }
 
 bool ClientHandler::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,

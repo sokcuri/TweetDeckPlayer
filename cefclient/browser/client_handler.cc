@@ -564,7 +564,6 @@ void ClientHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
 //
 // inject style, modify font-size
 void ClientHandler::OnLoadEnd(CefRefPtr< CefBrowser > browser, CefRefPtr< CefFrame > frame, int httpStatusCode) {
-	CEF_REQUIRE_UI_THREAD();
 	//browser->GetMainFrame()->ExecuteJavaScript("alert(document.getElementsByClassName(\"column\"))", "http://tweetdeck.twitter.com/", 0);
 
 	// get path
@@ -602,7 +601,16 @@ void ClientHandler::OnLoadEnd(CefRefPtr< CefBrowser > browser, CefRefPtr< CefFra
 	WritePrivateProfileString(L"timeline", L"fontSize", buff, path.c_str());
 	if (buff != 0)
 	{
+		// timeline text
 		styleCmd = L"injectStyles('.column {font-size: ";
+		styleCmd += buff;
+		styleCmd += L"rem; }');";
+		browser->GetMainFrame()->ExecuteJavaScript(
+			styleCmd.c_str(), L"http://tweetdeck.twitter.com/", 3);
+
+
+		// ~~ retweeted
+		styleCmd = L"injectStyles('.nbfc {font-size: ";
 		styleCmd += buff;
 		styleCmd += L"rem; }');";
 		browser->GetMainFrame()->ExecuteJavaScript(

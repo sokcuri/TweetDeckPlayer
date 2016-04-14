@@ -1,6 +1,6 @@
-TweetDeck Player is useful tweet life for windows.
+TweetDeck Player is useful window application for tweet life.
 
-Minimize Environment : Windows 7 or later.
+Minimum Requirements : Windows 7 or later.
 
 GNU General Public License version 2
 

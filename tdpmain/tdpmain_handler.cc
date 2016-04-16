@@ -261,7 +261,7 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 			int r = fread(_scrContent, 2, fileSize, fp);
 			_scrContent[r] = 0;
 			code = _scrContent;
-			delete _scrContent;
+			delete []_scrContent;
 			frame->ExecuteJavaScript(code, kTweetDeck, 0);
 			fclose(fp);
 		}

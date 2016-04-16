@@ -48,6 +48,9 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
   // Disable logging.
   settings.log_severity = LOGSEVERITY_DISABLE;
 
+  // Use Single process
+  settings.single_process = true;
+
   // Add to Accept-Language
   CefString AcceptLanguage;
   AcceptLanguage.Attach(&settings.accept_language_list, false);

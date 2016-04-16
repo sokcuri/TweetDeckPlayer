@@ -34,12 +34,41 @@ void TDPApp::OnContextInitialized() {
   // CreateWindowEx().
   window_info.SetAsPopup(NULL, "TweetDeck Player");
 #endif
-
   // Get Window size
-  window_info.x = GetINI_Int(L"window", L"left", 0);
-  window_info.y = GetINI_Int(L"window", L"top", 0);
-  window_info.width = GetINI_Int(L"window", L"right", 0) - window_info.x;
-  window_info.height = GetINI_Int(L"window", L"bottom", 0) - window_info.y;
+  int left;
+  int right;
+  int top;
+  int bottom;
+  left = GetINI_Int(L"window", L"left", 0);
+  top = GetINI_Int(L"window", L"top", 0);
+  right = GetINI_Int(L"window", L"right", 0);
+  bottom = GetINI_Int(L"window", L"bottom", 0);
+
+  // window size is init
+  if (right - left == 0 || bottom - top == 0)
+  {
+	  int width = 1300;
+	  int height = 900;
+
+	  RECT rect;
+	  GetClientRect(GetDesktopWindow(), &rect);
+
+	  rect.left = (rect.right / 2) - (width / 2);
+	  rect.top = (rect.bottom / 2) - (height / 2);
+
+	  window_info.x = rect.left;
+	  window_info.y = rect.top;
+	  window_info.width = width;
+	  window_info.height = height;
+
+  }
+  else
+  {
+	  window_info.x = left;
+	  window_info.y = top;
+	  window_info.width = right - left;
+	  window_info.height = bottom - top;
+  }
 
   // TDPHandler implements browser-level callbacks.
   CefRefPtr<TDPHandler> handler(new TDPHandler());

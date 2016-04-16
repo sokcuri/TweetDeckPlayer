@@ -246,19 +246,20 @@ std::wstring PartialEraseStr(const std::wstring &a, const std::wstring &b)
 		return a.substr(0, a.length() - b.length());
 	else return a;
 }
-std::wstring Twimg_Larger(const std::wstring &url)
+std::wstring Twimg_Orig(const std::wstring &url)
 {
 	std::wstring sourceUrl = url;
-	bool twimg_larger = (GetINI_Int(L"setting", L"DisableTwimgToLarger", 0) == 1);
-	SetINI_Int(L"setting", L"DisableTwimgToLarger", twimg_larger);
+	bool twimg_larger = (GetINI_Int(L"setting", L"DisableTwimgOrig", 0) == 1);
+	SetINI_Int(L"setting", L"DisableTwimgOrig", twimg_larger);
 	if (!twimg_larger)
 	{
 		if (sourceUrl.find(L"twimg.com/media", 0) != std::wstring::npos)
 		{
+			sourceUrl = PartialEraseStr(sourceUrl, L":orig");
 			sourceUrl = PartialEraseStr(sourceUrl, L":large");
 			sourceUrl = PartialEraseStr(sourceUrl, L":normal");
 			sourceUrl = PartialEraseStr(sourceUrl, L":small");
-			sourceUrl += L":large";
+			sourceUrl += L":orig";
 		}
 	}
 	return sourceUrl;

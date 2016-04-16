@@ -6,8 +6,8 @@
 
 namespace tdpmain
 {
-DWORD TDPWindow::wndOldProc;
-HWND TDPWindow::hMainWnd;
+DWORD TDPWindow::wndOldProc = 0;
+HWND TDPWindow::hMainWnd = 0;
 
 TDPWindow::TDPWindow()
 {
@@ -125,6 +125,9 @@ void TDPWindow::OnWndCreated(HWND hWnd, bool isMainWnd)
 			SetMenuItemInfo(systemMenu, IDB_ALWAYS_ON_TOP, false, &info);
 			SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 		}
+		DWORD wsStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS |
+			WS_VISIBLE;
+		SetWindowLong(hWnd, GWL_STYLE, wsStyle);
 	}
 	else // not main window
 	{
@@ -145,10 +148,10 @@ void TDPWindow::OnWndCreated(HWND hWnd, bool isMainWnd)
 	// Set Icon
 	HINSTANCE hInst = GetModuleHandle(0);
 	SetClassLong(hWnd, GCL_HICON, (LONG)LoadIcon(hInst, MAKEINTRESOURCE(IDI_TDPMAIN)));
-	
+
 	// Insert wndproc
-	wndOldProc = GetWindowLongPtr(hWnd, GWL_WNDPROC);
-	SetWindowLongPtr(hWnd, GWL_WNDPROC, reinterpret_cast<LONG_PTR>(PopupWndProc));
+	if (!wndOldProc)
+		wndOldProc = reinterpret_cast<DWORD>(SetWndProcPtr(hWnd, reinterpret_cast<WNDPROC>(PopupWndProc)));
 
 	/*
 	else

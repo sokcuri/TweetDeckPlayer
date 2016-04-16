@@ -446,6 +446,7 @@ void TDPHandler::OnBeforeDownload(
 	CEF_REQUIRE_UI_THREAD();
 
 	std::string filename = suggested_name;
+	filename = PartialEraseStr(filename, "-orig");
 	filename = PartialEraseStr(filename, "-large");
 	filename = PartialEraseStr(filename, "-normal");
 	filename = PartialEraseStr(filename, "-small");
@@ -516,7 +517,7 @@ bool TDPHandler::OnContextMenuCommand(
 	return true;
 	case CLIENT_ID_SAVE_IMAGE_AS:
 	{
-		browser->GetHost()->StartDownload(Twimg_Larger(params->GetSourceUrl()));
+		browser->GetHost()->StartDownload(Twimg_Orig(params->GetSourceUrl()));
 		return true;
 	}
 	case CLIENT_ID_COPY_IMAGE_URL:
@@ -524,7 +525,7 @@ bool TDPHandler::OnContextMenuCommand(
 		{
 			if (EmptyClipboard())
 			{
-				std::wstring url = Twimg_Larger(params->GetSourceUrl());
+				std::wstring url = Twimg_Orig(params->GetSourceUrl());
 				int length = url.length();
 				HGLOBAL hGlob = GlobalAlloc(GMEM_FIXED, (length + 1) * 2);
 				wcscpy_s((wchar_t*)hGlob, length + 1, url.c_str());
@@ -535,7 +536,7 @@ bool TDPHandler::OnContextMenuCommand(
 		}
 		return true;
 	case CLIENT_ID_OPEN_IMAGE_LINK:
-		OpenURL(Twimg_Larger(params->GetSourceUrl()));
+		OpenURL(Twimg_Orig(params->GetSourceUrl()));
 		return true;
 	case CLIENT_ID_SAVE_VIDEO_AS:
 		browser->GetHost()->StartDownload(params->GetSourceUrl());

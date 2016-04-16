@@ -33,34 +33,34 @@ set(TDPMAIN_RES_SRCS_WINDOWS
   res/small.ico
   )
 APPEND_PLATFORM_SOURCES(TDPMAIN_RES_SRCS)
-source_group(cefsimple\\\\res FILES ${TDPMAIN_RES_SRCS})
+source_group(tdpmain\\\\res FILES ${TDPMAIN_RES_SRCS})
 
 set(TDPMAIN_SRCS
   ${TDPMAIN_SRCS}
   ${TDPMAIN_RES_SRCS}
   )
 
-# cefsimple helper sources.
+# tdpmain helper sources.
 set(TDPMAIN_HELPER_SRCS_MACOSX
   process_helper_mac.cc
   )
 APPEND_PLATFORM_SOURCES(TDPMAIN_HELPER_SRCS)
-source_group(cefsimple FILES ${TDPMAIN_HELPER_SRCS})
+source_group(tdpmain FILES ${TDPMAIN_HELPER_SRCS})
 
-# cefsimple resources.
+# tdpmain resources.
 set(TDPMAIN_RESOURCES_MAC_SRCS_MACOSX
   mac/Info.plist
-  mac/cefsimple.icns
+  mac/tdpmain.icns
   )
 APPEND_PLATFORM_SOURCES(TDPMAIN_RESOURCES_MAC_SRCS)
-source_group(cefsimple\\\\mac FILES ${TDPMAIN_RESOURCES_MAC_SRCS})
+source_group(tdpmain\\\\mac FILES ${TDPMAIN_RESOURCES_MAC_SRCS})
 
 set(TDPMAIN_RESOURCES_MAC_ENGLISH_LPROJ_SRCS_MACOSX
   mac/English.lproj/InfoPlist.strings
   mac/English.lproj/MainMenu.xib
   )
 APPEND_PLATFORM_SOURCES(TDPMAIN_RESOURCES_MAC_ENGLISH_LPROJ_SRCS)
-source_group(cefsimple\\\\mac\\\\English.lproj FILES ${TDPMAIN_RESOURCES_MAC_ENGLISH_LPROJ_SRCS})
+source_group(tdpmain\\\\mac\\\\English.lproj FILES ${TDPMAIN_RESOURCES_MAC_ENGLISH_LPROJ_SRCS})
 
 set(TDPMAIN_RESOURCES_SRCS
   ${TDPMAIN_RESOURCES_MAC_SRCS}

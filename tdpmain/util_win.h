@@ -60,5 +60,9 @@ namespace tdpmain
 
 	// if a tail contain b, return (a-b) string
 	std::string PartialEraseStr(const std::string &a, const std::string &b);
+	std::wstring PartialEraseStr(const std::wstring &a, const std::wstring &b);
+
+	// if image from twimg, transform larger version
+	std::wstring Twimg_Larger(const std::wstring &url);
 }
 #endif

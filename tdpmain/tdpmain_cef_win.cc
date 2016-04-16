@@ -45,9 +45,6 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
   // Specify CEF global settings here.
   CefSettings settings;
 
-  // Use Single process
-  settings.single_process = true;
-
   // Disable logging.
   settings.log_severity = LOGSEVERITY_DISABLE;
 

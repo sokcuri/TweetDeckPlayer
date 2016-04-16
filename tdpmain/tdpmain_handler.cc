@@ -95,6 +95,21 @@ bool TDPHandler::OnBeforePopup(
 		return true;
 	}
 
+	bool no_link_popup_ = (GetINI_Int(L"setting", L"DisableLinkPopup", 0) == 1);
+	SetINI_Int(L"setting", L"DisableLinkPopup", no_link_popup_);
+
+	// no use link popup
+	std::wstring url = target_url.ToWString();
+
+	// is twitter menu, jump this logic
+	if (url.find(L"twitter.com/?&", 0) == std::wstring::npos &&
+		url.find(L"twitter.com/??", 0) == std::wstring::npos &&
+		no_link_popup_)
+	{
+		OpenURL(url);
+		return true; // cancel the popup window
+	}
+
 	// is already open browser, close browser
 	std::list<CefRefPtr<CefBrowser>> browser_list_temp;
 	for (auto iter : browser_list_)
@@ -132,7 +147,6 @@ bool TDPHandler::OnBeforePopup(
 	WindowName.Attach(&windowInfo.window_name, false);
 	WindowName.FromWString(L"TweetDeck Player");
 
-	// cancel the popup window
 	return false;
 	// Return true to cancel the popup window.
 	//return !CreatePopupWindow(browser, false, popupFeatures, windowInfo, client,
@@ -396,7 +410,7 @@ void TDPHandler::OnBeforeContextMenu(
 			model->AddItem(CLIENT_ID_TWEET_TWITTER, "Write Tweet in Twitter");
 
 		bool open_twitter_ = (GetINI_Int(L"setting", L"DisableTwitterOpenMenu", 0) == 1);
-		SetINI_Int(L"setting", L"DisableTwitterOpenMenu", write_twitter_);
+		SetINI_Int(L"setting", L"DisableTwitterOpenMenu", open_twitter_);
 		if (!open_twitter_)
 			model->AddItem(CLIENT_ID_OPEN_TWITTER, "Open Twitter in popup");
 	}
@@ -501,17 +515,19 @@ bool TDPHandler::OnContextMenuCommand(
 	}
 	return true;
 	case CLIENT_ID_SAVE_IMAGE_AS:
-
-		browser->GetHost()->StartDownload(params->GetSourceUrl());
+	{
+		browser->GetHost()->StartDownload(Twimg_Larger(params->GetSourceUrl()));
 		return true;
+	}
 	case CLIENT_ID_COPY_IMAGE_URL:
 		if (OpenClipboard(NULL))
 		{
 			if (EmptyClipboard())
 			{
-				int length = params->GetSourceUrl().length();
+				std::wstring url = Twimg_Larger(params->GetSourceUrl());
+				int length = url.length();
 				HGLOBAL hGlob = GlobalAlloc(GMEM_FIXED, (length + 1) * 2);
-				wcscpy_s((wchar_t*)hGlob, length + 1, params->GetSourceUrl().c_str());
+				wcscpy_s((wchar_t*)hGlob, length + 1, url.c_str());
 				SetClipboardData(CF_UNICODETEXT, hGlob);
 				GlobalUnlock(hGlob);
 			}
@@ -519,7 +535,7 @@ bool TDPHandler::OnContextMenuCommand(
 		}
 		return true;
 	case CLIENT_ID_OPEN_IMAGE_LINK:
-		OpenURL(params->GetSourceUrl());
+		OpenURL(Twimg_Larger(params->GetSourceUrl()));
 		return true;
 	case CLIENT_ID_SAVE_VIDEO_AS:
 		browser->GetHost()->StartDownload(params->GetSourceUrl());
@@ -566,7 +582,7 @@ bool TDPHandler::OnContextMenuCommand(
 		frame->ExecuteJavaScript("window.open('https://www.twitter.com/?&')", frame->GetURL(), 0);
 		return true;
 	case CLIENT_ID_OPEN_TWITTER:
-		frame->ExecuteJavaScript("window.open('https://www.twitter.com')", frame->GetURL(), 0);
+		frame->ExecuteJavaScript("window.open('https://www.twitter.com/??')", frame->GetURL(), 0);
 		return true;
 	case CLIENT_ID_SHOW_DEVTOOLS:
 		ShowDevTools(browser, CefPoint());

@@ -42,15 +42,15 @@ void TDPApp::OnContextInitialized() {
   int top;
   int bottom;
   left = GetINI_Int(L"window", L"left", 0);
-  right = GetINI_Int(L"window", L"top", 0);
-  top = GetINI_Int(L"window", L"right", 0);
+  top = GetINI_Int(L"window", L"top", 0);
+  right = GetINI_Int(L"window", L"right", 0);
   bottom = GetINI_Int(L"window", L"bottom", 0);
 
   // window size is init
   if (right - left == 0 || bottom - top == 0)
   {
-	  int width = 1200;
-	  int height = 800;
+	  int width = 1300;
+	  int height = 900;
 
 	  RECT rect;
 	  GetClientRect(GetDesktopWindow(), &rect);
@@ -63,6 +63,13 @@ void TDPApp::OnContextInitialized() {
 	  window_info.width = width;
 	  window_info.height = height;
 
+  }
+  else
+  {
+	  window_info.x = left;
+	  window_info.y = top;
+	  window_info.width = right - left;
+	  window_info.height = bottom - top;
   }
 
   // TDPHandler implements browser-level callbacks.

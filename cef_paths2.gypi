@@ -42,6 +42,7 @@
       'include/cef_base.h',
       'include/cef_pack_resources.h',
       'include/cef_pack_strings.h',
+      'include/cef_runnable.h',
       'include/cef_version.h',
       'include/internal/cef_export.h',
       'include/internal/cef_logging_internal.h',
@@ -314,37 +315,20 @@
     'cefclient_bundle_resources_linux': [
       '<@(cefclient_sources_resources)',
     ],
-    'cefsimple_sources_common': [
-      'cefsimple/simple_app.cc',
-      'cefsimple/simple_app.h',
-      'cefsimple/simple_handler.cc',
-      'cefsimple/simple_handler.h',
+    'tdpmain_sources_common': [
+      'tdpmain/tdpmain_app.cc',
+      'tdpmain/tdpmain_app.h',
+      'tdpmain/tdpmain_handler.cc',
+      'tdpmain/tdpmain_handler.h',
     ],
-    'cefsimple_sources_win': [
-      'cefsimple/cefsimple.exe.manifest',
-      'cefsimple/cefsimple.rc',
-      'cefsimple/cefsimple_win.cc',
-      'cefsimple/simple_handler_win.cc',
-      'cefsimple/resource.h',
-      'cefsimple/res/cefsimple.ico',
-      'cefsimple/res/small.ico',
-    ],
-    'cefsimple_sources_mac': [
-      'cefsimple/cefsimple_mac.mm',
-      'cefsimple/simple_handler_mac.mm',
-    ],
-    'cefsimple_sources_mac_helper': [
-      'cefsimple/process_helper_mac.cc',
-    ],
-    'cefsimple_bundle_resources_mac': [
-      'cefsimple/mac/cefsimple.icns',
-      'cefsimple/mac/English.lproj/InfoPlist.strings',
-      'cefsimple/mac/English.lproj/MainMenu.xib',
-      'cefsimple/mac/Info.plist',
-    ],
-    'cefsimple_sources_linux': [
-      'cefsimple/cefsimple_linux.cc',
-      'cefsimple/simple_handler_linux.cc',
+    'tdpmain_sources_win': [
+      'tdpmain/tdpmain.exe.manifest',
+      'tdpmain/tdpmain.rc',
+      'tdpmain/tdpmain_window.cc',
+      'tdpmain/tdpmain_window.h',
+      'tdpmain/resource.h',
+      'tdpmain/res/tdpmain.ico',
+      'tdpmain/res/small.ico',
     ],
   },
 }

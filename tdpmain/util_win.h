@@ -6,6 +6,7 @@
 
 #include <windows.h>
 #include <string>
+#include <vector>
 #include <Shellapi.h>
 #include <direct.h>
 #include <shlobj.h>
@@ -65,5 +66,14 @@ namespace tdpmain
 
 	// transform twimg url to orig version
 	std::wstring Twimg_Orig(const std::wstring &url);
+
+	// Get folder files
+	std::vector<std::wstring> GetFindFiles(std::wstring path);
+
+	// Read file and return content
+	std::wstring LoadFileContent(std::wstring path);
+
+	// Replace String
+	std::wstring replaceAll(const std::wstring &str, const std::wstring &pattern, const std::wstring &replace);
 }
 #endif

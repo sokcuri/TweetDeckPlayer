@@ -118,7 +118,7 @@ void TDPWindow::OnWndCreated(HWND hWnd, bool isMainWnd)
 
 	if (always_on_top_)
 		SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
-
+	//
 	//
 	// THIS CODE IS NOT USED
 	// always child on parent window

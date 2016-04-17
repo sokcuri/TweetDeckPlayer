@@ -264,4 +264,52 @@ std::wstring Twimg_Orig(const std::wstring &url)
 	}
 	return sourceUrl;
 }
+std::vector<std::wstring> GetFindFiles(std::wstring path)
+{
+	std::vector<std::wstring> res;
+	WIN32_FIND_DATAW hFound = { 0 };
+	HANDLE hFile = FindFirstFileW(path.c_str(), &hFound);
+	if (hFile != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			res.emplace_back(hFound.cFileName);
+		} while (FindNextFileW(hFile, &hFound));
+	}
+	FindClose(hFile);
+	return res;
+}
+std::wstring LoadFileContent(std::wstring path)
+{
+	FILE *fp;
+	std::wstring content;
+	_wfopen_s(&fp, path.c_str(), L"rt,ccs=utf-8");
+	if (fp)
+	{
+		fseek(fp, 0, SEEK_END);
+		int fileSize = ftell(fp);
+		fseek(fp, 0, SEEK_SET);
+		wchar_t *buffer = new wchar_t[fileSize + 1];
+		int r = fread(buffer, 2, fileSize, fp);
+		buffer[r] = 0;
+		content = buffer;
+		delete []buffer;
+		fclose(fp);
+	}
+	return content;
+}
+std::wstring replaceAll(const std::wstring &str, const std::wstring &pattern, const std::wstring &replace)
+{
+	std::wstring result = str;
+	std::wstring::size_type pos = 0;
+	std::wstring::size_type offset = 0;
+
+	while ((pos = result.find(pattern, offset)) != std::string::npos)
+	{
+		result.replace(result.begin() + pos, result.begin() + pos + pattern.size(), replace);
+		offset = pos + replace.size();
+	}
+
+	return result;
+}
 }

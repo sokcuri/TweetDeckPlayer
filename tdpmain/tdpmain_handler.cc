@@ -15,6 +15,9 @@
 #include "include/wrapper/cef_closure_task.h"
 #include "include/wrapper/cef_helpers.h"
 
+#define T(x)      L ## x
+#define TDP_MESSAGE T("TweetDeck Player v1.22 ~by @sokcuri")
+
 namespace tdpmain
 {
 namespace {
@@ -272,8 +275,9 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 
 	wchar_t kTweetDeck[] = L"https://tweetdeck.twitter.com";
 	wchar_t kTwitter[] = L"https://twitter.com";
-	// Apply if tweetdeck
-	if (frame->GetURL().ToWString().find(kTweetDeck) == 0)
+	// Apply if tweetdeck and twitter
+	if (frame->GetURL().ToWString().find(kTweetDeck) == 0 ||
+		frame->GetURL().ToWString().find(kTwitter) == 0)
 	{
 		const std::wstring iniPath(GetINIPath());
 		std::wstring code, para;
@@ -287,7 +291,7 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 			   L"};"
 			   L"}";
 		// inject style modifiy code
-		frame->ExecuteJavaScript(code, kTweetDeck, 0);
+		frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 
 		// font-family modify code
 		para = GetINI_String(L"timeline", L"fontFamily", L"");
@@ -296,27 +300,42 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 		{
 			code = L"TDP.injectStyles('.os-windows {font-family: Arial," + para +
 				   L",Verdana,sans-serif; }');";
-			frame->ExecuteJavaScript(code, kTweetDeck, 0);
+			frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 		}
+		code = L"TDP.onTDPageLoad = function(){ setTimeout(function(){"
+		       L"if(!TD.ready){ TDP.onTDPageLoad(); } else { "
+			   L"TD.controller.progressIndicator.addMessage("
+			   L"TD.i('"
+			   TDP_MESSAGE
+			   L"')); }}, 1000);};"
+			   L"$(document).ready(function(){"
+			   L"TDP.onTDPageLoad();});";
 
-		// script load
-		FILE *fp;
-		std::wstring scriptPath(GetExePath() + L"\\script\\script.js");
-		_wfopen_s(&fp, scriptPath.c_str(), L"rt,ccs=utf-8");
-		if (fp)
+		frame->ExecuteJavaScript(code, frame->GetURL(), 0);
+
+		std::vector<std::wstring> file_list;
+		std::vector<std::wstring>::iterator it;
+
+		// Load script folder js files
+		file_list = GetFindFiles(GetExePath() + L"\\script\\*.js");
+		for (it = file_list.begin(); it != file_list.end(); it++)
 		{
-			fseek(fp, 0, SEEK_END);
-			int fileSize = ftell(fp);
-			fseek(fp, 0, SEEK_SET);
-			wchar_t *_scrContent = new wchar_t[fileSize + 1];
-			int r = fread(_scrContent, 2, fileSize, fp);
-			_scrContent[r] = 0;
-			code = _scrContent;
-			delete []_scrContent;
-			frame->ExecuteJavaScript(code, kTweetDeck, 0);
-			fclose(fp);
+			code = LoadFileContent(GetExePath() + L"\\script\\" + (*it));
+			frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 		}
 
+		// Load script folder css files
+		file_list = GetFindFiles(GetExePath() + L"\\style\\*.css");
+		for (it = file_list.begin(); it != file_list.end(); it++)
+		{
+			code = LoadFileContent(GetExePath() + L"\\style\\" + (*it));
+			code = replaceAll(code, L"\\", L"\\\\");
+			code = replaceAll(code, L"'", L"\\'");
+			code = replaceAll(code, L"\r\n", L"");
+			code = replaceAll(code, L"\n", L"");
+			code = L"TDP.injectStyles('" + code + L"');";
+			frame->ExecuteJavaScript(code, frame->GetURL(), 0);
+		}
 	}
 	// twitter.com
 	else if (frame->GetURL().ToWString().find(kTwitter) == 0)

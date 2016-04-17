@@ -80,6 +80,9 @@ void TDPWindow::OnWndCreated(HWND hWnd, bool isMainWnd)
 	bool always_on_top_;
 	bool parent_always_on_top_;
 
+	// Get submenu
+	HMENU systemMenu = GetSystemMenu(hWnd, false);
+
 	if (isMainWnd)
 	{
 		hMainWnd = hWnd;
@@ -87,6 +90,22 @@ void TDPWindow::OnWndCreated(HWND hWnd, bool isMainWnd)
 		// Read Always on top settings
 		always_on_top_ = (GetINI_Int(L"setting", L"DefaultAlwaysOnTop", 0) == 1);
 		SetINI_Int(L"setting", L"DefaultAlwaysOnTop", always_on_top_);
+
+		// insert system menu
+		if (systemMenu)
+		{
+			InsertMenu(systemMenu, (UINT)-1, MF_SEPARATOR, 0, 0);
+			InsertMenu(systemMenu, (UINT)-1, MF_BYCOMMAND, IDB_ALWAYS_ON_TOP, L"Always On Top");
+		}
+
+		if (always_on_top_)
+		{
+			MENUITEMINFO info;
+			info.cbSize = sizeof(MENUITEMINFO);
+			info.fMask = MIIM_STATE;
+			info.fState = MFS_CHECKED;
+			SetMenuItemInfo(systemMenu, IDB_ALWAYS_ON_TOP, false, &info);
+		}
 	}
 	else
 	{
@@ -97,23 +116,8 @@ void TDPWindow::OnWndCreated(HWND hWnd, bool isMainWnd)
 		always_on_top_ = parent_always_on_top_;
 	}
 
-	// Insert Submenu
-	HMENU systemMenu = GetSystemMenu(hWnd, false);
-	if (systemMenu)
-	{
-		InsertMenu(systemMenu, (UINT)-1, MF_SEPARATOR, 0, 0);
-		InsertMenu(systemMenu, (UINT)-1, MF_BYCOMMAND, IDB_ALWAYS_ON_TOP, L"Always On Top");
-	}
-
 	if (always_on_top_)
-	{
-		MENUITEMINFO info;
-		info.cbSize = sizeof(MENUITEMINFO);
-		info.fMask = MIIM_STATE;
-		info.fState = MFS_CHECKED;
-		SetMenuItemInfo(systemMenu, IDB_ALWAYS_ON_TOP, false, &info);
 		SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
-	}
 
 	//
 	// THIS CODE IS NOT USED

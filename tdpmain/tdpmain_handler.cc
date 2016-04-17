@@ -660,7 +660,7 @@ bool TDPHandler::OnContextMenuCommand(
 		OpenURL(Twimg_Orig(params->GetSourceUrl()));
 		return true;
 	case CLIENT_ID_OPEN_IMAGE_LINK_POPUP:
-		OpenPopup(frame, params->GetSourceUrl());
+		OpenPopup(frame, Twimg_Orig(params->GetSourceUrl()));
 		return true;
 	case CLIENT_ID_SAVE_VIDEO_AS:
 		browser->GetHost()->StartDownload(params->GetSourceUrl());

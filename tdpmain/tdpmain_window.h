@@ -24,6 +24,7 @@ public:
 private:
 	static DWORD wndOldProc;
 	static HWND hMainWnd;
+	static HWND hPopupWnd;
 
 	// Window procedure for the root window.
 	static LRESULT CALLBACK PopupWndProc(HWND hWnd, UINT message, WPARAM wParam,

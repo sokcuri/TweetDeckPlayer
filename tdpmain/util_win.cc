@@ -175,22 +175,22 @@ std::wstring GetDataPath() {
 	return GetExePath() + L"\\data";
 }
 
-void SaveAppData(HWND hWnd) {
-	DWORD dwStyle;
-	RECT rect;
-
-	// save prevent when window minimize or maximize
-	dwStyle = GetWindowLong(hWnd, GWL_STYLE);
-	if (dwStyle & WS_MINIMIZE || dwStyle & WS_MAXIMIZE)
-		return;
-
-	GetWindowRect(hWnd, &rect);
+void SaveMainWnd(RECT *rect) {
 	const std::wstring iniPath(GetINIPath());
 
-	SetINI_String(L"window", L"left", std::to_wstring(rect.left));
-	SetINI_String(L"window", L"right", std::to_wstring(rect.right));
-	SetINI_String(L"window", L"top", std::to_wstring(rect.top));
-	SetINI_String(L"window", L"bottom", std::to_wstring(rect.bottom));
+	SetINI_String(L"window", L"left", std::to_wstring(rect->left));
+	SetINI_String(L"window", L"right", std::to_wstring(rect->right));
+	SetINI_String(L"window", L"top", std::to_wstring(rect->top));
+	SetINI_String(L"window", L"bottom", std::to_wstring(rect->bottom));
+}
+
+void SavePopupWnd(RECT *rect) {
+	const std::wstring iniPath(GetINIPath());
+
+	SetINI_String(L"popup", L"left", std::to_wstring(rect->left));
+	SetINI_String(L"popup", L"right", std::to_wstring(rect->right));
+	SetINI_String(L"popup", L"top", std::to_wstring(rect->top));
+	SetINI_String(L"popup", L"bottom", std::to_wstring(rect->bottom));
 }
 
 std::wstring GetINI_String(std::wstring app, std::wstring key, std::wstring default)

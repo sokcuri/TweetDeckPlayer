@@ -49,8 +49,9 @@ namespace tdpmain
 	int GetINI_Int(std::wstring app, std::wstring key, int default);
 	void SetINI_Int(std::wstring app, std::wstring key, int value);
 
-	// Save configuration to ini file.
-	void SaveAppData(HWND hWnd);
+	// Save window info to ini file.
+	void SaveMainWnd(RECT *rect);
+	void SavePopupWnd(RECT *rect);
 
 	// Open URL in external browser
 	void OpenURL(CefString url);

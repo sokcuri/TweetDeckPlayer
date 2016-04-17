@@ -26,15 +26,20 @@ TDPHandler* g_instance = NULL;
 // Custom menu command Ids.
 enum client_menu_ids {
 	CLIENT_ID_RELOAD_PAGE = MENU_ID_USER_FIRST,
+	CLIENT_ID_BACK_PAGE,
+	CLIENT_ID_FORWARD_PAGE,
 	CLIENT_ID_OPEN_LINK,
+	CLIENT_ID_OPEN_LINK_POPUP,
 	CLIENT_ID_SAVE_LINK_AS,
 	CLIENT_ID_COPY_LINK_ADDRESS,
 	CLIENT_ID_SAVE_IMAGE_AS,
 	CLIENT_ID_COPY_IMAGE_URL,
 	CLIENT_ID_OPEN_IMAGE_LINK,
+	CLIENT_ID_OPEN_IMAGE_LINK_POPUP,
 	CLIENT_ID_SAVE_VIDEO_AS,
 	CLIENT_ID_COPY_VIDEO_URL,
 	CLIENT_ID_OPEN_VIDEO_LINK,
+	CLIENT_ID_OPEN_VIDEO_LINK_POPUP,
 	CLIENT_ID_SELECTION_UNDO,
 	CLIENT_ID_SELECTION_REDO,
 	CLIENT_ID_SELECTION_CUT,
@@ -45,6 +50,9 @@ enum client_menu_ids {
 
 	CLIENT_ID_TWEET_TWITTER,
 	CLIENT_ID_OPEN_TWITTER,
+	CLIENT_ID_POPUP_COPY_PAGE_URL,
+	CLIENT_ID_POPUP_OPEN_BROWSER,
+	CLIENT_ID_CLOSE_BROWSER,
 
 	CLIENT_ID_SHOW_DEVTOOLS,
 	CLIENT_ID_CLOSE_DEVTOOLS,
@@ -88,28 +96,33 @@ bool TDPHandler::OnBeforePopup(
 	bool* no_javascript_access) {
 	CEF_REQUIRE_IO_THREAD();
 
-	// is not main window, do not allow popup
-	if (browser->IsPopup())
-	{
-		OpenURL(target_url);
-		return true;
-	}
-
 	bool no_link_popup_ = (GetINI_Int(L"setting", L"DisableLinkPopup", 0) == 1);
 	SetINI_Int(L"setting", L"DisableLinkPopup", no_link_popup_);
 
 	// no use link popup
 	std::wstring url = target_url.ToWString();
 
-	// is twitter menu, jump this logic
-	if (url.find(L"twitter.com/?&", 0) == std::wstring::npos &&
-		url.find(L"twitter.com/??", 0) == std::wstring::npos &&
-		no_link_popup_)
+	// is popup menu, jump this logic
+	if (url.find(L"tdppopup://", 0) != 0 && no_link_popup_ || // no_link_popup parameter
+		url.find(L"tdppopup://", 0) != 0 && browser->IsPopup()) // Popup window do not allow popup
 	{
 		OpenURL(url);
 		return true; // cancel the popup window
 	}
+	else if (url.find(L"tdppopup://", 0) == 0)
+		url = url.substr(11);
 
+	// is already open browser, move to link
+	for (auto iter : browser_list_)
+	{
+		if (iter->IsPopup())
+		{
+			iter->GetMainFrame()->LoadURL(url);
+			return true;
+		}
+	}
+
+	/*
 	// is already open browser, close browser
 	std::list<CefRefPtr<CefBrowser>> browser_list_temp;
 	for (auto iter : browser_list_)
@@ -122,22 +135,40 @@ bool TDPHandler::OnBeforePopup(
 			browser_list_temp.push_back(iter);
 	}
 	browser_list_ = browser_list_temp;
-
+	*/
 	// determine to popup window size
-	int width = GetINI_Int(L"popup", L"width", 1200);
-	SetINI_Int(L"popup", L"width", width);
-	int height = GetINI_Int(L"popup", L"height", 800);
-	SetINI_Int(L"popup", L"height", height);
-	RECT rect;
-	GetClientRect(GetDesktopWindow(), &rect);
+	int width = 1200;
+	int height = 800;
 
-	rect.left = (rect.right / 2) - (width / 2);
-	rect.top = (rect.bottom / 2) - (height / 2);
+	int left, right, top, bottom;
 
-	windowInfo.x = rect.left;
-	windowInfo.y = rect.top;
-	windowInfo.width = width;
-	windowInfo.height = height;
+	left = GetINI_Int(L"popup", L"left", 0);
+	right = GetINI_Int(L"popup", L"right", 0);
+	top = GetINI_Int(L"popup", L"top", 0);
+	bottom = GetINI_Int(L"popup", L"bottom", 0);
+
+	// window size is init
+	if (right - left == 0 || bottom - top == 0)
+	{
+		RECT rect;
+		GetClientRect(GetDesktopWindow(), &rect);
+
+		rect.left = (rect.right / 2) - (width / 2);
+		rect.top = (rect.bottom / 2) - (height / 2);
+
+		windowInfo.x = rect.left;
+		windowInfo.y = rect.top;
+		windowInfo.width = width;
+		windowInfo.height = height;
+
+	}
+	else
+	{
+		windowInfo.x = left;
+		windowInfo.y = top;
+		windowInfo.width = right - left;
+		windowInfo.height = bottom - top;
+	}
 
 	windowInfo.style &= ~WS_MINIMIZEBOX;
 	windowInfo.style &= ~WS_MAXIMIZEBOX;
@@ -168,9 +199,29 @@ void TDPHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
 bool TDPHandler::DoClose(CefRefPtr<CefBrowser> browser) {
   CEF_REQUIRE_UI_THREAD();
 
+  // save prevent when window minimize or maximize
+  DWORD dwStyle = GetWindowLong(browser->GetHost()->GetWindowHandle(), GWL_STYLE);
+  if (!(dwStyle & WS_MINIMIZE) && !(dwStyle & WS_MAXIMIZE))
+  {
+	  RECT rect;
+	  GetWindowRect(browser->GetHost()->GetWindowHandle(), &rect);
+
+	  // Save window info
+	  if (!browser->IsPopup())
+		  SaveMainWnd(&rect);
+	  else SavePopupWnd(&rect);
+
+	  // is main browser, close all browser
+	  if (!browser->IsPopup())
+	  {
+		  is_closing_ = true;
+		  CloseAllBrowsers(true);
+	  }
+  }
   // Closing the main window requires special handling. See the DoClose()
   // documentation in the CEF header for a detailed destription of this
   // process.
+
   if (browser_list_.size() == 1) {
     // Set a flag to indicate that the window close should be allowed.
     is_closing_ = true;
@@ -300,6 +351,15 @@ void TDPHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
                                 const CefString& failedUrl) {
   CEF_REQUIRE_UI_THREAD();
 
+  // Skip popup url, reload it
+  std::wstring url = failedUrl;
+  if (url.find(L"tdppopup://", 0) == 0)
+  {
+	  url = url.substr(11);
+	  browser->GetMainFrame()->LoadURL(url);
+	  return;
+  }
+
   // Don't display an error for downloaded files.
   if (errorCode == ERR_ABORTED)
     return;
@@ -339,13 +399,38 @@ void TDPHandler::OnBeforeContextMenu(
 	// ContextMenu Initialize
 	model->Clear();
 
+	// is usable popup open menu
+	bool no_popup_menu_ = (GetINI_Int(L"setting", L"DisablePopupOpenMenu", 0) == 1);
+	SetINI_Int(L"setting", L"DisablePopupOpenMenu", no_popup_menu_);
+
+	if (browser->IsPopup())
+	{
+		if ((params->GetTypeFlags() & (CM_TYPEFLAG_MEDIA)) != 0 ||
+			(params->GetTypeFlags() & (CM_TYPEFLAG_PAGE)) != 0)
+		{
+			model->AddItem(CLIENT_ID_BACK_PAGE, "Back");
+			model->AddItem(CLIENT_ID_FORWARD_PAGE, "Forward");
+			model->AddItem(CLIENT_ID_RELOAD_PAGE, "Reload");
+
+			if (!browser->CanGoBack())
+				model->SetEnabled(CLIENT_ID_BACK_PAGE, false);
+			if (!browser->CanGoForward())
+				model->SetEnabled(CLIENT_ID_FORWARD_PAGE, false);
+		}
+	}
+
 	if ((params->GetTypeFlags() & (CM_TYPEFLAG_LINK)))
 	{
+		if (model->GetCount())
+			model->AddSeparator();
+
 		model->AddItem(CLIENT_ID_OPEN_LINK, "Open link");
+		if (!no_popup_menu_)
+			model->AddItem(CLIENT_ID_OPEN_LINK_POPUP, "Open link in popup");
 		model->AddItem(CLIENT_ID_SAVE_LINK_AS, "Save link as...");
 		model->AddItem(CLIENT_ID_COPY_LINK_ADDRESS, "Copy link address");
 	}
-
+	
 	if ((params->GetTypeFlags() & (CM_TYPEFLAG_MEDIA)) != 0 && (params->GetMediaType() & (CM_MEDIATYPE_IMAGE)) != 0)
 	{
 		if (model->GetCount())
@@ -353,6 +438,8 @@ void TDPHandler::OnBeforeContextMenu(
 		model->AddItem(CLIENT_ID_SAVE_IMAGE_AS, "Save image as...");
 		model->AddItem(CLIENT_ID_COPY_IMAGE_URL, "Copy image URL");
 		model->AddItem(CLIENT_ID_OPEN_IMAGE_LINK, "Open image in browser");
+		if (!no_popup_menu_)
+			model->AddItem(CLIENT_ID_OPEN_IMAGE_LINK_POPUP, "Open image in popup");
 	}
 	else if ((params->GetTypeFlags() & (CM_TYPEFLAG_MEDIA)) != 0 && (params->GetMediaType() & (CM_MEDIATYPE_VIDEO)) != 0)
 	{
@@ -361,6 +448,8 @@ void TDPHandler::OnBeforeContextMenu(
 		model->AddItem(CLIENT_ID_SAVE_VIDEO_AS, "Save video as...");
 		model->AddItem(CLIENT_ID_COPY_VIDEO_URL, "Copy video URL");
 		model->AddItem(CLIENT_ID_OPEN_VIDEO_LINK, "Open video in browser");
+		if (!no_popup_menu_)
+			model->AddItem(CLIENT_ID_OPEN_VIDEO_LINK_POPUP, "Open video in popup");
 	}
 	else if ((params->GetTypeFlags() & (CM_TYPEFLAG_EDITABLE)) != 0)
 	{
@@ -401,24 +490,37 @@ void TDPHandler::OnBeforeContextMenu(
 	// this menu only shown main window
 	else if (params->GetTypeFlags() & (CM_TYPEFLAG_PAGE) && browser->GetHost()->GetWindowHandle() == TDPWindow::GetMainWndHandle())
 	{
-		if (model->GetCount())
-			model->AddSeparator();
-
 		bool write_twitter_ = (GetINI_Int(L"setting", L"DisableWriteTweetMenu", 0) == 1);
 		SetINI_Int(L"setting", L"DisableWriteTweetMenu", write_twitter_);
+		bool open_twitter_ = (GetINI_Int(L"setting", L"DisableTwitterOpenMenu", 0) == 1);
+		SetINI_Int(L"setting", L"DisableTwitterOpenMenu", open_twitter_);
+
+		if (!write_twitter_ || !open_twitter_)
+			model->AddSeparator();
+
 		if (!write_twitter_)
 			model->AddItem(CLIENT_ID_TWEET_TWITTER, "Write Tweet in Twitter");
 
-		bool open_twitter_ = (GetINI_Int(L"setting", L"DisableTwitterOpenMenu", 0) == 1);
-		SetINI_Int(L"setting", L"DisableTwitterOpenMenu", open_twitter_);
 		if (!open_twitter_)
 			model->AddItem(CLIENT_ID_OPEN_TWITTER, "Open Twitter in popup");
 	}
-	// Add to Reload button
-	if (model->GetCount())
-		model->AddSeparator();
-	model->AddItem(CLIENT_ID_RELOAD_PAGE, "Reload");
+	
+	if (browser->IsPopup())
+	{
+		if (model->GetCount())
+			model->AddSeparator();
+		model->AddItem(CLIENT_ID_POPUP_COPY_PAGE_URL, "Copy page URL");
+		model->AddItem(CLIENT_ID_POPUP_OPEN_BROWSER, "Open page in browser");
+		model->AddItem(CLIENT_ID_CLOSE_BROWSER, "Close");
+	}
+	else
+	{
+		if (model->GetCount())
+			model->AddSeparator();
 
+		// Add to Reload button
+		model->AddItem(CLIENT_ID_RELOAD_PAGE, "Reload");
+	}
 	// Add DevTools items to all context menus.
 	//bool is_debug = GetINI_Int(L"debug", L"devtools", 0) == 1;
 	//if (is_debug)
@@ -480,6 +582,16 @@ void TDPHandler::OnDownloadUpdated(
 	}
 }
 
+void TDPHandler::OpenPopup(CefRefPtr<CefFrame> frame, CefString url)
+{
+	std::wstring request;
+	request += L"window.open('tdppopup://";
+	request += url;
+	request += L"')";
+	frame->ExecuteJavaScript(request, frame->GetURL(), 0);
+	return;
+}
+
 bool TDPHandler::OnContextMenuCommand(
 	CefRefPtr<CefBrowser> browser,
 	CefRefPtr<CefFrame> frame,
@@ -492,9 +604,18 @@ bool TDPHandler::OnContextMenuCommand(
 	case CLIENT_ID_RELOAD_PAGE:
 		browser->Reload();
 		return true;
+	case CLIENT_ID_BACK_PAGE:
+		browser->GoBack();
+		return true;
+	case CLIENT_ID_FORWARD_PAGE:
+		browser->GoForward();
+		return true;
 	case CLIENT_ID_OPEN_LINK:
 		params->GetLinkUrl();
 		OpenURL(params->GetLinkUrl());
+		return true;
+	case CLIENT_ID_OPEN_LINK_POPUP:
+		OpenPopup(frame, params->GetLinkUrl());
 		return true;
 	case CLIENT_ID_SAVE_LINK_AS:
 		browser->GetHost()->StartDownload(params->GetLinkUrl());
@@ -538,6 +659,9 @@ bool TDPHandler::OnContextMenuCommand(
 	case CLIENT_ID_OPEN_IMAGE_LINK:
 		OpenURL(Twimg_Orig(params->GetSourceUrl()));
 		return true;
+	case CLIENT_ID_OPEN_IMAGE_LINK_POPUP:
+		OpenPopup(frame, params->GetSourceUrl());
+		return true;
 	case CLIENT_ID_SAVE_VIDEO_AS:
 		browser->GetHost()->StartDownload(params->GetSourceUrl());
 		return true;
@@ -557,6 +681,9 @@ bool TDPHandler::OnContextMenuCommand(
 		return true;
 	case CLIENT_ID_OPEN_VIDEO_LINK:
 		OpenURL(params->GetSourceUrl());
+		return true;
+	case CLIENT_ID_OPEN_VIDEO_LINK_POPUP:
+		OpenPopup(frame, params->GetSourceUrl());
 		return true;
 	case CLIENT_ID_SELECTION_UNDO:
 		frame->Undo();
@@ -580,10 +707,10 @@ bool TDPHandler::OnContextMenuCommand(
 		frame->SelectAll();
 		return true;
 	case CLIENT_ID_TWEET_TWITTER:
-		frame->ExecuteJavaScript("window.open('https://www.twitter.com/?&')", frame->GetURL(), 0);
+		OpenPopup(frame, L"https://www.twitter.com/?&");
 		return true;
 	case CLIENT_ID_OPEN_TWITTER:
-		frame->ExecuteJavaScript("window.open('https://www.twitter.com/??')", frame->GetURL(), 0);
+		OpenPopup(frame, L"https://www.twitter.com/");
 		return true;
 	case CLIENT_ID_SHOW_DEVTOOLS:
 		ShowDevTools(browser, CefPoint());
@@ -595,6 +722,38 @@ bool TDPHandler::OnContextMenuCommand(
 		ShowDevTools(browser, CefPoint(params->GetXCoord(), params->GetYCoord()));
 		return true;
 	case CLIENT_ID_TOAST_NOTI:
+		return true;
+	case CLIENT_ID_POPUP_OPEN_BROWSER:
+	case CLIENT_ID_POPUP_COPY_PAGE_URL:
+	{
+		std::wstring url = browser->GetMainFrame()->GetURL();
+
+		if (url.find(L"twitter.com/", 0) != std::wstring::npos)
+		{
+			url = PartialEraseStr(url, L"/?&");
+			url = PartialEraseStr(url, L"/??");
+		}
+		if (command_id == CLIENT_ID_POPUP_OPEN_BROWSER)
+			OpenURL(url);
+		else if (command_id == CLIENT_ID_POPUP_COPY_PAGE_URL)
+		{
+			if (OpenClipboard(NULL))
+			{
+				if (EmptyClipboard())
+				{
+					int length = url.length();
+					HGLOBAL hGlob = GlobalAlloc(GMEM_FIXED, (length + 1) * 2);
+					wcscpy_s((wchar_t*)hGlob, length + 1, url.c_str());
+					SetClipboardData(CF_UNICODETEXT, hGlob);
+					GlobalUnlock(hGlob);
+				}
+				CloseClipboard();
+			}
+		}
+	}
+	return true;
+	case CLIENT_ID_CLOSE_BROWSER:
+		browser->GetHost()->CloseBrowser(false);
 		return true;
 	//default:  // Allow default handling, if any.
 	//	return ExecuteTestMenu(command_id);

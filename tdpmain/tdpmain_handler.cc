@@ -495,7 +495,7 @@ void TDPHandler::OnBeforeContextMenu(
 		bool open_twitter_ = (GetINI_Int(L"setting", L"DisableTwitterOpenMenu", 0) == 1);
 		SetINI_Int(L"setting", L"DisableTwitterOpenMenu", open_twitter_);
 
-		if (!write_twitter_ || !open_twitter_)
+		if (model->GetCount() && (!write_twitter_ || !open_twitter_))
 			model->AddSeparator();
 
 		if (!write_twitter_)

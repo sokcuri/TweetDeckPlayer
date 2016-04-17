@@ -276,8 +276,7 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 	wchar_t kTweetDeck[] = L"https://tweetdeck.twitter.com";
 	wchar_t kTwitter[] = L"https://twitter.com";
 	// Apply if tweetdeck and twitter
-	if (frame->GetURL().ToWString().find(kTweetDeck) == 0 ||
-		frame->GetURL().ToWString().find(kTwitter) == 0)
+	if (frame->GetURL().ToWString().find(kTweetDeck) == 0)
 	{
 		const std::wstring iniPath(GetINIPath());
 		std::wstring code, para;
@@ -302,6 +301,8 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 				   L",Verdana,sans-serif; }');";
 			frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 		}
+
+		// print version info
 		code = L"TDP.onTDPageLoad = function(){ setTimeout(function(){"
 		       L"if(!TD.ready){ TDP.onTDPageLoad(); } else { "
 			   L"TD.controller.progressIndicator.addMessage("

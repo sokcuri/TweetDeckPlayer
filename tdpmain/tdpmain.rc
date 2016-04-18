@@ -33,7 +33,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "Save",IDOK,198,198,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,252,198,50,14
-    LTEXT           "If checked, links will be opened in the system's default web browser.\r\nIf unchecked, links will be opened a internal popup window.",IDC_LBL_POPUP_DESC,18,42,229,18,WS_DISABLED
+    LTEXT           "If checked, links will be opened in the system's default web browser.\r\nIf unchecked, links will be opened in an internal popup window.",IDC_LBL_POPUP_DESC,18,42,229,18,WS_DISABLED
     CONTROL         "Always On Top as Default",IDC_CHK_ALWAYS_ON_TOP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,99,10
     CONTROL         "Open Links in a Default Web Browser",IDC_CHK_POPUP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,30,134,10
@@ -49,7 +49,7 @@ BEGIN
     LTEXT           "If checked, TweetDeck Player will download images in ""large"" quality.",IDC_LBL_TOP_DESC,18,132,221,8,WS_DISABLED
     LTEXT           "Display Font:",IDC_LBL_FONT,6,151,43,8
     EDITTEXT        IDC_EDIT_FONT,54,150,246,12,ES_AUTOHSCROLL
-    LTEXT           "Leave it blank if you want to use the default font.\r\nYou need to restart TweetDeck Player to apply changes.",IDC_LBL_FONT_DESC,54,166,186,20,WS_DISABLED
+    LTEXT           "Leave it blank if you want to use the default font.\r\nYou need to restart TweetDeck Player to apply new fonts.",IDC_LBL_FONT_DESC,54,166,204,20,WS_DISABLED
 END
 
 

@@ -73,14 +73,7 @@ LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 		break;
 		case IDB_SETTINGS:
 		{
-			if (DialogBox(NULL, MAKEINTRESOURCE(IDD_SETTINGS), hWnd, (DLGPROC)SettingsDlgProc) == IDOK)
-			{
-				// If the user presses OK button, save new settings.
-			}
-			else
-			{
-				// If not, Nothing happens.
-			}
+			DialogBox(NULL, MAKEINTRESOURCE(IDD_SETTINGS), hWnd, (DLGPROC)SettingsDlgProc);
 		}
 	}
 

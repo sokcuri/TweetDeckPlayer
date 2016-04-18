@@ -127,7 +127,7 @@ cmake_minimum_required(VERSION 2.8.12.1)
 set(CMAKE_CONFIGURATION_TYPES Release)
 
 # Project name.
-project(cef)
+project(tdp)
 
 # Use folders in the resulting project files.
 set_property(GLOBAL PROPERTY OS_FOLDERS ON)

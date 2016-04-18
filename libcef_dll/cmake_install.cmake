@@ -1,4 +1,4 @@
-# Install script for directory: C:/TweetDeckPlayer/libcef_dll
+# Install script for directory: C:/Users/sokcu/Source/Repos/TweetDeckPlayer/libcef_dll
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

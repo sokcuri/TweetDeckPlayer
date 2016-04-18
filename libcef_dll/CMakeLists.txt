@@ -289,6 +289,7 @@ set(LIBCEF_INCLUDE_SRCS
   ../include/cef_resource_handler.h
   ../include/cef_response.h
   ../include/cef_response_filter.h
+  ../include/cef_runnable.h
   ../include/cef_scheme.h
   ../include/cef_ssl_info.h
   ../include/cef_stream.h

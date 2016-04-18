@@ -23,8 +23,8 @@ TDPWindow::~TDPWindow()
 LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 	WPARAM wParam, LPARAM lParam) {
 
-	// Callback for the main window
-	switch (message) {
+		// Callback for the main window
+		switch (message) {
 			case WM_SYSCOMMAND:
 			{
 				switch (wParam)
@@ -70,11 +70,76 @@ LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 			}
 			return 0;
 		}
+		break;
+		case IDB_SETTINGS:
+		{
+			if (DialogBox(NULL, MAKEINTRESOURCE(IDD_SETTINGS), hWnd, (DLGPROC)SettingsDlgProc) == IDOK)
+			{
+				// If the user presses OK button, save new settings.
+			}
+			else
+			{
+				// If not, Nothing happens.
+			}
+		}
 	}
 
 	return reinterpret_cast<LRESULT(*)(HWND hWnd, UINT message, WPARAM wParam,
 		LPARAM lParam)>(wndOldProc)(hWnd, message, wParam, lParam);
 }
+
+BOOL CALLBACK TDPWindow::SettingsDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_INITDIALOG:
+	{
+		// Center this dialog.
+		HWND hParent;
+		RECT rcParent, rcDlg, rc;
+
+		hParent = GetParent(hWnd);
+		if (hParent == NULL) hParent = GetDesktopWindow();
+		GetWindowRect(hParent, &rcParent);
+		GetWindowRect(hWnd, &rcDlg);
+		CopyRect(&rc, &rcParent);
+
+		OffsetRect(&rcDlg, -rcDlg.left, -rcDlg.top);
+		OffsetRect(&rc, -rc.left, -rc.top);
+		OffsetRect(&rc, -rcDlg.right, -rcDlg.bottom);
+		SetWindowPos(hWnd, HWND_TOP, rcParent.left + rc.right / 2, rcParent.top + rc.bottom / 2, 0, 0, SWP_NOSIZE);
+
+		// Read settings from appdata.ini and set checkboxes appropriately.
+		CheckDlgButton(hWnd, IDC_CHK_ALWAYS_ON_TOP, GetINI_Int(L"setting", L"DefaultAlwaysOnTop", 0));
+		CheckDlgButton(hWnd, IDC_CHK_POPUP, GetINI_Int(L"setting", L"DisableLinkPopup", 0));
+		CheckDlgButton(hWnd, IDC_CHK_CTX_TWEET_IN_TWITTER, GetINI_Int(L"setting", L"DisableWriteTweetMenu", 0));
+		CheckDlgButton(hWnd, IDC_CHK_CTX_TWITTER_POPUP, GetINI_Int(L"setting", L"DisableTwitterOpenMenu", 0));
+		CheckDlgButton(hWnd, IDC_CHK_CTX_LINK_POPUP, GetINI_Int(L"setting", L"DisablePopupOpenMenu", 0));
+		CheckDlgButton(hWnd, IDC_CHK_DL_ORIG_IMG, GetINI_Int(L"setting", L"DisableTwimgOrig", 0));
+	}
+		return TRUE;
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDOK:
+			// Write settings to appdata.ini
+			SetINI_Int(L"setting", L"DefaultAlwaysOnTop", IsDlgButtonChecked(hWnd, IDC_CHK_ALWAYS_ON_TOP));
+			SetINI_Int(L"setting", L"DisableLinkPopup", IsDlgButtonChecked(hWnd, IDC_CHK_POPUP));
+			SetINI_Int(L"setting", L"DisableWriteTweetMenu", IsDlgButtonChecked(hWnd, IDC_CHK_CTX_TWEET_IN_TWITTER));
+			SetINI_Int(L"setting", L"DisableTwitterOpenMenu", IsDlgButtonChecked(hWnd, IDC_CHK_CTX_TWITTER_POPUP));
+			SetINI_Int(L"setting", L"DisablePopupOpenMenu", IsDlgButtonChecked(hWnd, IDC_CHK_CTX_LINK_POPUP));
+			SetINI_Int(L"setting", L"DisableTwimgOrig", IsDlgButtonChecked(hWnd, IDC_CHK_DL_ORIG_IMG));
+
+			// Fall through to close this dialog.
+		case IDCANCEL:
+			EndDialog(hWnd, wParam);
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
 void TDPWindow::OnWndCreated(HWND hWnd, bool isMainWnd)
 {
 	bool always_on_top_;
@@ -96,6 +161,7 @@ void TDPWindow::OnWndCreated(HWND hWnd, bool isMainWnd)
 		{
 			InsertMenu(systemMenu, (UINT)-1, MF_SEPARATOR, 0, 0);
 			InsertMenu(systemMenu, (UINT)-1, MF_BYCOMMAND, IDB_ALWAYS_ON_TOP, L"Always On Top");
+			InsertMenu(systemMenu, (UINT)-1, MF_BYCOMMAND, IDB_SETTINGS, L"Settings");
 		}
 
 		if (always_on_top_)

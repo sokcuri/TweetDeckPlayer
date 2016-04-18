@@ -9,7 +9,11 @@
 #include <vector>
 #include <Shellapi.h>
 #include <direct.h>
+
+#pragma warning(push)
+#pragma warning(disable: 4091)
 #include <shlobj.h>
+#pragma warning(pop)
 
 #include "include/internal/cef_types_wrappers.h"
 

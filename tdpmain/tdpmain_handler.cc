@@ -353,7 +353,7 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 				L"if (!TDP) TDP = {};"
 				L"if (!TDP.DialogOpened){"
 				L"TDP.onPageLoad = function(){ setTimeout(function(){"
-				L"$(document).trigger('uiShortcutShowTweetbox'); }, 100);};"
+				L"$(document).trigger('uiShortcutShowTweetbox'); }, 1000);};"
 			    L"$(document).ready(function(){"
 				L"TDP.onPageLoad();});"
 				L"TDP.DialogOpened = true;"

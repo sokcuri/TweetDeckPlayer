@@ -9,6 +9,9 @@
 
 #include "include/base/cef_scoped_ptr.h"
 
+#define NOTIFYICON_ID_MAIN 0
+#define MSG_NOTIFYICON 0x8100
+
 namespace tdpmain
 {
 
@@ -32,5 +35,6 @@ private:
 
 	static BOOL CALLBACK SettingsDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 };
+
 }
 #endif

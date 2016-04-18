@@ -5,6 +5,7 @@
 
 ####최소 사양
 * 최소 사양은 윈도우 XP 이상입니다.
+* 윈도우 외 타 플랫폼은 지원하지 않고 있습니다.
 
 ####라이선스
 * GPLv2(GNU General Public License version 2) 라이선스를 따릅니다

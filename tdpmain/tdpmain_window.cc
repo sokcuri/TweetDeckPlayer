@@ -102,13 +102,16 @@ BOOL CALLBACK TDPWindow::SettingsDlgProc(HWND hWnd, UINT message, WPARAM wParam,
 		OffsetRect(&rc, -rcDlg.right, -rcDlg.bottom);
 		SetWindowPos(hWnd, HWND_TOP, rcParent.left + rc.right / 2, rcParent.top + rc.bottom / 2, 0, 0, SWP_NOSIZE);
 
-		// Read settings from appdata.ini and set checkboxes appropriately.
+		// Read settings from appdata.ini and set controls appropriately.
 		CheckDlgButton(hWnd, IDC_CHK_ALWAYS_ON_TOP, GetINI_Int(L"setting", L"DefaultAlwaysOnTop", 0));
 		CheckDlgButton(hWnd, IDC_CHK_POPUP, GetINI_Int(L"setting", L"DisableLinkPopup", 0));
 		CheckDlgButton(hWnd, IDC_CHK_CTX_TWEET_IN_TWITTER, GetINI_Int(L"setting", L"DisableWriteTweetMenu", 0));
 		CheckDlgButton(hWnd, IDC_CHK_CTX_TWITTER_POPUP, GetINI_Int(L"setting", L"DisableTwitterOpenMenu", 0));
 		CheckDlgButton(hWnd, IDC_CHK_CTX_LINK_POPUP, GetINI_Int(L"setting", L"DisablePopupOpenMenu", 0));
 		CheckDlgButton(hWnd, IDC_CHK_DL_ORIG_IMG, GetINI_Int(L"setting", L"DisableTwimgOrig", 0));
+
+		HWND hFont = GetDlgItem(hWnd, IDC_EDIT_FONT);
+		SetWindowText(hFont, GetINI_String(L"timeline", L"fontFamily", L"").c_str());
 	}
 		return TRUE;
 	case WM_COMMAND:
@@ -122,6 +125,10 @@ BOOL CALLBACK TDPWindow::SettingsDlgProc(HWND hWnd, UINT message, WPARAM wParam,
 			SetINI_Int(L"setting", L"DisableTwitterOpenMenu", IsDlgButtonChecked(hWnd, IDC_CHK_CTX_TWITTER_POPUP));
 			SetINI_Int(L"setting", L"DisablePopupOpenMenu", IsDlgButtonChecked(hWnd, IDC_CHK_CTX_LINK_POPUP));
 			SetINI_Int(L"setting", L"DisableTwimgOrig", IsDlgButtonChecked(hWnd, IDC_CHK_DL_ORIG_IMG));
+
+			WCHAR _fnt[1001];
+			GetWindowText(GetDlgItem(hWnd, IDC_EDIT_FONT), _fnt, 1000);
+			SetINI_String(L"timeline", L"fontFamily", _fnt);
 
 			// Fall through to close this dialog.
 		case IDCANCEL:

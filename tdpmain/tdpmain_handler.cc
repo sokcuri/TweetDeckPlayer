@@ -373,7 +373,7 @@ void TDPHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
 
   // Skip popup url, reload it
   std::wstring url = failedUrl;
-  if (url.find(L"tdppopup://", 0) == 0)
+  if (url.find(L"tdppopup://", 0) == 0 && browser->IsPopup())
   {
 	  url = url.substr(11);
 	  frame->LoadURL(url);

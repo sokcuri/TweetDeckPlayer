@@ -51,10 +51,23 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
   // Use Single process
   settings.single_process = false;
 
+  // Set language based on user's system language
+  LANGID langId = GetUserDefaultLangID();
+
+  wchar_t languageCode[100];
+  GetLocaleInfo(langId, LOCALE_SISO639LANGNAME, languageCode, 100);
+  wchar_t countryCode[100];
+  GetLocaleInfo(langId, LOCALE_SISO3166CTRYNAME, countryCode, 100);
+
+  std::wstring lang(languageCode);
+  lang += L"_" + std::wstring(countryCode);
+  CefString(&settings.locale).FromWString(lang);
+
   // Add to Accept-Language
   CefString AcceptLanguage;
   AcceptLanguage.Attach(&settings.accept_language_list, false);
-  AcceptLanguage.FromString("ko-KR;");
+  AcceptLanguage.clear();
+  AcceptLanguage.FromWString(lang);
 
 #if !defined(CEF_USE_SANDBOX)
   settings.no_sandbox = true;

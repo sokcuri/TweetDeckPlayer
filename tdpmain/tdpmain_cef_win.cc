@@ -49,7 +49,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
   settings.log_severity = LOGSEVERITY_DISABLE;
 
   // Use Single process
-  settings.single_process = true;
+  settings.single_process = false;
 
   // Add to Accept-Language
   CefString AcceptLanguage;

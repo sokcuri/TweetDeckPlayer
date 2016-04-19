@@ -16,7 +16,7 @@
 #include "include/wrapper/cef_helpers.h"
 
 #define T(x)      L ## x
-#define TDP_MESSAGE T("TweetDeck Player v1.23 ~by @sokcuri")
+#define TDP_MESSAGE T("TweetDeck Player v1.23dev ~by @sokcuri")
 
 namespace tdpmain
 {
@@ -376,7 +376,7 @@ void TDPHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
   if (url.find(L"tdppopup://", 0) == 0)
   {
 	  url = url.substr(11);
-	  browser->GetMainFrame()->LoadURL(url);
+	  frame->LoadURL(url);
 	  return;
   }
 

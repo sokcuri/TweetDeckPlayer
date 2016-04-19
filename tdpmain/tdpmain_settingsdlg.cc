@@ -77,6 +77,15 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				Shell_NotifyIcon(NIM_DELETE, (NOTIFYICONDATA *)&notifyIconData);
 
 				TDPWindow::isShownTrayIcon = false;
+
+				// Show Window
+				long exstyle = GetWindowLong(TDPWindow::GetMainWndHandle(), GWL_EXSTYLE);
+				if (exstyle & WS_EX_TOOLWINDOW)
+				{
+					exstyle |= WS_EX_APPWINDOW;
+					exstyle &= ~WS_EX_TOOLWINDOW;
+					SetWindowLong(TDPWindow::GetMainWndHandle(), GWL_EXSTYLE, exstyle);
+				}
 			}
 			else if (!TDPWindow::isShownTrayIcon && IsDlgButtonChecked(hWnd, IDC_CHK_HIDETRAY) == 0)
 			{

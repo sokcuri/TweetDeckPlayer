@@ -38,11 +38,11 @@ BEGIN
     CONTROL         "Open Links in a Default Web Browser",IDC_CHK_POPUP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,54,134,10
     LTEXT           "If checked, TweetDeck Player window will be set to be always on top on startup.",IDC_LBL_TOP_DESC,18,18,259,8,WS_DISABLED
-    CONTROL         "Don't Show ""Write Tweet in Twitter"" Context Menu",IDC_CHK_CTX_TWEET_IN_TWITTER,
+    CONTROL         "Hide ""Write Tweet in Twitter"" Context Menu",IDC_CHK_CTX_TWEET_IN_TWITTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,90,178,10
-    CONTROL         "Don't Show ""Open Twitter in Popup"" Context Menu",IDC_CHK_CTX_TWITTER_POPUP,
+    CONTROL         "Hide ""Open Twitter in Popup"" Context Menu",IDC_CHK_CTX_TWITTER_POPUP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,108,178,10
-    CONTROL         "Don't Show ""Open Link in Popup"" Context Menu",IDC_CHK_CTX_LINK_POPUP,
+    CONTROL         "Hide ""Open Link in Popup"" Context Menu",IDC_CHK_CTX_LINK_POPUP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,126,167,10
     CONTROL         "Don't Download Images in Original Quality",IDC_CHK_DL_ORIG_IMG,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,144,149,10

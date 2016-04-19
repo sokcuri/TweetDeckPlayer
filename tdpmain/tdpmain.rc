@@ -15,7 +15,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// ???(????) resources
+// 한국어(대한민국) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
@@ -72,12 +72,12 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // ???(????) resources
+#endif    // 한국어(대한민국) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// ??(??) resources
+// 영어(미국) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -101,8 +101,8 @@ IDI_SMALL               ICON                    "res\\small.ico"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,2,3,0
- PRODUCTVERSION 1,2,3,0
+ FILEVERSION 1,2,4,0
+ PRODUCTVERSION 1,2,4,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -119,12 +119,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Sokcuri"
             VALUE "FileDescription", "TweetDeck Player"
-            VALUE "FileVersion", "1.2.3.0"
+            VALUE "FileVersion", "1.2.4.0"
             VALUE "InternalName", "tweetdeckplayer"
             VALUE "LegalCopyright", "Copyright (C) 2016 Sokcuri."
             VALUE "OriginalFilename", "TweetDeckPlayer.exe"
             VALUE "ProductName", "TweetDeck Player"
-            VALUE "ProductVersion", "1.2.3.0"
+            VALUE "ProductVersion", "1.2.4.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -161,7 +161,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // ??(??) resources
+#endif    // 영어(미국) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

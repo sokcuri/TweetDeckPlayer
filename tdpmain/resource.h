@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++?? ??? ?? ?????.
-// tdpmain.rc?? ???? ????.
+// Microsoft Visual C++에서 생성한 포함 파일입니다.
+// tdpmain.rc에서 사용되고 있습니다.
 //
 #define IDI_TDPMAIN                     100
 #define IDI_SMALL                       101

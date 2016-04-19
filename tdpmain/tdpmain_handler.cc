@@ -16,7 +16,7 @@
 #include "include/wrapper/cef_helpers.h"
 
 #define T(x)      L ## x
-#define TDP_MESSAGE T("TweetDeck Player v1.23dev ~by @sokcuri")
+#define TDP_MESSAGE T("TweetDeck Player v1.24 ~by @sokcuri")
 
 namespace tdpmain
 {

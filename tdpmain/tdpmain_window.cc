@@ -19,6 +19,31 @@ TDPWindow::~TDPWindow()
 {
 }
 
+void TDPWindow::HideToTray(HWND hWnd)
+{
+	long exstyle = GetWindowLong(hWnd, GWL_EXSTYLE);
+	exstyle |= WS_EX_TOOLWINDOW;
+	exstyle &= ~WS_EX_APPWINDOW;
+
+	ShowWindow(hWnd, SW_HIDE);
+	SetWindowLong(hWnd, GWL_EXSTYLE, exstyle);
+	ShowWindow(hWnd, SW_SHOW);
+	ShowWindow(hWnd, SW_HIDE);
+}
+
+void TDPWindow::RestoreFromTray(HWND hWnd)
+{
+	long exstyle = GetWindowLong(hWnd, GWL_EXSTYLE);
+	if (exstyle & WS_EX_TOOLWINDOW)
+	{
+		exstyle |= WS_EX_APPWINDOW;
+		exstyle &= ~WS_EX_TOOLWINDOW;
+		SetWindowLong(hWnd, GWL_EXSTYLE, exstyle);
+	}
+	ShowWindow(hWnd, SW_RESTORE);
+	SetForegroundWindow(hWnd);
+}
+
 // static
 LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 	WPARAM wParam, LPARAM lParam) {
@@ -30,6 +55,8 @@ LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 				switch (wParam)
 				{
 					case SC_MINIMIZE:
+						HideToTray(hWnd);
+						return 0;
 					case SC_MAXIMIZE:
 					{
 						RECT rect;
@@ -45,8 +72,7 @@ LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 				switch (lParam)
 				{
 					case WM_LBUTTONDBLCLK:
-						ShowWindow(hWnd, SW_RESTORE);
-						SetForegroundWindow(hWnd);
+						RestoreFromTray(hWnd);
 						break;
 					case WM_RBUTTONUP:
 					{
@@ -110,7 +136,7 @@ LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 		}
 		break;
 		case IDB_SETTINGS:
-			ShowWindow(hWnd, SW_RESTORE);
+			RestoreFromTray(hWnd);
 			DialogBox(NULL, MAKEINTRESOURCE(IDD_SETTINGS), hWnd, (DLGPROC)SettingsDlgProc);
 			break;
 

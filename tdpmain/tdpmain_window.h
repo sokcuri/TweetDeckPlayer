@@ -29,6 +29,9 @@ private:
 	static HWND hMainWnd;
 	static HWND hPopupWnd;
 
+	static void HideToTray(HWND hWnd);
+	static void RestoreFromTray(HWND hWnd);
+
 	// Window procedure for the root window.
 	static LRESULT CALLBACK PopupWndProc(HWND hWnd, UINT message, WPARAM wParam,
 		LPARAM lParam);

@@ -7,6 +7,7 @@
 #define IDD_SETTINGS                    102
 #define IDB_ALWAYS_ON_TOP               300
 #define IDB_SETTINGS                    301
+#define IDB_TRAY_QUIT                   499
 #define IDC_LBL_POPUP_DESC              1001
 #define IDC_CHK_ALWAYS_ON_TOP           1002
 #define IDC_CHK_POPUP                   1003
@@ -17,6 +18,7 @@
 #define IDC_LBL_FONT                    1008
 #define IDC_EDIT_FONT                   1009
 #define IDC_LBL_FONT_DESC               1010
+#define IDC_CHK_MINTRAY                 1011
 #define IDC_LBL_TOP_DESC                -1
 
 // Next default values for new objects
@@ -26,7 +28,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        103
 #define _APS_NEXT_COMMAND_VALUE         32700
-#define _APS_NEXT_CONTROL_VALUE         1011
-#define _APS_NEXT_SYMED_VALUE           103
+#define _APS_NEXT_CONTROL_VALUE         1012
+#define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

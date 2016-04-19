@@ -20,6 +20,31 @@ TDPWindow::~TDPWindow()
 {
 }
 
+void TDPWindow::HideToTray(HWND hWnd)
+{
+	long exstyle = GetWindowLong(hWnd, GWL_EXSTYLE);
+	exstyle |= WS_EX_TOOLWINDOW;
+	exstyle &= ~WS_EX_APPWINDOW;
+
+	ShowWindow(hWnd, SW_HIDE);
+	SetWindowLong(hWnd, GWL_EXSTYLE, exstyle);
+	ShowWindow(hWnd, SW_SHOW);
+	ShowWindow(hWnd, SW_HIDE);
+}
+
+void TDPWindow::RestoreFromTray(HWND hWnd)
+{
+	long exstyle = GetWindowLong(hWnd, GWL_EXSTYLE);
+	if (exstyle & WS_EX_TOOLWINDOW)
+	{
+		exstyle |= WS_EX_APPWINDOW;
+		exstyle &= ~WS_EX_TOOLWINDOW;
+		SetWindowLong(hWnd, GWL_EXSTYLE, exstyle);
+	}
+	ShowWindow(hWnd, SW_RESTORE);
+	SetForegroundWindow(hWnd);
+}
+
 // static
 LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 	WPARAM wParam, LPARAM lParam) {
@@ -31,6 +56,12 @@ LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 				switch (wParam)
 				{
 					case SC_MINIMIZE:
+						if (GetINI_Int(L"setting", L"MinimizeToTray", 1))
+						{
+							HideToTray(hWnd);
+							return 0;
+						}
+						else break;
 					case SC_MAXIMIZE:
 					{
 						RECT rect;
@@ -39,6 +70,43 @@ LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 					}
 					break;
 				}
+			}
+			break;
+			// When the user interacts with the tray icon:
+			case MSG_NOTIFYICON:
+				switch (lParam)
+				{
+					case WM_LBUTTONDBLCLK:
+						RestoreFromTray(hWnd);
+						break;
+					case WM_RBUTTONUP:
+					{
+						// Display context menu
+						HMENU hMenu = CreatePopupMenu();
+						if (hMenu)
+						{
+							InsertMenu(hMenu, 0, MF_BYPOSITION | MF_DISABLED, 0, L"TweetDeck Player");
+							InsertMenu(hMenu, (UINT)-1, MF_BYCOMMAND, IDB_SETTINGS, L"Settings");
+							InsertMenu(hMenu, (UINT)-1, MF_SEPARATOR, 0, 0);
+							InsertMenu(hMenu, (UINT)-1, MF_BYCOMMAND, IDB_TRAY_QUIT, L"Quit");
+							POINT pt;
+							GetCursorPos(&pt);
+							SetForegroundWindow(hWnd);
+							TrackPopupMenu(hMenu, TPM_RIGHTBUTTON, pt.x, pt.y, 0, hWnd, NULL);
+						}
+						break;
+					}
+				}
+				break;
+			case WM_DESTROY:
+			{
+				// Remove notification icon from the system tray.
+				NOTIFYICONDATA x;
+				ZeroMemory(&x, sizeof(NOTIFYICONDATA));
+				x.hWnd = hWnd;
+				x.uID = NOTIFYICON_ID_MAIN;
+				Shell_NotifyIcon(NIM_DELETE, &x);
+				PostQuitMessage(0);
 			}
 		}
 		switch (wParam)
@@ -73,9 +141,14 @@ LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 		}
 		break;
 		case IDB_SETTINGS:
-		{
+			RestoreFromTray(hWnd);
 			TDPSettingsDlg::ShowDialog(hWnd);
-		}
+			break;
+
+		// TRAY MENU HANDLERS //
+		case IDB_TRAY_QUIT:
+			PostMessage(hWnd, WM_DESTROY, 0, 0);
+			break;
 	}
 
 	return reinterpret_cast<LRESULT(*)(HWND hWnd, UINT message, WPARAM wParam,
@@ -98,6 +171,9 @@ void TDPWindow::OnWndCreated(HWND hWnd, bool isMainWnd)
 		always_on_top_ = (GetINI_Int(L"setting", L"DefaultAlwaysOnTop", 0) == 1);
 		SetINI_Int(L"setting", L"DefaultAlwaysOnTop", always_on_top_);
 
+		SetINI_Int(L"setting", L"MinimizeToTray",
+			GetINI_Int(L"setting", L"MinimizeToTray", 0));
+
 		// insert system menu
 		if (systemMenu)
 		{
@@ -114,6 +190,20 @@ void TDPWindow::OnWndCreated(HWND hWnd, bool isMainWnd)
 			info.fState = MFS_CHECKED;
 			SetMenuItemInfo(systemMenu, IDB_ALWAYS_ON_TOP, false, &info);
 		}
+
+		// Set tray icon
+		NOTIFYICONDATA notiIcon;
+		ZeroMemory(&notiIcon, sizeof(NOTIFYICONDATA));
+		notiIcon.cbSize = sizeof(NOTIFYICONDATA);
+		notiIcon.hWnd = hWnd;
+		notiIcon.uID = NOTIFYICON_ID_MAIN;
+		notiIcon.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_SMALL));
+		notiIcon.uVersion = NOTIFYICON_VERSION;
+		notiIcon.uCallbackMessage = MSG_NOTIFYICON;
+		lstrcpy(notiIcon.szTip, L"TweetDeck Player");
+		notiIcon.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
+
+		Shell_NotifyIcon(NIM_ADD, &notiIcon);
 	}
 	else
 	{

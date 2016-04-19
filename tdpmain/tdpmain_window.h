@@ -35,8 +35,6 @@ private:
 	// Window procedure for the root window.
 	static LRESULT CALLBACK PopupWndProc(HWND hWnd, UINT message, WPARAM wParam,
 		LPARAM lParam);
-
-	static BOOL CALLBACK SettingsDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 };
 
 }

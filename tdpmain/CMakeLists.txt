@@ -13,6 +13,8 @@ set(TDPMAIN_SRCS
   tdpmain_cef_win.cc
   tdpmain_handler.cc
   tdpmain_handler.h
+  tdpmain_settingsdlg.cc
+  tdpmain_settingsdlg.h
   tdpmain_window.cc
   tdpmain_window.h
   util_win.cc

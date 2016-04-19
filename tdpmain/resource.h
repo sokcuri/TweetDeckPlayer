@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++에서 생성한 포함 파일입니다.
-// tdpmain.rc에서 사용되고 있습니다.
+// Microsoft Visual C++?? ??? ?? ?????.
+// tdpmain.rc?? ???? ????.
 //
 #define IDI_TDPMAIN                     100
 #define IDI_SMALL                       101
@@ -18,6 +18,7 @@
 #define IDC_LBL_FONT                    1008
 #define IDC_EDIT_FONT                   1009
 #define IDC_LBL_FONT_DESC               1010
+#define IDC_CHK_MINTRAY                 1011
 #define IDC_LBL_TOP_DESC                -1
 
 // Next default values for new objects
@@ -27,7 +28,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        103
 #define _APS_NEXT_COMMAND_VALUE         32700
-#define _APS_NEXT_CONTROL_VALUE         1011
+#define _APS_NEXT_CONTROL_VALUE         1012
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

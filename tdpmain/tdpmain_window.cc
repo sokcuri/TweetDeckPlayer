@@ -55,8 +55,12 @@ LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 				switch (wParam)
 				{
 					case SC_MINIMIZE:
-						HideToTray(hWnd);
-						return 0;
+						if (GetINI_Int(L"setting", L"MinimizeToTray", 1))
+						{
+							HideToTray(hWnd);
+							return 0;
+						}
+						else break;
 					case SC_MAXIMIZE:
 					{
 						RECT rect;
@@ -173,6 +177,7 @@ BOOL CALLBACK TDPWindow::SettingsDlgProc(HWND hWnd, UINT message, WPARAM wParam,
 
 		// Read settings from appdata.ini and set controls appropriately.
 		CheckDlgButton(hWnd, IDC_CHK_ALWAYS_ON_TOP, GetINI_Int(L"setting", L"DefaultAlwaysOnTop", 0));
+		CheckDlgButton(hWnd, IDC_CHK_MINTRAY, GetINI_Int(L"setting", L"MinimizeToTray", 1));
 		CheckDlgButton(hWnd, IDC_CHK_POPUP, GetINI_Int(L"setting", L"DisableLinkPopup", 0));
 		CheckDlgButton(hWnd, IDC_CHK_CTX_TWEET_IN_TWITTER, GetINI_Int(L"setting", L"DisableWriteTweetMenu", 0));
 		CheckDlgButton(hWnd, IDC_CHK_CTX_TWITTER_POPUP, GetINI_Int(L"setting", L"DisableTwitterOpenMenu", 0));
@@ -189,6 +194,7 @@ BOOL CALLBACK TDPWindow::SettingsDlgProc(HWND hWnd, UINT message, WPARAM wParam,
 		case IDOK:
 			// Write settings to appdata.ini
 			SetINI_Int(L"setting", L"DefaultAlwaysOnTop", IsDlgButtonChecked(hWnd, IDC_CHK_ALWAYS_ON_TOP));
+			SetINI_Int(L"setting", L"MinimizeToTray", IsDlgButtonChecked(hWnd, IDC_CHK_MINTRAY));
 			SetINI_Int(L"setting", L"DisableLinkPopup", IsDlgButtonChecked(hWnd, IDC_CHK_POPUP));
 			SetINI_Int(L"setting", L"DisableWriteTweetMenu", IsDlgButtonChecked(hWnd, IDC_CHK_CTX_TWEET_IN_TWITTER));
 			SetINI_Int(L"setting", L"DisableTwitterOpenMenu", IsDlgButtonChecked(hWnd, IDC_CHK_CTX_TWITTER_POPUP));

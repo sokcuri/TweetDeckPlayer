@@ -26,31 +26,33 @@ LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
 // Dialog
 //
 
-IDD_SETTINGS DIALOGEX 0, 0, 309, 242
+IDD_SETTINGS DIALOGEX 0, 0, 309, 257
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION
 CAPTION "Settings"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Save",IDOK,198,222,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,252,222,50,14
-    LTEXT           "If checked, links will be opened in the system's default web browser.\r\nIf unchecked, links will be opened in an internal popup window.",IDC_LBL_POPUP_DESC,18,66,229,18,WS_DISABLED
+    DEFPUSHBUTTON   "Save",IDOK,198,236,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,252,236,50,14
+    LTEXT           "If checked, links will be opened in the system's default web browser.\r\nIf unchecked, links will be opened in an internal popup window.",IDC_LBL_POPUP_DESC,18,80,229,18,WS_DISABLED
     CONTROL         "Always On Top as Default",IDC_CHK_ALWAYS_ON_TOP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,99,10
     CONTROL         "Open Links in a Default Web Browser",IDC_CHK_POPUP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,54,134,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,68,134,10
     LTEXT           "If checked, TweetDeck Player window will be set to be always on top on startup.",IDC_LBL_TOP_DESC,18,18,259,8,WS_DISABLED
     CONTROL         "Hide ""Write Tweet in Twitter"" Context Menu",IDC_CHK_CTX_TWEET_IN_TWITTER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,90,178,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,104,178,10
     CONTROL         "Hide ""Open Twitter in Popup"" Context Menu",IDC_CHK_CTX_TWITTER_POPUP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,108,178,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,122,178,10
     CONTROL         "Hide ""Open Link in Popup"" Context Menu",IDC_CHK_CTX_LINK_POPUP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,126,167,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,140,167,10
     CONTROL         "Don't Download Images in Original Quality",IDC_CHK_DL_ORIG_IMG,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,144,149,10
-    LTEXT           "If checked, TweetDeck Player will download images in ""large"" quality.",IDC_LBL_TOP_DESC,18,156,221,8,WS_DISABLED
-    LTEXT           "Display Font:",IDC_LBL_FONT,6,175,43,8
-    EDITTEXT        IDC_EDIT_FONT,54,174,246,12,ES_AUTOHSCROLL
-    LTEXT           "Leave it blank if you want to use the default font.\r\nYou need to restart TweetDeck Player to apply new fonts.",IDC_LBL_FONT_DESC,54,190,204,20,WS_DISABLED
-    CONTROL         "Minimize to System Tray",IDC_CHK_MINTRAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,36,93,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,158,149,10
+    LTEXT           "If checked, TweetDeck Player will download images in ""large"" quality.",IDC_LBL_TOP_DESC,18,170,221,8,WS_DISABLED
+    LTEXT           "Display Font:",IDC_LBL_FONT,6,189,43,8
+    EDITTEXT        IDC_EDIT_FONT,54,188,246,12,ES_AUTOHSCROLL
+    LTEXT           "Leave it blank if you want to use the default font.\r\nYou need to restart TweetDeck Player to apply new fonts.",IDC_LBL_FONT_DESC,54,204,204,20,WS_DISABLED
+    CONTROL         "Minimize to System Tray",IDC_CHK_MINTRAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,50,93,10
+    CONTROL         "Hide System Tray Icon",IDC_CHK_HIDETRAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,32,85,10
+    LTEXT           "(Require restart)",IDC_LBL_TRAY_DESC,94,33,99,8,WS_DISABLED
 END
 
 
@@ -67,7 +69,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 302
         TOPMARGIN, 7
-        BOTTOMMARGIN, 235
+        BOTTOMMARGIN, 250
     END
 END
 #endif    // APSTUDIO_INVOKED

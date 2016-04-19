@@ -56,7 +56,7 @@ LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 				switch (wParam)
 				{
 					case SC_MINIMIZE:
-						if (GetINI_Int(L"setting", L"MinimizeToTray", 1))
+						if (GetINI_Int(L"setting", L"MinimizeToTray", 0))
 						{
 							HideToTray(hWnd);
 							return 0;
@@ -191,19 +191,22 @@ void TDPWindow::OnWndCreated(HWND hWnd, bool isMainWnd)
 			SetMenuItemInfo(systemMenu, IDB_ALWAYS_ON_TOP, false, &info);
 		}
 
-		// Set tray icon
-		NOTIFYICONDATA notiIcon;
-		ZeroMemory(&notiIcon, sizeof(NOTIFYICONDATA));
-		notiIcon.cbSize = sizeof(NOTIFYICONDATA);
-		notiIcon.hWnd = hWnd;
-		notiIcon.uID = NOTIFYICON_ID_MAIN;
-		notiIcon.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_SMALL));
-		notiIcon.uVersion = NOTIFYICON_VERSION;
-		notiIcon.uCallbackMessage = MSG_NOTIFYICON;
-		lstrcpy(notiIcon.szTip, L"TweetDeck Player");
-		notiIcon.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
+		if (GetINI_Int(L"setting", L"DisableTrayIcon", 0) == 0)
+		{
+			// Set tray icon
+			NOTIFYICONDATA notiIcon;
+			ZeroMemory(&notiIcon, sizeof(NOTIFYICONDATA));
+			notiIcon.cbSize = sizeof(NOTIFYICONDATA);
+			notiIcon.hWnd = hWnd;
+			notiIcon.uID = NOTIFYICON_ID_MAIN;
+			notiIcon.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_SMALL));
+			notiIcon.uVersion = NOTIFYICON_VERSION;
+			notiIcon.uCallbackMessage = MSG_NOTIFYICON;
+			lstrcpy(notiIcon.szTip, L"TweetDeck Player");
+			notiIcon.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
 
-		Shell_NotifyIcon(NIM_ADD, &notiIcon);
+			Shell_NotifyIcon(NIM_ADD, &notiIcon);
+		}
 	}
 	else
 	{

@@ -24,6 +24,9 @@ public:
 	// Window style change method
 	static void OnWndCreated(HWND hWnd, bool isMainWnd);
 	static HWND GetMainWndHandle(){ return hMainWnd; };
+
+	// tray icon
+	static bool isShownTrayIcon;
 private:
 	static DWORD wndOldProc;
 	static HWND hMainWnd;

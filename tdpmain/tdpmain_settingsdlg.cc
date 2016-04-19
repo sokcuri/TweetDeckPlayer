@@ -1,4 +1,5 @@
 #include "tdpmain/tdpmain_settingsdlg.h"
+#include "tdpmain/tdpmain_window.h"
 #include "tdpmain/util_win.h"
 #include "tdpmain/resource.h"
 
@@ -64,6 +65,35 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 			WCHAR _fnt[1001];
 			GetWindowText(GetDlgItem(hWnd, IDC_EDIT_FONT), _fnt, 1000);
 			SetINI_String(L"timeline", L"fontFamily", _fnt);
+
+			if (TDPWindow::isShownTrayIcon && IsDlgButtonChecked(hWnd, IDC_CHK_HIDETRAY) == 1)
+			{
+				NOTIFYICONDATA notifyIconData;
+				memset(&notifyIconData, 0, sizeof(notifyIconData));
+				notifyIconData.cbSize = sizeof(NOTIFYICONDATA);
+				notifyIconData.hWnd = TDPWindow::GetMainWndHandle();
+				notifyIconData.uID = NOTIFYICON_ID_MAIN;
+
+				Shell_NotifyIcon(NIM_DELETE, (NOTIFYICONDATA *)&notifyIconData);
+
+				TDPWindow::isShownTrayIcon = false;
+			}
+			else if (!TDPWindow::isShownTrayIcon && IsDlgButtonChecked(hWnd, IDC_CHK_HIDETRAY) == 0)
+			{
+				NOTIFYICONDATA notifyIconData;
+				ZeroMemory(&notifyIconData, sizeof(NOTIFYICONDATA));
+				notifyIconData.cbSize = sizeof(NOTIFYICONDATA);
+				notifyIconData.hWnd = TDPWindow::GetMainWndHandle();
+				notifyIconData.uID = NOTIFYICON_ID_MAIN;
+				notifyIconData.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_SMALL));
+				notifyIconData.uVersion = NOTIFYICON_VERSION;
+				notifyIconData.uCallbackMessage = MSG_NOTIFYICON;
+				lstrcpy(notifyIconData.szTip, L"TweetDeck Player");
+				notifyIconData.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
+				Shell_NotifyIcon(NIM_ADD, &notifyIconData);
+
+				TDPWindow::isShownTrayIcon = true;
+			}
 
 			// Fall through to close this dialog.
 		case IDCANCEL:

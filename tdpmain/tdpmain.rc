@@ -52,7 +52,6 @@ BEGIN
     LTEXT           "Leave it blank if you want to use the default font.\r\nYou need to restart TweetDeck Player to apply new fonts.",IDC_LBL_FONT_DESC,54,204,204,20,WS_DISABLED
     CONTROL         "Minimize to System Tray",IDC_CHK_MINTRAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,50,93,10
     CONTROL         "Hide System Tray Icon",IDC_CHK_HIDETRAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,32,85,10
-    LTEXT           "(Require restart)",IDC_LBL_TRAY_DESC,94,33,99,8,WS_DISABLED
 END
 
 

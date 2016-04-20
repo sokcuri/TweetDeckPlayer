@@ -39,9 +39,10 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		CheckDlgButton(hWnd, IDC_CHK_HIDETRAY, GetINI_Int(L"setting", L"DisableTrayIcon", 0));
 		CheckDlgButton(hWnd, IDC_CHK_MINTRAY, GetINI_Int(L"setting", L"MinimizeToTray", 0));
 		CheckDlgButton(hWnd, IDC_CHK_POPUP, GetINI_Int(L"setting", L"DisableLinkPopup", 0));
-		CheckDlgButton(hWnd, IDC_CHK_CTX_TWEET_IN_TWITTER, GetINI_Int(L"setting", L"DisableWriteTweetMenu", 0));
-		CheckDlgButton(hWnd, IDC_CHK_CTX_TWITTER_POPUP, GetINI_Int(L"setting", L"DisableTwitterOpenMenu", 0));
-		CheckDlgButton(hWnd, IDC_CHK_CTX_LINK_POPUP, GetINI_Int(L"setting", L"DisablePopupOpenMenu", 0));
+		CheckDlgButton(hWnd, IDC_CHK_CTX_TWEET_IN_TWITTER, !GetINI_Int(L"setting", L"DisableWriteTweetMenu", 0));
+		CheckDlgButton(hWnd, IDC_CHK_CTX_TWITTER_POPUP, !GetINI_Int(L"setting", L"DisableTwitterOpenMenu", 0));
+		CheckDlgButton(hWnd, IDC_CHK_CTX_LINK_POPUP, !GetINI_Int(L"setting", L"DisablePopupOpenMenu", 0));
+		CheckDlgButton(hWnd, IDC_CHK_CTX_SEARCH_IMG, !GetINI_Int(L"setting", L"DisableSearchImageMenu", 0));
 		CheckDlgButton(hWnd, IDC_CHK_DL_ORIG_IMG, GetINI_Int(L"setting", L"DisableTwimgOrig", 0));
 
 		HWND hFont = GetDlgItem(hWnd, IDC_EDIT_FONT);
@@ -56,10 +57,11 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 			SetINI_Int(L"setting", L"DefaultAlwaysOnTop", IsDlgButtonChecked(hWnd, IDC_CHK_ALWAYS_ON_TOP));
 			SetINI_Int(L"setting", L"DisableTrayIcon", IsDlgButtonChecked(hWnd, IDC_CHK_HIDETRAY));
 			SetINI_Int(L"setting", L"MinimizeToTray", IsDlgButtonChecked(hWnd, IDC_CHK_MINTRAY));
-			SetINI_Int(L"setting", L"DisableLinkPopup", IsDlgButtonChecked(hWnd, IDC_CHK_POPUP));
-			SetINI_Int(L"setting", L"DisableWriteTweetMenu", IsDlgButtonChecked(hWnd, IDC_CHK_CTX_TWEET_IN_TWITTER));
-			SetINI_Int(L"setting", L"DisableTwitterOpenMenu", IsDlgButtonChecked(hWnd, IDC_CHK_CTX_TWITTER_POPUP));
-			SetINI_Int(L"setting", L"DisablePopupOpenMenu", IsDlgButtonChecked(hWnd, IDC_CHK_CTX_LINK_POPUP));
+			SetINI_Int(L"setting", L"DisableLinkPopup", !IsDlgButtonChecked(hWnd, IDC_CHK_POPUP));
+			SetINI_Int(L"setting", L"DisableWriteTweetMenu", !IsDlgButtonChecked(hWnd, IDC_CHK_CTX_TWEET_IN_TWITTER));
+			SetINI_Int(L"setting", L"DisableTwitterOpenMenu", !IsDlgButtonChecked(hWnd, IDC_CHK_CTX_TWITTER_POPUP));
+			SetINI_Int(L"setting", L"DisablePopupOpenMenu", !IsDlgButtonChecked(hWnd, IDC_CHK_CTX_LINK_POPUP));
+			SetINI_Int(L"setting", L"DisableSearchImageMenu", !IsDlgButtonChecked(hWnd, IDC_CHK_CTX_SEARCH_IMG));
 			SetINI_Int(L"setting", L"DisableTwimgOrig", IsDlgButtonChecked(hWnd, IDC_CHK_DL_ORIG_IMG));
 
 			WCHAR _fnt[1001];

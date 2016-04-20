@@ -468,12 +468,20 @@ void TDPHandler::OnBeforeContextMenu(
 			model->AddSeparator();
 		model->AddItem(CLIENT_ID_SAVE_IMAGE_AS, "Save image as...");
 		model->AddItem(CLIENT_ID_COPY_IMAGE_URL, "Copy image URL");
+		
 		model->AddItem(CLIENT_ID_OPEN_IMAGE_LINK, "Open image in browser");
 		if (!no_popup_menu_)
 			model->AddItem(CLIENT_ID_OPEN_IMAGE_LINK_POPUP, "Open image in popup");
-		model->AddItem(CLIENT_ID_OPEN_G_IMAGESEARCH, "Search this image with Google");
-		if (!no_popup_menu_)
-			model->AddItem(CLIENT_ID_OPEN_G_IMAGESEARCH_POPUP, "Search this image with Google in popup");
+		
+		bool search_image_ = (GetINI_Int(L"setting", L"DisableSearchImageMenu", 0) == 1);
+		SetINI_Int(L"setting", L"DisableSearchImageMenu", search_image_);
+		if (!search_image_)
+		{
+			model->AddSeparator();
+			model->AddItem(CLIENT_ID_OPEN_G_IMAGESEARCH, "Search image with Google");
+			if (!no_popup_menu_)
+				model->AddItem(CLIENT_ID_OPEN_G_IMAGESEARCH_POPUP, "Search image with Google in popup");
+		}
 	}
 	else if ((params->GetTypeFlags() & (CM_TYPEFLAG_MEDIA)) != 0 && (params->GetMediaType() & (CM_MEDIATYPE_VIDEO)) != 0)
 	{

@@ -26,13 +26,13 @@ LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
 // Dialog
 //
 
-IDD_SETTINGS DIALOGEX 0, 0, 309, 257
+IDD_SETTINGS DIALOGEX 0, 0, 309, 254
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION
 CAPTION "Settings"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Save",IDOK,198,236,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,252,236,50,14
+    DEFPUSHBUTTON   "Save",IDOK,198,233,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,252,233,50,14
     LTEXT           "If checked, links will be opened in the system's default web browser.\r\nIf unchecked, links will be opened in an internal popup window.",IDC_LBL_POPUP_DESC,18,79,229,18,WS_DISABLED
     CONTROL         "Always On Top as Default",IDC_CHK_ALWAYS_ON_TOP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,99,10
     CONTROL         "Open Links in a Default Web Browser",IDC_CHK_POPUP,
@@ -68,7 +68,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 302
         TOPMARGIN, 7
-        BOTTOMMARGIN, 250
+        BOTTOMMARGIN, 247
     END
 END
 #endif    // APSTUDIO_INVOKED

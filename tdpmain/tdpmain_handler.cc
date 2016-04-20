@@ -430,7 +430,6 @@ void TDPHandler::OnBeforeContextMenu(
 	// ContextMenu Initialize
 	model->Clear();
 
-	// is usable popup open menu
 	bool no_popup_menu_ = (GetINI_Int(L"setting", L"DisablePopupOpenMenu", 0) == 1);
 	SetINI_Int(L"setting", L"DisablePopupOpenMenu", no_popup_menu_);
 

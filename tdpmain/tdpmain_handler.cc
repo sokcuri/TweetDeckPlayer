@@ -304,21 +304,23 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 
 		// print version info and prevent backspace
 		code = L"TDP.onTDPageLoad = function(){ setTimeout(function(){"
-		       L"if(!TD.ready){ TDP.onTDPageLoad(); } else { "
+			   L"if(!TD.ready){ TDP.onTDPageLoad(); } else { "
 			   L"TD.controller.progressIndicator.addMessage("
 			   L"TD.i('"
 			   TDP_MESSAGE
 			   L"'));"
-			   L"$(document).on('keydown', function(event) {"
-			   L"if (document.activeElement === document.body ||"
-			   L"document.activeElement === document.body.parentElement) {"
-			   L"if (event.keyCode === 8) {"
-			   L"event.preventDefault();}"
-			   L"}});"
 			   L"}}, 1000);};"
 			   L"$(document).ready(function(){"
 			   L"TDP.onTDPageLoad();});";
+		frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 
+		// prevent backspace
+		code = L"$(document).on('keydown', function(event) {"
+			   L"if (document.activeElement === document.body ||"
+			   L"document.activeElement === document.body.parentElement) {"
+			   L"if (event.keyCode === 8) {"
+			   L"alert('prevent');event.preventDefault();}"
+			   L"}});";
 		frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 
 		std::vector<std::wstring> file_list;

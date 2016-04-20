@@ -16,7 +16,7 @@
 #include "include/wrapper/cef_helpers.h"
 
 #define T(x)      L ## x
-#define TDP_MESSAGE T("TweetDeck Player v1.24 ~by @sokcuri")
+#define TDP_MESSAGE T("TweetDeck Player v1.25 ~by @sokcuri")
 
 namespace tdpmain
 {
@@ -306,14 +306,23 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 
 		// print version info
 		code = L"TDP.onTDPageLoad = function(){ setTimeout(function(){"
-		       L"if(!TD.ready){ TDP.onTDPageLoad(); } else { "
-			   L"TD.controller.progressIndicator.addMessage("
-			   L"TD.i('"
-			   TDP_MESSAGE
-			   L"')); }}, 1000);};"
-			   L"$(document).ready(function(){"
-			   L"TDP.onTDPageLoad();});";
+			L"if(!TD.ready){ TDP.onTDPageLoad(); } else { "
+			L"TD.controller.progressIndicator.addMessage("
+			L"TD.i('"
+			TDP_MESSAGE
+			L"'));"
+			L"}}, 1000);};"
+			L"$(document).ready(function(){"
+			L"TDP.onTDPageLoad();});";
+		frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 
+		// prevent backspace
+		code = L"$(document).on('keydown', function(event) {"
+			L"if (document.activeElement === document.body ||"
+			L"document.activeElement === document.body.parentElement) {"
+			L"if (event.keyCode === 8) {"
+			L"event.preventDefault();}"
+			L"}});";
 		frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 
 		std::vector<std::wstring> file_list;

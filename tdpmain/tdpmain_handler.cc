@@ -39,6 +39,8 @@ enum client_menu_ids {
 	CLIENT_ID_COPY_IMAGE_URL,
 	CLIENT_ID_OPEN_IMAGE_LINK,
 	CLIENT_ID_OPEN_IMAGE_LINK_POPUP,
+	CLIENT_ID_OPEN_G_IMAGESEARCH,
+	CLIENT_ID_OPEN_G_IMAGESEARCH_POPUP,
 	CLIENT_ID_SAVE_VIDEO_AS,
 	CLIENT_ID_COPY_VIDEO_URL,
 	CLIENT_ID_OPEN_VIDEO_LINK,
@@ -302,25 +304,16 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 			frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 		}
 
-		// print version info and prevent backspace
+		// print version info
 		code = L"TDP.onTDPageLoad = function(){ setTimeout(function(){"
-			   L"if(!TD.ready){ TDP.onTDPageLoad(); } else { "
+		       L"if(!TD.ready){ TDP.onTDPageLoad(); } else { "
 			   L"TD.controller.progressIndicator.addMessage("
 			   L"TD.i('"
 			   TDP_MESSAGE
-			   L"'));"
-			   L"}}, 1000);};"
+			   L"')); }}, 1000);};"
 			   L"$(document).ready(function(){"
 			   L"TDP.onTDPageLoad();});";
-		frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 
-		// prevent backspace
-		code = L"$(document).on('keydown', function(event) {"
-			   L"if (document.activeElement === document.body ||"
-			   L"document.activeElement === document.body.parentElement) {"
-			   L"if (event.keyCode === 8) {"
-			   L"event.preventDefault();}"
-			   L"}});";
 		frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 
 		std::vector<std::wstring> file_list;
@@ -469,6 +462,9 @@ void TDPHandler::OnBeforeContextMenu(
 		model->AddItem(CLIENT_ID_OPEN_IMAGE_LINK, "Open image in browser");
 		if (!no_popup_menu_)
 			model->AddItem(CLIENT_ID_OPEN_IMAGE_LINK_POPUP, "Open image in popup");
+		model->AddItem(CLIENT_ID_OPEN_G_IMAGESEARCH, "Search this image with Google");
+		if (!no_popup_menu_)
+			model->AddItem(CLIENT_ID_OPEN_G_IMAGESEARCH_POPUP, "Search this image with Google in popup");
 	}
 	else if ((params->GetTypeFlags() & (CM_TYPEFLAG_MEDIA)) != 0 && (params->GetMediaType() & (CM_MEDIATYPE_VIDEO)) != 0)
 	{
@@ -629,6 +625,7 @@ bool TDPHandler::OnContextMenuCommand(
 	EventFlags event_flags) {
 	CEF_REQUIRE_UI_THREAD();
 
+	std::wstring g_imgsearch = L"https://www.google.com/searchbyimage?image_url=";
 	switch (command_id) {
 	case CLIENT_ID_RELOAD_PAGE:
 		browser->Reload();
@@ -691,6 +688,12 @@ bool TDPHandler::OnContextMenuCommand(
 	case CLIENT_ID_OPEN_IMAGE_LINK_POPUP:
 		OpenPopup(frame, Twimg_Orig(params->GetSourceUrl()));
 		return true;
+	case CLIENT_ID_OPEN_G_IMAGESEARCH:
+		OpenURL(g_imgsearch.append(Twimg_Orig(params->GetSourceUrl())));
+		return true; // Image search added
+	case CLIENT_ID_OPEN_G_IMAGESEARCH_POPUP:
+		OpenPopup(frame, g_imgsearch.append(Twimg_Orig(params->GetSourceUrl())));
+		return true; // Image search added
 	case CLIENT_ID_SAVE_VIDEO_AS:
 		browser->GetHost()->StartDownload(params->GetSourceUrl());
 		return true;

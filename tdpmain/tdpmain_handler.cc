@@ -319,7 +319,7 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 			   L"if (document.activeElement === document.body ||"
 			   L"document.activeElement === document.body.parentElement) {"
 			   L"if (event.keyCode === 8) {"
-			   L"alert('prevent');event.preventDefault();}"
+			   L"event.preventDefault();}"
 			   L"}});";
 		frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 

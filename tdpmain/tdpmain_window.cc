@@ -42,7 +42,13 @@ void TDPWindow::RestoreFromTray(HWND hWnd)
 		exstyle &= ~WS_EX_TOOLWINDOW;
 		SetWindowLong(hWnd, GWL_EXSTYLE, exstyle);
 	}
-	ShowWindow(hWnd, SW_RESTORE);
+
+	WINDOWPLACEMENT wndpl;
+	wndpl.length = sizeof(WINDOWPLACEMENT);
+	GetWindowPlacement(hWnd, &wndpl);
+	if (wndpl.showCmd != SW_SHOWMAXIMIZED)
+		ShowWindow(hWnd, SW_RESTORE);
+
 	SetForegroundWindow(hWnd);
 }
 
@@ -142,9 +148,10 @@ LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 		}
 		break;
 		case IDB_SETTINGS:
+		{
 			RestoreFromTray(hWnd);
 			TDPSettingsDlg::ShowDialog(hWnd);
-			break;
+		}	break;
 
 		// TRAY MENU HANDLERS //
 		case IDB_TRAY_QUIT:

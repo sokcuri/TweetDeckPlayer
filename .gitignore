@@ -248,3 +248,4 @@ _Pvt_Extensions
 /libcef_dll/libcef_dll_wrapper.vcxproj
 /tdpmain/tdpmain.vcxproj.filters
 /tdpmain/tdpmain.vcxproj
+/tdpmain/cmake_install.cmake

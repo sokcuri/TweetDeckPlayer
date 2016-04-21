@@ -58,10 +58,19 @@ LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 
 		// Callback for the main window
 		switch (message) {
+			break;
 			case WM_SYSCOMMAND:
 			{
 				switch (wParam)
 				{
+				case SC_RESTORE:
+				{
+					RECT rect;
+					GetClientRect(hWnd, &rect);
+					InvalidateRect(hWnd, &rect, true);
+					UpdateWindow(hWnd);
+				}
+				break;
 					case SC_MINIMIZE:
 						if (GetINI_Int(L"setting", L"MinimizeToTray", 0) && isShownTrayIcon)
 						{

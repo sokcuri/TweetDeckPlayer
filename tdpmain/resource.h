@@ -21,10 +21,10 @@
 #define IDC_CHK_MINTRAY                 1011
 #define IDC_CHK_HIDETRAY                1012
 #define IDC_LBL_TRAY_DESC               1013
-#define IDC_CHK_CTX_SEARCH_IMG          1014
-#define IDC_RADIO_STAYOPEN_DEFAULT      1015
-#define IDC_RADIO_STAYOPEN_ALWAYSON     1016
-#define IDC_RADIO_STAYOPEN_ALWAYSOFF    1017
+#define IDC_CHK_CTX_SEARCH_IMG          1013
+#define IDC_RADIO_STAYOPEN_DEFAULT      1014
+#define IDC_RADIO_STAYOPEN_ALWAYSON     1015
+#define IDC_RADIO_STAYOPEN_ALWAYSOFF    1016
 #define IDC_LBL_TOP_DESC                -1
 
 // Next default values for new objects

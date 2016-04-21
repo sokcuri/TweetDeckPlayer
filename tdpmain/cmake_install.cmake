@@ -1,8 +1,8 @@
-# Install script for directory: C:/TweetDeckPlayer/tdpmain
+# Install script for directory: C:/Users/sokcu/Source/Repos/TweetDeckPlayer/tdpmain
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/cef")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/tdp")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 

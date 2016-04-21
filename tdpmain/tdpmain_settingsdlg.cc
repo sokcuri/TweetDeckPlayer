@@ -44,6 +44,10 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		CheckDlgButton(hWnd, IDC_CHK_CTX_LINK_POPUP, !GetINI_Int(L"setting", L"DisablePopupOpenMenu", 0));
 		CheckDlgButton(hWnd, IDC_CHK_CTX_SEARCH_IMG, !GetINI_Int(L"setting", L"DisableSearchImageMenu", 0));
 		CheckDlgButton(hWnd, IDC_CHK_DL_ORIG_IMG, GetINI_Int(L"setting", L"DisableTwimgOrig", 0));
+		
+		int stay_open_ = GetINI_Int(L"setting", L"OverrideStayOpen", 0);
+		if (stay_open_ > 2) stay_open_ = 0;
+		CheckRadioButton(hWnd, IDC_RADIO_STAYOPEN_DEFAULT, IDC_RADIO_STAYOPEN_ALWAYSOFF, IDC_RADIO_STAYOPEN_DEFAULT + stay_open_);
 
 		HWND hFont = GetDlgItem(hWnd, IDC_EDIT_FONT);
 		SetWindowText(hFont, GetINI_String(L"timeline", L"fontFamily", L"").c_str());
@@ -53,16 +57,27 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		switch (LOWORD(wParam))
 		{
 		case IDOK:
+		{
 			// Write settings to appdata.ini
 			SetINI_Int(L"setting", L"DefaultAlwaysOnTop", IsDlgButtonChecked(hWnd, IDC_CHK_ALWAYS_ON_TOP));
 			SetINI_Int(L"setting", L"DisableTrayIcon", IsDlgButtonChecked(hWnd, IDC_CHK_HIDETRAY));
 			SetINI_Int(L"setting", L"MinimizeToTray", IsDlgButtonChecked(hWnd, IDC_CHK_MINTRAY));
-			SetINI_Int(L"setting", L"DisableLinkPopup", !IsDlgButtonChecked(hWnd, IDC_CHK_POPUP));
+			SetINI_Int(L"setting", L"DisableLinkPopup", IsDlgButtonChecked(hWnd, IDC_CHK_POPUP));
 			SetINI_Int(L"setting", L"DisableWriteTweetMenu", !IsDlgButtonChecked(hWnd, IDC_CHK_CTX_TWEET_IN_TWITTER));
 			SetINI_Int(L"setting", L"DisableTwitterOpenMenu", !IsDlgButtonChecked(hWnd, IDC_CHK_CTX_TWITTER_POPUP));
 			SetINI_Int(L"setting", L"DisablePopupOpenMenu", !IsDlgButtonChecked(hWnd, IDC_CHK_CTX_LINK_POPUP));
 			SetINI_Int(L"setting", L"DisableSearchImageMenu", !IsDlgButtonChecked(hWnd, IDC_CHK_CTX_SEARCH_IMG));
 			SetINI_Int(L"setting", L"DisableTwimgOrig", IsDlgButtonChecked(hWnd, IDC_CHK_DL_ORIG_IMG));
+
+			// Stay Open Override setting
+			int stay_open_ = 0;
+			if (IsDlgButtonChecked(hWnd, IDC_RADIO_STAYOPEN_ALWAYSON))
+				stay_open_ = 1;
+			else if (IsDlgButtonChecked(hWnd, IDC_RADIO_STAYOPEN_ALWAYSOFF))
+				stay_open_ = 2;
+
+			SetINI_Int(L"setting", L"OverrideStayOpen", stay_open_);
+
 
 			WCHAR _fnt[1001];
 			GetWindowText(GetDlgItem(hWnd, IDC_EDIT_FONT), _fnt, 1000);
@@ -105,8 +120,8 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 
 				TDPWindow::isShownTrayIcon = true;
 			}
-
-			// Fall through to close this dialog.
+		}
+		// Fall through to close this dialog.
 		case IDCANCEL:
 			EndDialog(hWnd, wParam);
 			return TRUE;

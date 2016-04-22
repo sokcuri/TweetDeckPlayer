@@ -253,6 +253,11 @@ if(OS_WINDOWS)
 
   # List of Distribution Purpose files (Readme, Setting..).
   set(CEF_DISTRIBUTION_FILES
+    LICENSE/CHROMIUM_CREDITS.HTML
+	LICENSE/CHROMIUM_LICENSE.TXT
+	LICENSE/FFMPEG_LICENSE.TXT
+	LICENSE/LIBCEF_INFORMATION.TXT
+	LICENSE/LICENSE.TXT
 	script/script.js
 	style/style.css
 	appdata.ini

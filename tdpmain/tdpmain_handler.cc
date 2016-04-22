@@ -16,7 +16,7 @@
 #include "include/wrapper/cef_helpers.h"
 
 #define T(x)      L ## x
-#define TDP_MESSAGE T("TweetDeck Player v1.25 ~by @sokcuri")
+#define TDP_MESSAGE T("TweetDeck Player v1.26 ~by @sokcuri")
 
 namespace tdpmain
 {
@@ -304,13 +304,26 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 			frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 		}
 
+		int stay_open_ = GetINI_Int(L"setting", L"OverrideStayOpen", 0);
+
 		// print version info
 		code = L"TDP.onTDPageLoad = function(){ setTimeout(function(){"
-			L"if(!TD.ready){ TDP.onTDPageLoad(); } else { "
-			L"TD.controller.progressIndicator.addMessage("
+			L"if(!TD.ready){ TDP.onTDPageLoad(); } else { ";
+			if (stay_open_ == 1)
+			{
+				code += L"if (!$('.js-compose-stay-open').is(':checked')) $('.js-compose-stay-open').click();";
+				code += L"$(document).trigger('uiComposeTweet');";
+			}
+			else if (stay_open_ == 2)
+			{
+				code += L"if ($('.js-compose-stay-open').is(':checked')) $('.js-compose-stay-open').click();";
+				code += L"$(document).trigger('uiComposeClose');";
+			}
+
+		code += L"TD.controller.progressIndicator.addMessage("
 			L"TD.i('"
 			TDP_MESSAGE
-			L"'));"
+			L"'));TDP.StayOpen();"
 			L"}}, 1000);};"
 			L"$(document).ready(function(){"
 			L"TDP.onTDPageLoad();});";
@@ -324,6 +337,17 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 			L"event.preventDefault();}"
 			L"}});";
 		frame->ExecuteJavaScript(code, frame->GetURL(), 0);
+
+		if (stay_open_)
+		{
+			code = L"$(document).on('keydown', function(event) {"
+				L"if (document.activeElement === document.body ||"
+				L"document.activeElement === document.body.parentElement) {"
+				L"if (event.keyCode === 8) {"
+				L"event.preventDefault();}"
+				L"}});";
+			frame->ExecuteJavaScript(code, frame->GetURL(), 0);
+		}
 
 		std::vector<std::wstring> file_list;
 		std::vector<std::wstring>::iterator it;

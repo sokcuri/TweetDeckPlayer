@@ -101,11 +101,15 @@ bool TDPHandler::OnBeforePopup(
 	bool* no_javascript_access) {
 	CEF_REQUIRE_IO_THREAD();
 
+	std::wstring url = target_url.ToWString();
+
+	// Adv Popup Block
+	bool block_adv_popup_ = (GetINI_Int(L"setting", L"BlockAdvPopup", 1) != 0);
+	SetINI_Int(L"setting", L"BlockAdvPopup", block_adv_popup_);
+	if (block_adv_popup_ && url.find(L"tdppopup://", 0) != 0 && !user_gesture) return true;
+
 	bool no_link_popup_ = (GetINI_Int(L"setting", L"DisableLinkPopup", 0) == 1);
 	SetINI_Int(L"setting", L"DisableLinkPopup", no_link_popup_);
-
-	// no use link popup
-	std::wstring url = target_url.ToWString();
 
 	// is popup menu, jump this logic
 	if (url.find(L"tdppopup://", 0) != 0 && no_link_popup_ || // no_link_popup parameter

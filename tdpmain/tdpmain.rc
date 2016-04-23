@@ -95,9 +95,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_TDPMAIN             ICON                    "res\\tdpmain.ico"
-
 IDI_SMALL               ICON                    "res\\small.ico"
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -105,8 +103,8 @@ IDI_SMALL               ICON                    "res\\small.ico"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,2,6,0
- PRODUCTVERSION 1,2,6,0
+ FILEVERSION 1,2,7,0
+ PRODUCTVERSION 1,2,7,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -123,12 +121,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Sokcuri"
             VALUE "FileDescription", "TweetDeck Player"
-            VALUE "FileVersion", "1.2.6.0"
+            VALUE "FileVersion", "1.2.7.0"
             VALUE "InternalName", "tweetdeckplayer"
             VALUE "LegalCopyright", "Copyright (C) 2016 Sokcuri."
             VALUE "OriginalFilename", "TweetDeckPlayer.exe"
             VALUE "ProductName", "TweetDeck Player"
-            VALUE "ProductVersion", "1.2.6.0"
+            VALUE "ProductVersion", "1.2.7.0"
         END
     END
     BLOCK "VarFileInfo"

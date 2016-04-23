@@ -28,15 +28,20 @@ private:
 	static GdiplusStartupInput gpsi;
 	static ULONG_PTR gptok;
 
+	// Resources for drawing controls
 	static const LPCWSTR szBtnFaceNames[3][4];
+	static const LPCWSTR szSwitchNames[2];
 	Image *iBtnFaces[3][4];
+	Image *iSwitch[2];
 	SolidBrush *brFaces[3];
+	SolidBrush *brCtrlText;
 	Pen *penShadow;
 
 private:
 	TDPSettingsDlg();
 	~TDPSettingsDlg();
 	static BOOL CALLBACK DlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+	static LRESULT CALLBACK GrpProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	
 public:
 	static TDPSettingsDlg *GetInstance();

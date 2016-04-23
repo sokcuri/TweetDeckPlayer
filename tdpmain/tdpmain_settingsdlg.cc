@@ -5,7 +5,7 @@
 #include "tdpmain/util_win.h"
 #include "tdpmain/resource.h"
 
-#define BF_PATH L"E:\\Data\\btnface_"
+#define BF_PATH L"E:\\Data\\"
 
 namespace tdpmain
 {
@@ -24,9 +24,13 @@ void TDPSettingsDlg::FreeInstance()
 }
 
 const LPCWSTR TDPSettingsDlg::szBtnFaceNames[3][4] {
-	{ BF_PATH L"n_lt.png", BF_PATH L"n_rt.png", BF_PATH L"n_lb.png", BF_PATH L"n_rb.png" },
-	{ BF_PATH L"h_lt.png", BF_PATH L"h_rt.png", BF_PATH L"h_lb.png", BF_PATH L"h_rb.png" },
-	{ BF_PATH L"d_lt.png", BF_PATH L"d_rt.png", BF_PATH L"d_lb.png", BF_PATH L"d_rb.png" }
+	{ BF_PATH L"btnface_n_lt.png", BF_PATH L"btnface_n_rt.png", BF_PATH L"btnface_n_lb.png", BF_PATH L"btnface_n_rb.png" },
+	{ BF_PATH L"btnface_h_lt.png", BF_PATH L"btnface_h_rt.png", BF_PATH L"btnface_h_lb.png", BF_PATH L"btnface_h_rb.png" },
+	{ BF_PATH L"btnface_d_lt.png", BF_PATH L"btnface_d_rt.png", BF_PATH L"btnface_d_lb.png", BF_PATH L"btnface_d_rb.png" }
+};
+
+const LPCWSTR TDPSettingsDlg::szSwitchNames[2]{
+	BF_PATH L"sw_0.png", BF_PATH L"sw_1.png"
 };
 
 Gdiplus::GdiplusStartupInput TDPSettingsDlg::gpsi;
@@ -40,9 +44,12 @@ TDPSettingsDlg::TDPSettingsDlg()
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 4; j++)
 			iBtnFaces[i][j] = Image::FromFile(szBtnFaceNames[i][j]);
+	for (int i = 0; i < 2; i++)
+		iSwitch[i] = Image::FromFile(szSwitchNames[i]);
 	brFaces[0] = new SolidBrush(Color(85, 172, 239));
 	brFaces[1] = new SolidBrush(Color(80, 165, 230));
 	brFaces[2] = new SolidBrush(Color(59, 148, 217));
+	brCtrlText = new SolidBrush(Color(17, 17, 17));
 	penShadow = new Pen(Color(48, 0, 0, 0));
 }
 
@@ -52,8 +59,11 @@ TDPSettingsDlg::~TDPSettingsDlg()
 	for (auto &a : iBtnFaces)
 		for (auto &img : a)
 			delete img;
+	for (auto &img : iSwitch)
+		delete img;
 	for (auto &bf : brFaces)
 		delete bf;
+	delete brCtrlText;
 	delete penShadow;
 }
 
@@ -104,15 +114,27 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		HWND hFont = GetDlgItem(hWnd, IDC_EDIT_FONT);
 		SetWindowText(hFont, GetINI_String(L"timeline", L"fontFamily", L"").c_str());
 
+		SetWindowLong(GetDlgItem(hWnd, IDC_GRP_STAYOPEN), GWL_WNDPROC, (LONG)(WNDPROC)GrpProc);
+		SetWindowLong(GetDlgItem(hWnd, IDC_GRP_CTXMENU), GWL_WNDPROC, (LONG)(WNDPROC)GrpProc);
+
 		GetWindowRect(hWnd, &rcDlg);
 		HRGN rgn = CreateRoundRectRgn(0, 0, rcDlg.right - rcDlg.left, rcDlg.bottom - rcDlg.top, 2, 2);
 		SetWindowRgn(hWnd, rgn, TRUE);
 	}	return TRUE;
 	case WM_PAINT:
 	{
-		Gdiplus::Graphics g(hWnd);
+		RECT rcDlg;
+		GetWindowRect(hWnd, &rcDlg);
+		OffsetRect(&rcDlg, -rcDlg.left, -rcDlg.top);
+		Rect grcDlg{ 16, 45, rcDlg.right-32, rcDlg.bottom-108 };
+		PAINTSTRUCT ps;
+		HDC dc = BeginPaint(hWnd, &ps);
+		Gdiplus::Graphics g(dc);
 		Gdiplus::Image imgHandle(L"E:\\Data\\handle.png");
 		g.DrawImage(&imgHandle, 16, 14);
+		Pen pen(Color(204, 214, 221));
+		g.DrawRectangle(&pen, grcDlg);
+		EndPaint(hWnd, &ps);
 	}	break;
 	case WM_CTLCOLORDLG:
 	case WM_CTLCOLORSTATIC:
@@ -120,52 +142,116 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 	case WM_NOTIFY:
 	{
 		LPNMHDR item = (LPNMHDR)lParam;
-		if (item->idFrom == IDOK && item->code == NM_CUSTOMDRAW)
+		LONG lStyle = GetWindowLong(item->hwndFrom, GWL_STYLE);
+		if (item->code == NM_CUSTOMDRAW)
 		{
-			LPNMCUSTOMDRAW d = (LPNMCUSTOMDRAW)item;
-			RECT &rcBtn = d->rc;
-			Graphics g(d->hdc);
-			static int corners[4][2]{
-				{ rcBtn.left, rcBtn.top },
-				{ rcBtn.right - 3, rcBtn.top },
-				{ rcBtn.left, rcBtn.bottom - 3 },
-				{ rcBtn.right - 3, rcBtn.bottom - 3 }
-			};
-
-			// Draw button face
-			int nType;
-			if (d->uItemState & CDIS_SELECTED) nType = 2;
-			else if (d->uItemState & CDIS_HOT) nType = 1;
-			else nType = 0;
-
-			g.Clear(Color(255, 255, 255));
-			for (int i = 0; i < 4; i++)
-				g.DrawImage(inst->iBtnFaces[nType][i], corners[i][0], corners[i][1]);
-			g.FillRectangle(inst->brFaces[nType], 3, 0, rcBtn.right - 6, rcBtn.bottom - 1);
-			g.FillRectangle(inst->brFaces[nType], 0, 3, rcBtn.right - 1, rcBtn.bottom - 6);
-			if (nType != 2)
+			if (item->idFrom == IDOK)
 			{
-				g.DrawLine(inst->penShadow, rcBtn.right - 1, 3, rcBtn.right - 1, rcBtn.bottom - 4);
-				g.DrawLine(inst->penShadow, 3, rcBtn.bottom - 1, rcBtn.right - 4, rcBtn.bottom - 1);
+				LPNMCUSTOMDRAW d = (LPNMCUSTOMDRAW)item;
+				RECT &rcBtn = d->rc;
+				Graphics g(d->hdc);
+				static int corners[4][2]{
+					{ rcBtn.left, rcBtn.top },
+					{ rcBtn.right - 3, rcBtn.top },
+					{ rcBtn.left, rcBtn.bottom - 3 },
+					{ rcBtn.right - 3, rcBtn.bottom - 3 }
+				};
+
+				// Draw button face
+				int nType;
+				if (d->uItemState & CDIS_SELECTED) nType = 2;
+				else if (d->uItemState & CDIS_HOT) nType = 1;
+				else nType = 0;
+
+				g.Clear(Color(255, 255, 255));
+				for (int i = 0; i < 4; i++)
+					g.DrawImage(inst->iBtnFaces[nType][i], corners[i][0], corners[i][1]);
+				g.FillRectangle(inst->brFaces[nType], 3, 0, rcBtn.right - 6, rcBtn.bottom - 1);
+				g.FillRectangle(inst->brFaces[nType], 0, 3, rcBtn.right - 1, rcBtn.bottom - 6);
+				if (nType != 2)
+				{
+					g.DrawLine(inst->penShadow, rcBtn.right - 1, 3, rcBtn.right - 1, rcBtn.bottom - 4);
+					g.DrawLine(inst->penShadow, 3, rcBtn.bottom - 1, rcBtn.right - 4, rcBtn.bottom - 1);
+				}
+
+				// Draw button text
+				WCHAR szLabel[100];
+				SendMessage(item->hwndFrom, WM_GETTEXT, 100, (LPARAM)szLabel);
+
+				RectF rcfBtn(rcBtn.left, rcBtn.top, rcBtn.right, rcBtn.bottom), rcfText;
+				SolidBrush brush(Color(255, 255, 255));
+				FontFamily fontFamily(L"Arial");
+				Font font(&fontFamily, 14, FontStyleRegular, UnitPixel);
+
+				g.SetTextRenderingHint(TextRenderingHintAntiAliasGridFit);
+				g.MeasureString(szLabel, -1, &font, rcfBtn, &rcfText);
+				PointF origin(rcfBtn.GetRight() / 2 - rcfText.GetRight() / 2,
+					rcfBtn.GetBottom() / 2 - rcfText.GetBottom() / 2);
+				g.DrawString(szLabel, -1, &font, origin, &brush);
+
+				SetWindowLong(hWnd, DWL_MSGRESULT, CDRF_SKIPDEFAULT);
+				return TRUE;
 			}
+			else if (LOWORD(lStyle) == BS_AUTOCHECKBOX)
+			{
+				LPNMCUSTOMDRAW d = (LPNMCUSTOMDRAW)item;
+				Graphics g(d->hdc);
 
-			// Draw button text
-			WCHAR szLabel[100];
-			SendMessage(item->hwndFrom, WM_GETTEXT, 100, (LPARAM)szLabel);
+				if (IsDlgButtonChecked(hWnd, item->idFrom))
+					g.DrawImage(inst->iSwitch[1], 0, 0);
+				else
+					g.DrawImage(inst->iSwitch[0], 0, 0);
 
-			RectF rcfBtn(rcBtn.left, rcBtn.top, rcBtn.right, rcBtn.bottom), rcfText;
-			SolidBrush brush(Color(255, 255, 255));
-			FontFamily fontFamily(L"Arial");
-			Font font(&fontFamily, 14, FontStyleRegular, UnitPixel);
+				WCHAR szLabel[100];
+				SendMessage(item->hwndFrom, WM_GETTEXT, 100, (LPARAM)szLabel);
+				g.SetTextRenderingHint(TextRenderingHintAntiAliasGridFit);
+				FontFamily fontFamily(L"Arial");
+				Font font(&fontFamily, 13, FontStyleRegular, UnitPixel);
+				g.DrawString(szLabel, -1, &font, { 30.0f, 0.0f }, inst->brCtrlText);
 
-			g.SetTextRenderingHint(TextRenderingHintAntiAliasGridFit);
-			g.MeasureString(szLabel, -1, &font, rcfBtn, &rcfText);
-			PointF origin(rcfBtn.GetRight() / 2 - rcfText.GetRight() / 2,
-				rcfBtn.GetBottom() / 2 - rcfText.GetBottom() / 2);
-			g.DrawString(szLabel, -1, &font, origin, &brush);
+				SetWindowLong(hWnd, DWL_MSGRESULT, CDRF_SKIPDEFAULT);
+				return TRUE;
+			}
+			else if (LOWORD(lStyle) == BS_AUTORADIOBUTTON)
+			{
+				LPNMCUSTOMDRAW d = (LPNMCUSTOMDRAW)item;
+				Graphics g(d->hdc);
 
-			SetWindowLong(hWnd, DWL_MSGRESULT, CDRF_SKIPDEFAULT);
-			return TRUE;
+				Pen *pen;
+				SolidBrush *brush;
+				if (d->uItemState & CDIS_HOT)
+				{
+					pen = new Pen(Color(59, 148, 217));
+					brush = new SolidBrush(Color(59, 148, 217));
+				}
+				else
+				{
+					pen = new Pen(Color(51, 51, 51));
+					brush = new SolidBrush(Color(51, 51, 51));
+				}
+				g.SetSmoothingMode(SmoothingModeAntiAlias);
+				if (d->uItemState & CDIS_SELECTED)
+				{
+					SolidBrush bgBrush(Color(64, 59, 148, 217));
+					g.FillEllipse(&bgBrush, Rect{ 0, 2, 13, 13 });
+				}
+				g.DrawEllipse(pen, Rect{ 0, 2, 13, 13 });
+				if (IsDlgButtonChecked(hWnd, item->idFrom))
+					g.FillEllipse(brush, Rect{ 3, 5, 7, 7 });
+
+				WCHAR szLabel[100];
+				SendMessage(item->hwndFrom, WM_GETTEXT, 100, (LPARAM)szLabel);
+				g.SetTextRenderingHint(TextRenderingHintAntiAliasGridFit);
+				FontFamily fontFamily(L"Arial");
+				Font font(&fontFamily, 13, FontStyleRegular, UnitPixel);
+				g.DrawString(szLabel, -1, &font, { 18.0f, 0.0f }, inst->brCtrlText);
+				
+				delete pen;
+				delete brush;
+
+				SetWindowLong(hWnd, DWL_MSGRESULT, CDRF_SKIPDEFAULT);
+				return TRUE;
+			}
 		}
 	}	break;
 	case WM_COMMAND:
@@ -242,5 +328,31 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 			return TRUE;
 		}
 	}	return FALSE;
+}
+
+LRESULT CALLBACK TDPSettingsDlg::GrpProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	TDPSettingsDlg *inst = TDPSettingsDlg::GetInstance();
+
+	switch (msg)
+	{
+	case WM_PAINT:
+	{
+		PAINTSTRUCT ps;
+		HDC dc = BeginPaint(hWnd, &ps);
+		Graphics g(dc);
+
+		WCHAR buf[100];
+		SendMessage(hWnd, WM_GETTEXT, 100, (LPARAM)buf);
+
+		FontFamily fontFamily(L"Arial");
+		Font font(&fontFamily, 13, FontStyleBold, UnitPixel);
+		g.DrawString(buf, -1, &font, { 0.0f, 0.0f }, inst->brCtrlText);
+
+		EndPaint(hWnd, &ps);
+	}	break;
+	}
+
+	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 }

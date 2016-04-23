@@ -27,6 +27,8 @@
 #define IDC_RADIO_STAYOPEN_DEFAULT      1014
 #define IDC_RADIO_STAYOPEN_ALWAYSON     1015
 #define IDC_RADIO_STAYOPEN_ALWAYSOFF    1016
+#define IDC_GRP_CTXMENU                 1017
+#define IDC_GRP_STAYOPEN                1018
 #define IDC_LBL_TOP_DESC                -1
 
 // Next default values for new objects
@@ -36,7 +38,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        106
 #define _APS_NEXT_COMMAND_VALUE         32700
-#define _APS_NEXT_CONTROL_VALUE         1015
+#define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

@@ -11,6 +11,7 @@ namespace Gdiplus
 	using std::max;
 }
 #include <Windows.h>
+#include <wingdi.h>
 #include <ObjIdl.h>
 #include <gdiplus.h>
 
@@ -37,10 +38,17 @@ private:
 	SolidBrush *brFaces[3];
 	SolidBrush *brCtrlText;
 	Pen *penShadow;
+	FontFamily *ffArial;
+	Font *fntDefault;
 
 private:
 	TDPSettingsDlg();
 	~TDPSettingsDlg();
+
+	static void CustomDrawOK(LPNMHDR item);
+	static void CustomDrawCancel(LPNMHDR item);
+	static void CustomDrawCheckbox(LPNMHDR item);
+	static void CustomDrawRadio(LPNMHDR item);
 
 	static BOOL CALLBACK DlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK GrpProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

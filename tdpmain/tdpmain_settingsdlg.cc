@@ -5,7 +5,7 @@
 #include "tdpmain/util_win.h"
 #include "tdpmain/resource.h"
 
-#define BF_PATH L"E:\\Data\\"
+#define IMGPATH L"images\\"
 
 namespace tdpmain
 {
@@ -24,13 +24,13 @@ void TDPSettingsDlg::FreeInstance()
 }
 
 const LPCWSTR TDPSettingsDlg::szBtnFaceNames[3][4] {
-	{ BF_PATH L"btnface_n_lt.png", BF_PATH L"btnface_n_rt.png", BF_PATH L"btnface_n_lb.png", BF_PATH L"btnface_n_rb.png" },
-	{ BF_PATH L"btnface_h_lt.png", BF_PATH L"btnface_h_rt.png", BF_PATH L"btnface_h_lb.png", BF_PATH L"btnface_h_rb.png" },
-	{ BF_PATH L"btnface_d_lt.png", BF_PATH L"btnface_d_rt.png", BF_PATH L"btnface_d_lb.png", BF_PATH L"btnface_d_rb.png" }
+	{ IMGPATH L"btnface_n_lt.png", IMGPATH L"btnface_n_rt.png", IMGPATH L"btnface_n_lb.png", IMGPATH L"btnface_n_rb.png" },
+	{ IMGPATH L"btnface_h_lt.png", IMGPATH L"btnface_h_rt.png", IMGPATH L"btnface_h_lb.png", IMGPATH L"btnface_h_rb.png" },
+	{ IMGPATH L"btnface_d_lt.png", IMGPATH L"btnface_d_rt.png", IMGPATH L"btnface_d_lb.png", IMGPATH L"btnface_d_rb.png" }
 };
 
 const LPCWSTR TDPSettingsDlg::szSwitchNames[2]{
-	BF_PATH L"sw_0.png", BF_PATH L"sw_1.png"
+	IMGPATH L"sw_0.png", IMGPATH L"sw_1.png"
 };
 
 Gdiplus::GdiplusStartupInput TDPSettingsDlg::gpsi;
@@ -133,7 +133,7 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		PAINTSTRUCT ps;
 		HDC dc = BeginPaint(hWnd, &ps);
 		Gdiplus::Graphics g(dc);
-		Gdiplus::Image imgHandle(L"E:\\Data\\handle.png");
+		Gdiplus::Image imgHandle(IMGPATH L"handle.png");
 		g.DrawImage(&imgHandle, 16, 14);
 		Pen pen(Color(204, 214, 221));
 		g.DrawRectangle(&pen, grcDlg);

@@ -262,6 +262,21 @@ if(OS_WINDOWS)
 	style/style.css
 	appdata.ini
     README.txt
+    images/btnface_d_lb.png
+    images/btnface_d_lt.png
+    images/btnface_d_rb.png
+    images/btnface_d_rt.png
+    images/btnface_h_lb.png
+    images/btnface_h_lt.png
+    images/btnface_h_rb.png
+    images/btnface_h_rt.png
+    images/btnface_n_lb.png
+    images/btnface_n_lt.png
+    images/btnface_n_rb.png
+    images/btnface_n_rt.png
+    images/handle.png
+    images/sw_0.png
+    images/sw_1.png
 	)
 	
   if(PROJECT_ARCH STREQUAL "x86")

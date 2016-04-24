@@ -26,35 +26,33 @@ LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
 // Dialog
 //
 
-IDD_SETTINGS DIALOGEX 0, 0, 309, 254
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION
-CAPTION "Settings"
+IDD_SETTINGS DIALOGEX 0, 0, 324, 306
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Save",IDOK,198,233,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,252,233,50,14
-    CONTROL         "Always On Top as Default",IDC_CHK_ALWAYS_ON_TOP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,99,10
+    DEFPUSHBUTTON   "Save",IDOK,137,281,50,18
+    PUSHBUTTON      "Cancel",IDCANCEL,304,10,9,9
+    CONTROL         "Always On Top as Default",IDC_CHK_ALWAYS_ON_TOP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,37,203,10
     CONTROL         "Open Links in a Default Web Browser",IDC_CHK_POPUP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,62,134,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,91,203,10
     CONTROL         "Write Tweet in Twitter",IDC_CHK_CTX_TWEET_IN_TWITTER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,143,114,10
-    CONTROL         "Open Twitter in Popup",IDC_CHK_CTX_TWITTER_POPUP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,159,113,10
-    CONTROL         "Open Link in Popup",IDC_CHK_CTX_LINK_POPUP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,170,143,101,10
-    CONTROL         "Don't Download Images in Original Quality",IDC_CHK_DL_ORIG_IMG,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,78,149,10
-    LTEXT           "Display Font:",IDC_LBL_FONT,6,189,43,8
-    EDITTEXT        IDC_EDIT_FONT,54,188,246,12,ES_AUTOHSCROLL
-    LTEXT           "Leave it blank if you want to use the default font.\r\nYou need to restart TweetDeck Player to apply new fonts.",IDC_LBL_FONT_DESC,54,204,204,20,WS_DISABLED
-    CONTROL         "Minimize to System Tray",IDC_CHK_MINTRAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,46,93,10
-    CONTROL         "Hide System Tray Icon",IDC_CHK_HIDETRAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,30,85,10
-    GROUPBOX        "Context Menu",IDC_LBL_TOP_DESC,7,128,295,49
-    CONTROL         "Search Image with Google",IDC_CHK_CTX_SEARCH_IMG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,170,160,101,10
-    LTEXT           "If checked, TweetDeck Player window will be set to be always on top on startup.",IDC_LBL_TOP_DESC,18,18,259,8,WS_DISABLED
-    GROUPBOX        "Stay open as Start",IDC_LBL_TOP_DESC,7,94,295,30
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,151,124,10
+    CONTROL         "Open Twitter in Popup",IDC_CHK_CTX_TWITTER_POPUP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,164,124,10
+    CONTROL         "Open Link in Popup",IDC_CHK_CTX_LINK_POPUP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,177,124,10
+    CONTROL         "Download Compressed Images",IDC_CHK_DL_ORIG_IMG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,105,203,10
+    LTEXT           "Display Font:",IDC_LBL_FONT,20,221,52,11
+    EDITTEXT        IDC_EDIT_FONT,72,220,231,12,ES_AUTOHSCROLL
+    LTEXT           "Leave it blank if you want to use the default font.\r\nYou need to restart TweetDeck Player to apply new fonts.",IDC_LBL_FONT_DESC,20,235,284,22,WS_DISABLED
+    CONTROL         "Minimize to System Tray",IDC_CHK_MINTRAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,77,203,10
+    CONTROL         "Hide System Tray Icon",IDC_CHK_HIDETRAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,63,203,10
+    CONTROL         "Search Image with Google",IDC_CHK_CTX_SEARCH_IMG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,190,124,10
+    LTEXT           "If checked, the main window will be set to be always on top on startup.",IDC_LBL_TOP_DESC,20,49,284,12,WS_DISABLED
     CONTROL         "Default (Account Setting)",IDC_RADIO_STAYOPEN_DEFAULT,
-                    "Button",BS_AUTORADIOBUTTON,20,107,97,10
-    CONTROL         "Always On",IDC_RADIO_STAYOPEN_ALWAYSON,"Button",BS_AUTORADIOBUTTON,140,107,50,10
-    CONTROL         "Always Off",IDC_RADIO_STAYOPEN_ALWAYSOFF,"Button",BS_AUTORADIOBUTTON,220,107,51,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,22,151,119,10
+    CONTROL         "Always On",IDC_RADIO_STAYOPEN_ALWAYSON,"Button",BS_AUTORADIOBUTTON,22,164,119,10
+    CONTROL         "Always Off",IDC_RADIO_STAYOPEN_ALWAYSOFF,"Button",BS_AUTORADIOBUTTON,22,177,119,10
+    GROUPBOX        "STAY OPEN",IDC_GRP_STAYOPEN,20,136,123,61
+    GROUPBOX        "CONTEXT MENU",IDC_GRP_CTXMENU,163,136,134,67
 END
 
 
@@ -68,10 +66,10 @@ GUIDELINES DESIGNINFO
 BEGIN
     IDD_SETTINGS, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 302
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 247
+        LEFTMARGIN, 10
+        RIGHTMARGIN, 314
+        TOPMARGIN, 27
+        BOTTOMMARGIN, 299
     END
 END
 #endif    // APSTUDIO_INVOKED

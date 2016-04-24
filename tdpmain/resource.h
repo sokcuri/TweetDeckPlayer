@@ -2,6 +2,8 @@
 // Microsoft Visual C++에서 생성한 포함 파일입니다.
 // tdpmain.rc에서 사용되고 있습니다.
 //
+#define IDOK                            1
+#define IDCANCEL                        2
 #define IDI_TDPMAIN                     100
 #define IDI_SMALL                       101
 #define IDD_SETTINGS                    102
@@ -25,6 +27,8 @@
 #define IDC_RADIO_STAYOPEN_DEFAULT      1014
 #define IDC_RADIO_STAYOPEN_ALWAYSON     1015
 #define IDC_RADIO_STAYOPEN_ALWAYSOFF    1016
+#define IDC_GRP_CTXMENU                 1017
+#define IDC_GRP_STAYOPEN                1018
 #define IDC_LBL_TOP_DESC                -1
 
 // Next default values for new objects
@@ -32,9 +36,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        103
+#define _APS_NEXT_RESOURCE_VALUE        106
 #define _APS_NEXT_COMMAND_VALUE         32700
-#define _APS_NEXT_CONTROL_VALUE         1015
+#define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

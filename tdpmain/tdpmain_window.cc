@@ -55,7 +55,6 @@ void TDPWindow::RestoreFromTray(HWND hWnd)
 // static
 LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 	WPARAM wParam, LPARAM lParam) {
-
 		// Callback for the main window
 		switch (message) {
 			break;
@@ -159,7 +158,8 @@ LRESULT CALLBACK TDPWindow::PopupWndProc(HWND hWnd, UINT message,
 		case IDB_SETTINGS:
 		{
 			RestoreFromTray(hWnd);
-			TDPSettingsDlg::ShowDialog(hWnd);
+			TDPSettingsDlg *dlgInst = TDPSettingsDlg::GetInstance();
+			dlgInst->ShowDialog(hWnd);
 		}	break;
 
 		// TRAY MENU HANDLERS //

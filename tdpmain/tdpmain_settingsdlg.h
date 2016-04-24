@@ -23,6 +23,7 @@ namespace tdpmain
 class TDPSettingsDlg
 {
 private:
+	// Singleton
 	static TDPSettingsDlg *instance;
 
 	static GdiplusStartupInput gpsi;
@@ -40,8 +41,10 @@ private:
 private:
 	TDPSettingsDlg();
 	~TDPSettingsDlg();
+
 	static BOOL CALLBACK DlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK GrpProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+	static LRESULT CALLBACK TxtProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	
 public:
 	static TDPSettingsDlg *GetInstance();

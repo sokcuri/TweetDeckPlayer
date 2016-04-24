@@ -38,7 +38,6 @@ ULONG_PTR TDPSettingsDlg::gptok;
 
 TDPSettingsDlg::TDPSettingsDlg()
 {
-	OutputDebugString(L"TDPSettingsDlg constructor called.\n");
 	GdiplusStartup(&gptok, &gpsi, NULL);
 
 	for (int i = 0; i < 3; i++)
@@ -116,7 +115,11 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 
 		SetWindowLong(GetDlgItem(hWnd, IDC_GRP_STAYOPEN), GWL_WNDPROC, (LONG)(WNDPROC)GrpProc);
 		SetWindowLong(GetDlgItem(hWnd, IDC_GRP_CTXMENU), GWL_WNDPROC, (LONG)(WNDPROC)GrpProc);
+		SetWindowLong(GetDlgItem(hWnd, IDC_LBL_TOP_DESC), GWL_WNDPROC, (LONG)(WNDPROC)TxtProc);
+		SetWindowLong(GetDlgItem(hWnd, IDC_LBL_FONT), GWL_WNDPROC, (LONG)(WNDPROC)TxtProc);
+		SetWindowLong(GetDlgItem(hWnd, IDC_LBL_FONT_DESC), GWL_WNDPROC, (LONG)(WNDPROC)TxtProc);
 
+		// Apply rounded window frame
 		GetWindowRect(hWnd, &rcDlg);
 		HRGN rgn = CreateRoundRectRgn(0, 0, rcDlg.right - rcDlg.left, rcDlg.bottom - rcDlg.top, 2, 2);
 		SetWindowRgn(hWnd, rgn, TRUE);
@@ -126,7 +129,7 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		RECT rcDlg;
 		GetWindowRect(hWnd, &rcDlg);
 		OffsetRect(&rcDlg, -rcDlg.left, -rcDlg.top);
-		Rect grcDlg{ 16, 45, rcDlg.right-32, rcDlg.bottom-108 };
+		Rect grcDlg{ 16, 45, rcDlg.right-33, rcDlg.bottom-109 };
 		PAINTSTRUCT ps;
 		HDC dc = BeginPaint(hWnd, &ps);
 		Gdiplus::Graphics g(dc);
@@ -145,12 +148,13 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		LONG lStyle = GetWindowLong(item->hwndFrom, GWL_STYLE);
 		if (item->code == NM_CUSTOMDRAW)
 		{
+			LPNMCUSTOMDRAW d = (LPNMCUSTOMDRAW)item;
+
 			if (item->idFrom == IDOK)
 			{
-				LPNMCUSTOMDRAW d = (LPNMCUSTOMDRAW)item;
 				RECT &rcBtn = d->rc;
 				Graphics g(d->hdc);
-				static int corners[4][2]{
+				int corners[4][2]{
 					{ rcBtn.left, rcBtn.top },
 					{ rcBtn.right - 3, rcBtn.top },
 					{ rcBtn.left, rcBtn.bottom - 3 },
@@ -188,13 +192,25 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				PointF origin(rcfBtn.GetRight() / 2 - rcfText.GetRight() / 2,
 					rcfBtn.GetBottom() / 2 - rcfText.GetBottom() / 2);
 				g.DrawString(szLabel, -1, &font, origin, &brush);
+			}
+			else if (item->idFrom == IDCANCEL)
+			{
+				RECT rc = d->rc;
+				Graphics g(d->hdc);
 
-				SetWindowLong(hWnd, DWL_MSGRESULT, CDRF_SKIPDEFAULT);
-				return TRUE;
+				g.Clear(Color(255, 255, 255));
+				Pen pen1(Color(89, 89, 89));
+				Pen pen2(Color(17, 17, 17));
+				Pen *pen;
+				if (d->uItemState & CDIS_HOT) pen = &pen2;
+				else pen = &pen1;
+				pen->SetWidth(2);
+				g.SetSmoothingMode(SmoothingModeAntiAlias);
+				g.DrawLine(pen, Point{ 0, 0 }, Point{ rc.right - 1, rc.bottom - 1 });
+				g.DrawLine(pen, Point{ 0, rc.bottom - 1 }, Point{ rc.right - 1, 0 });
 			}
 			else if (LOWORD(lStyle) == BS_AUTOCHECKBOX)
 			{
-				LPNMCUSTOMDRAW d = (LPNMCUSTOMDRAW)item;
 				Graphics g(d->hdc);
 
 				if (IsDlgButtonChecked(hWnd, item->idFrom))
@@ -208,13 +224,9 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				FontFamily fontFamily(L"Arial");
 				Font font(&fontFamily, 13, FontStyleRegular, UnitPixel);
 				g.DrawString(szLabel, -1, &font, { 30.0f, 0.0f }, inst->brCtrlText);
-
-				SetWindowLong(hWnd, DWL_MSGRESULT, CDRF_SKIPDEFAULT);
-				return TRUE;
 			}
 			else if (LOWORD(lStyle) == BS_AUTORADIOBUTTON)
 			{
-				LPNMCUSTOMDRAW d = (LPNMCUSTOMDRAW)item;
 				Graphics g(d->hdc);
 
 				Pen *pen;
@@ -248,10 +260,10 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				
 				delete pen;
 				delete brush;
-
-				SetWindowLong(hWnd, DWL_MSGRESULT, CDRF_SKIPDEFAULT);
-				return TRUE;
 			}
+
+			SetWindowLong(hWnd, DWL_MSGRESULT, CDRF_SKIPDEFAULT);
+			return TRUE;
 		}
 	}	break;
 	case WM_COMMAND:
@@ -348,6 +360,40 @@ LRESULT CALLBACK TDPSettingsDlg::GrpProc(HWND hWnd, UINT msg, WPARAM wParam, LPA
 		FontFamily fontFamily(L"Arial");
 		Font font(&fontFamily, 13, FontStyleBold, UnitPixel);
 		g.DrawString(buf, -1, &font, { 0.0f, 0.0f }, inst->brCtrlText);
+
+		EndPaint(hWnd, &ps);
+	}	break;
+	}
+
+	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+LRESULT CALLBACK TDPSettingsDlg::TxtProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	TDPSettingsDlg *inst = TDPSettingsDlg::GetInstance();
+
+	switch (msg)
+	{
+	case WM_PAINT:
+	{
+		PAINTSTRUCT ps;
+		HDC dc = BeginPaint(hWnd, &ps);
+		Graphics g(dc);
+
+		WCHAR buf[1000];
+		SendMessage(hWnd, WM_GETTEXT, 1000, (LPARAM)buf);
+
+		FontFamily fontFamily(L"Arial");
+		Font font(&fontFamily, 12, FontStyleRegular, UnitPixel);
+		long style = GetWindowLong(hWnd, GWL_STYLE);
+		if (style & WS_DISABLED)
+		{
+			SolidBrush *brush = new SolidBrush(Color(136, 153, 166));
+			g.DrawString(buf, -1, &font, { 0.0f, 0.0f }, brush);
+			delete brush;
+		}
+		else
+			g.DrawString(buf, -1, &font, { 0.0f, 0.0f }, inst->brCtrlText);
 
 		EndPaint(hWnd, &ps);
 	}	break;

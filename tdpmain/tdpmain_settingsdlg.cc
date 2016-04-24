@@ -169,6 +169,14 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 			return TRUE;
 		}
 	}	break;
+	// Make the dialog draggable
+	case WM_LBUTTONDOWN:
+	{
+		DefWindowProc(hWnd, message, wParam, lParam);
+		POINTS pt = MAKEPOINTS(lParam);
+		if (pt.x >= 16 && pt.x < 34 && pt.y >= 14 && pt.y < 36)
+			SendMessage(hWnd, WM_NCLBUTTONDOWN, HTCAPTION, lParam);
+	}	break;
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{

@@ -259,6 +259,7 @@ if(OS_WINDOWS)
 	LICENSE/LIBCEF_INFORMATION.TXT
 	LICENSE/LICENSE.TXT
 	script/script.js
+	script/gaeulbyul-paste-image.js
 	style/style.css
 	appdata.ini
     README.txt

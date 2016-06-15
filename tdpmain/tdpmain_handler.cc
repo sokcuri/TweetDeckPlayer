@@ -401,6 +401,11 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 			frame->ExecuteJavaScript(code, kTwitter, 10);
 		}
 	}
+
+	// 2623 upper 
+	std::wstring code =
+		L"Notification = false;";
+	frame->ExecuteJavaScript(code, kTwitter, 3);
 }
 
 void TDPHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
@@ -819,7 +824,7 @@ bool TDPHandler::OnContextMenuCommand(
 				{
 					int length = url.length();
 					HGLOBAL hGlob = GlobalAlloc(GMEM_FIXED, (length + 1) * 2);
-					wcscpy_s((wchar_t*)hGlob, length + 1, url.c_str());
+					wcscpy_s((wchar_t*)hGlob, length, url.c_str());
 					SetClipboardData(CF_UNICODETEXT, hGlob);
 					GlobalUnlock(hGlob);
 				}

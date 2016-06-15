@@ -7,6 +7,7 @@
 #include "include/base/cef_scoped_ptr.h"
 #include "tdpmain/tdpmain_app.h"
 #include "include/cef_sandbox_win.h"
+#include "tdpmain/util_win.h"
 
 using namespace tdpmain;
 
@@ -45,6 +46,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
   // Specify CEF global settings here.
   CefSettings settings;
 
+  CefString(&settings.user_data_path).FromWString(GetDataPath());
+  CefString(&settings.cache_path).FromWString(GetCachePath());
   // Disable logging.
   settings.log_severity = LOGSEVERITY_DISABLE;
 

@@ -45,6 +45,9 @@ namespace tdpmain
 	// Return the data folder path.
 	std::wstring GetDataPath();
 
+	// Return the cache folder path.
+	std::wstring GetCachePath();
+
 	// Return the INI file path.
 	std::wstring GetINIPath();
 

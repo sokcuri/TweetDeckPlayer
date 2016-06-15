@@ -175,6 +175,10 @@ std::wstring GetDataPath() {
 	return GetExePath() + L"\\data";
 }
 
+std::wstring GetCachePath() {
+	return GetExePath() + L"\\cache";
+}
+
 void SaveMainWnd(RECT *rect) {
 	const std::wstring iniPath(GetINIPath());
 

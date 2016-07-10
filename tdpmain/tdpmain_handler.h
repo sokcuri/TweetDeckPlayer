@@ -26,6 +26,12 @@ class TDPHandler : public CefClient,
   // Provide access to the single global instance of this object.
   static TDPHandler* GetInstance();
 
+  static CefRefPtr<CefFrame> g_mainFrame;
+  static void execJavascript(CefString code)
+  {
+	  if(g_mainFrame) g_mainFrame->ExecuteJavaScript(code, g_mainFrame->GetURL(), 0);
+  }
+
   // CefClient methods
   CefRefPtr<CefContextMenuHandler> GetContextMenuHandler() OVERRIDE {
 	  return this;

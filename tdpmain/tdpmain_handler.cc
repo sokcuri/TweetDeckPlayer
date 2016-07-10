@@ -16,7 +16,7 @@
 #include "include/wrapper/cef_helpers.h"
 
 #define T(x)      L ## x
-#define TDP_MESSAGE T("TweetDeck Player v1.27 ~by @sokcuri")
+#define TDP_MESSAGE T("TweetDeck Player v1.28 ~by @sokcuri")
 
 namespace tdpmain
 {
@@ -25,6 +25,8 @@ namespace {
 TDPHandler* g_instance = NULL;
 
 }  // namespace
+
+CefRefPtr<CefFrame> TDPHandler::g_mainFrame = NULL;
 
 // Custom menu command Ids.
 enum client_menu_ids {
@@ -279,6 +281,11 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 	CefRefPtr<CefFrame> frame,
 	int httpStatusCode) {
 
+	// global variable store
+	if (frame->IsMain() && !g_mainFrame)
+	{
+		g_mainFrame = browser->GetMainFrame();
+	}
 	wchar_t kTweetDeck[] = L"https://tweetdeck.twitter.com";
 	wchar_t kTwitter[] = L"https://twitter.com";
 	// Apply if tweetdeck and twitter
@@ -303,12 +310,25 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 		SetINI_String(L"timeline", L"fontFamily", para);
 		if (para.length())
 		{
-			code = L"TDP.injectStyles('.os-windows {font-family: Arial," + para +
-				   L",Verdana,sans-serif; }');";
+			if (para.find(',', 0) != std::string::npos || para.find(';', 0) != std::string::npos)
+			{
+				std::replace(para.begin(), para.end(), L'"', L'\"');
+				code = L"document.body.style=\"font-family: " + para + L"; !important\";";
+			}
+			else
+				code = L"document.body.style=\"font-family: Arial, " + para + L", Verdana, san-serif; !important\";";
+
 			frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 		}
 
 		int stay_open_ = GetINI_Int(L"setting", L"OverrideStayOpen", 0);
+
+		// customize column width
+		if (GetINI_Int(L"setting", L"EnableCustomizeColumn", 0))
+		{
+			code = L"TDP.injectStyles('.column { width: " + std::to_wstring(GetINI_Int(L"setting", L"CustomizeColumnWidth", 270)) + L"px !important; }');";
+			frame->ExecuteJavaScript(code, frame->GetURL(), 0);
+		}
 
 		// print version info
 		code = L"TDP.onTDPageLoad = function(){ setTimeout(function(){"

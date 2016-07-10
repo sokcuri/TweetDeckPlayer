@@ -1,5 +1,6 @@
 #include "tdpmain/tdpmain_settingsdlg.h"
 #include "tdpmain/tdpmain_window.h"
+#include "tdpmain/tdpmain_handler.h"
 #include "tdpmain/util_win.h"
 #include "tdpmain/resource.h"
 
@@ -34,6 +35,11 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		OffsetRect(&rc, -rcDlg.right, -rcDlg.bottom);
 		SetWindowPos(hWnd, HWND_TOP, rcParent.left + rc.right / 2, rcParent.top + rc.bottom / 2, 0, 0, SWP_NOSIZE);
 
+		std::wstring str = L"Column size Customize (" + std::to_wstring(GetINI_Int(L"setting", L"CustomizeColumnWidth", 270)) + L")";
+		SetWindowText(GetDlgItem(hWnd, IDC_CHK_CTX_CUSTOMIZE_COLUMN), str.c_str());
+		SendDlgItemMessage(hWnd, IDC_SLIDER_COLUMN, TBM_SETRANGE, false, MAKELPARAM(270, 1000));
+		SendDlgItemMessage(hWnd, IDC_SLIDER_COLUMN, TBM_SETPOS, true, GetINI_Int(L"setting", L"CustomizeColumnWidth", 270));
+
 		// Read settings from appdata.ini and set controls appropriately.
 		CheckDlgButton(hWnd, IDC_CHK_ALWAYS_ON_TOP, GetINI_Int(L"setting", L"DefaultAlwaysOnTop", 0));
 		CheckDlgButton(hWnd, IDC_CHK_HIDETRAY, GetINI_Int(L"setting", L"DisableTrayIcon", 0));
@@ -44,6 +50,9 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		CheckDlgButton(hWnd, IDC_CHK_CTX_LINK_POPUP, !GetINI_Int(L"setting", L"DisablePopupOpenMenu", 0));
 		CheckDlgButton(hWnd, IDC_CHK_CTX_SEARCH_IMG, !GetINI_Int(L"setting", L"DisableSearchImageMenu", 0));
 		CheckDlgButton(hWnd, IDC_CHK_DL_ORIG_IMG, GetINI_Int(L"setting", L"DisableTwimgOrig", 0));
+		CheckDlgButton(hWnd, IDC_CHK_CTX_CUSTOMIZE_COLUMN, GetINI_Int(L"setting", L"EnableCustomizeColumn", 0));
+
+		EnableWindow(GetDlgItem(hWnd, IDC_SLIDER_COLUMN), IsDlgButtonChecked(hWnd, IDC_CHK_CTX_CUSTOMIZE_COLUMN));
 		
 		int stay_open_ = GetINI_Int(L"setting", L"OverrideStayOpen", 0);
 		if (stay_open_ > 2) stay_open_ = 0;
@@ -53,6 +62,16 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		SetWindowText(hFont, GetINI_String(L"timeline", L"fontFamily", L"").c_str());
 	}
 	return TRUE;
+	case WM_HSCROLL:
+	{
+		int n = SendDlgItemMessage(hWnd, IDC_SLIDER_COLUMN, TBM_GETPOS, 0, 0);
+		std::wstring str = L"Column size Customize (" + std::to_wstring(n) + L")";
+		SetWindowText(GetDlgItem(hWnd, IDC_CHK_CTX_CUSTOMIZE_COLUMN), str.c_str());
+		std::wstring code;
+		code = L"TDP.injectStyles('.is-narrow-columns .column {width: " + std::to_wstring(n) + L"px} .is-medium-columns .column {width: " + std::to_wstring(n) + L"px} .is-wide-columns .column {width: " + std::to_wstring(n) + L"px}');";
+		TDPHandler::execJavascript(code);
+	}
+	break;
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
@@ -68,6 +87,9 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 			SetINI_Int(L"setting", L"DisablePopupOpenMenu", !IsDlgButtonChecked(hWnd, IDC_CHK_CTX_LINK_POPUP));
 			SetINI_Int(L"setting", L"DisableSearchImageMenu", !IsDlgButtonChecked(hWnd, IDC_CHK_CTX_SEARCH_IMG));
 			SetINI_Int(L"setting", L"DisableTwimgOrig", IsDlgButtonChecked(hWnd, IDC_CHK_DL_ORIG_IMG));
+			SetINI_Int(L"setting", L"EnableCustomizeColumn", IsDlgButtonChecked(hWnd, IDC_CHK_CTX_CUSTOMIZE_COLUMN));
+
+			SetINI_Int(L"setting", L"CustomizeColumnWidth", SendDlgItemMessage(hWnd, IDC_SLIDER_COLUMN, TBM_GETPOS, 0, 0));
 
 			// Stay Open Override setting
 			int stay_open_ = 0;
@@ -82,6 +104,24 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 			WCHAR _fnt[1001];
 			GetWindowText(GetDlgItem(hWnd, IDC_EDIT_FONT), _fnt, 1000);
 			SetINI_String(L"timeline", L"fontFamily", _fnt);
+
+			std::wstring para = _fnt;
+			std::wstring code;
+			if (para.length())
+			{
+				if (para.find(',', 0) != std::string::npos || para.find(';', 0) != std::string::npos)
+				{
+					std::replace(para.begin(), para.end(), L'"', L'\"');
+					code = L"document.body.style=\"font-family: " + para + L"; !important\";";
+				}
+				else
+					code = L"document.body.style=\"font-family: Arial, " + para + L", Verdana, san-serif; !important\";";
+			}
+			else
+			{
+				code = L"document.body.style=\"\";";
+			}
+			TDPHandler::execJavascript(code);
 
 			if (TDPWindow::isShownTrayIcon && IsDlgButtonChecked(hWnd, IDC_CHK_HIDETRAY) == 1)
 			{
@@ -126,6 +166,24 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 			EndDialog(hWnd, wParam);
 			return TRUE;
 		}
+		case IDC_CHK_CTX_CUSTOMIZE_COLUMN:
+		{
+			std::wstring code;
+			if (IsDlgButtonChecked(hWnd, IDC_CHK_CTX_CUSTOMIZE_COLUMN))
+			{
+				int n = SendDlgItemMessage(hWnd, IDC_SLIDER_COLUMN, TBM_GETPOS, 0, 0);
+				code = L"TDP.injectStyles('.is-narrow-columns .column {width: " + std::to_wstring(n) + L"px} .is-medium-columns .column {width: " + std::to_wstring(n) + L"px} .is-wide-columns .column {width: " + std::to_wstring(n) + L"px}');";
+				EnableWindow(GetDlgItem(hWnd, IDC_SLIDER_COLUMN), true);
+			}
+			else
+			{
+				code = L"TDP.injectStyles('.is-narrow-columns .column {width: 270px} .is-medium-columns .column {width: 310px} .is-wide-columns .column {width: 350px}');";
+				EnableWindow(GetDlgItem(hWnd, IDC_SLIDER_COLUMN), false);
+			}
+
+			TDPHandler::execJavascript(code);
+		}
+		break;
 	}
 
 	return FALSE;

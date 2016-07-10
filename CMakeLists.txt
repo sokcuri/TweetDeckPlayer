@@ -260,6 +260,7 @@ if(OS_WINDOWS)
 	LICENSE/LICENSE.TXT
 	script/script.js
 	script/gaeulbyul-paste-image.js
+	script/font-size.js
 	style/style.css
 	appdata.ini
     README.txt

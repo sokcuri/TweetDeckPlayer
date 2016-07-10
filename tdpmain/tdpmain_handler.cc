@@ -326,7 +326,8 @@ void TDPHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
 		// customize column width
 		if (GetINI_Int(L"setting", L"EnableCustomizeColumn", 0))
 		{
-			code = L"TDP.injectStyles('.column { width: " + std::to_wstring(GetINI_Int(L"setting", L"CustomizeColumnWidth", 270)) + L"px !important; }');";
+			int n = GetINI_Int(L"setting", L"CustomizeColumnWidth", 270);
+			code = L"TDP.injectStyles('.is-narrow-columns .column {width: " + std::to_wstring(n) + L"px} .is-medium-columns .column {width: " + std::to_wstring(n) + L"px} .is-wide-columns .column {width: " + std::to_wstring(n) + L"px}');";
 			frame->ExecuteJavaScript(code, frame->GetURL(), 0);
 		}
 

@@ -163,6 +163,13 @@ BOOL CALLBACK TDPSettingsDlg::DlgProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		}
 		// Fall through to close this dialog.
 		case IDCANCEL:
+			std::wstring code;
+			int n = GetINI_Int(L"setting", L"CustomizeColumnWidth", 270);
+			if (GetINI_Int(L"setting", L"EnableCustomizeColumn", 0))
+				code = L"TDP.injectStyles('.is-narrow-columns .column {width: " + std::to_wstring(n) + L"px} .is-medium-columns .column {width: " + std::to_wstring(n) + L"px} .is-wide-columns .column {width: " + std::to_wstring(n) + L"px}');";
+			else
+				code = L"TDP.injectStyles('.is-narrow-columns .column {width: 270px} .is-medium-columns .column {width: 310px} .is-wide-columns .column {width: 350px}');";
+			TDPHandler::execJavascript(code);
 			EndDialog(hWnd, wParam);
 			return TRUE;
 		}

@@ -724,7 +724,7 @@ bool TDPHandler::OnContextMenuCommand(
 			{
 				int length = params->GetLinkUrl().length();
 				HGLOBAL hGlob = GlobalAlloc(GMEM_FIXED, (length + 1) * 2);
-				wcscpy_s((wchar_t*)hGlob, length + 1, params->GetLinkUrl().c_str());
+				wcscpy_s((wchar_t*)hGlob, (length + 1) * 2, params->GetLinkUrl().c_str());
 				SetClipboardData(CF_UNICODETEXT, hGlob);
 				GlobalUnlock(hGlob);
 			}
@@ -845,7 +845,7 @@ bool TDPHandler::OnContextMenuCommand(
 				{
 					int length = url.length();
 					HGLOBAL hGlob = GlobalAlloc(GMEM_FIXED, (length + 1) * 2);
-					wcscpy_s((wchar_t*)hGlob, length, url.c_str());
+					wcscpy_s((wchar_t*)hGlob, (length + 1), url.c_str());
 					SetClipboardData(CF_UNICODETEXT, hGlob);
 					GlobalUnlock(hGlob);
 				}

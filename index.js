@@ -1,4 +1,4 @@
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, session} = require('electron')
 const {dialog} = require('electron')
 const path = require('path')
 
@@ -9,7 +9,6 @@ const ipcMain = electron.ipcMain;
 
 let win
 global.sharedObj = {prop1: null};
-
 
 // 링크가 트위터 이미지면 원본 해상도를 구한다 
 var getLinkOrig = (link) => {
@@ -134,6 +133,35 @@ var sub_copy_link = (webContents) => {return {
 }};
 
 app.on("ready", function() {
+    const ses = session.fromPartition('persist:main')
+
+const filter = {
+urls: ['*']
+}
+/*
+ses.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+
+details.requestHeaders['Location'] = ['http://twtter.com/']
+callback({cancel: false, requestHeaders: details.requestHeaders})
+});
+*/
+/*
+ses.webRequest.onHeadersReceived(filter, (details, callback) => {
+    if(details.url.search('userstream.twitter.com') != -1)
+    {
+    console.log(details.responseHeaders);
+    console.log(details.statusCode);
+    console.log(details.statusLine);
+    details.statusCode = 307;
+    details.statusLine = "HTTP/1.1 307 Temporary Redirect";
+    Object.defineProperty(details, "Location", { get: function() { return this.Location; }, set: function(value) { this.Location = value } });
+    var url = details.url.substr(details.url.search('://')+3);
+    var url = url.substr(url.search('/')+1);
+    details.responseHeaders['Location'] = ['https://api.twitter.com/' + url]
+    }
+    callback({cancel: false, responseHeaders: details.responseHeaders, statusLine: details['statusLine']})
+})
+*/
     var path = require("path");
     var fs = require("fs");
     var initPath = path.join(__dirname, "init.json");
@@ -152,7 +180,8 @@ app.on("ready", function() {
     }
     win = new BrowserWindow(preference);
     win.loadURL("https://tweetdeck.twitter.com/");
-    //win.webContents.openDevTools();
+    //win.loadURL("https://userstream.twitter.com")
+    win.webContents.openDevTools();
 
     win.webContents.on('did-get-redirect-request', function(e, oldURL, newURL, isMainFrame, httpResponseCode, requestMethod, refeerrer, header) {
         if (isMainFrame)
@@ -161,9 +190,10 @@ app.on("ready", function() {
             e.preventDefault();
         }
     });
+    win.webContents.on('did-finish-load', function() {
+        win.webContents.executeJavaScript(`var TDP = {}; TDP.onPageLoad = () => {setTimeout(() => { if (!TD.ready) { TDP.onPageLoad(); } else { TD.controller.progressIndicator.addMessage(TD.i("TweetDeck Player v2.00 by @sokcuri")); setTimeout(() => TD.settings.setUseStream(TD.settings.getUseStream()), 3000); }}, 1000)}; TDP.onPageLoad();`)
+    });
 
-    win.webContents.executeJavaScript(`var TDP = {}; TDP.onPageLoad = () => {setTimeout(() => { if (!TD.ready) { TDP.onPageLoad(); } else { TD.controller.progressIndicator.addMessage(TD.i("TweetDeck Player v2.00 by @sokcuri")); setTimeout(() => TD.settings.setUseStream(TD.settings.getUseStream()), 3000); }}, 1000)}; TDP.onPageLoad();`)
-    
     win.on("close", function() {
         var data = {
           bounds: win.getBounds()

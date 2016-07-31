@@ -43,7 +43,48 @@ var getLinkFilename = (link) => {
     l = l.substr(0, l.lastIndexOf(':'));
   return l.substr(l.lastIndexOf('/') + 1);
 }
+/* 
+// Modify the user agent for all requests to the following urls.
+const filter = {
+urls: ['*']
+}
 
+ses.webRequest.onCompleted(filter, (details) => {
+
+    console.log(details.url);
+});
+
+ses.webRequest.onBeforeRequest(filter, (details, callback) => {
+    console.log(details.url);
+    if(details.url.search('httpbin.org') != -1)
+    callback({cancel: true, redirectURL: "https://twitter.com/"})
+    else
+    callback({cancel: true});
+});
+
+ses.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+    //console.log(details.requestHeaders);
+    if (details.url.search('/dist/bundle') != -1)
+    {
+        console.log(details.url);
+        details.url = '/test';
+    }
+callback({cancel: true, requestHeaders: details.requestHeaders})
+})
+    
+
+ses.webRequest.onSendHeaders(filter, (details) => {
+details.requestHeaders['User-Agent'] = 'asdgasdgasdg'
+});
+
+ses.webRequest.onHeadersReceived(filter, (details, callback) => {
+    //console.log(details.statusCode);
+    //console.log(details.statusLine);
+    //details.statusCode = 307;
+    //details.statusLine = "HTTP/1.1 307 Temporary Redirect";
+    //details.responseHeaders['Location'] = ["http://twitter.com"];
+    callback({cancel: true, responseHeaders: details.responseHeaders, statusLine: details.statusLine})
+})*/
 // 임시 저장되는 주소 변수들
 var img_addr, link_addr;
 
@@ -212,3 +253,39 @@ window.addEventListener('contextmenu', (e) => {
 
     ipcRenderer.send('context-menu', target, is_range)
 }, false)
+
+var open = XMLHttpRequest.prototype.open;
+
+XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
+    var oldReady;
+    if (async) {   
+        oldReady = this.onreadystatechange;
+        // override onReadyStateChange
+        this.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                console.log(this.responseText.substr(0, 255));
+                // this.responseText is the ajax result
+                // create a dummay ajax object so we can modify responseText
+                var self = this;
+                var dummy = {};
+                ["statusText", "status", "readyState", "responseType"].forEach(function(item) {
+                    dummy[item] = self[item];
+                });
+                dummy.responseText = '{"msg": "Hello"}';
+                //return oldReady.call(dummy);
+            } else {
+                // call original onreadystatechange handler
+                //return oldReady.apply(this, arguments);
+            }
+        }
+    } 
+    // call original open method
+    return open.apply(this, arguments);
+}
+
+
+/*
+XMLHttpRequest.prototype.realSend = XMLHttpRequest.prototype.send;
+var newSend = function(vData) { console.log("data: " + vData); this.realSend(vData); }
+XMLHttpRequest.prototype.send = newSend;
+*/

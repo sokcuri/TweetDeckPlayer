@@ -161,6 +161,8 @@ app.on("ready", function() {
             e.preventDefault();
         }
     });
+
+    win.webContents.executeJavaScript(`var TDP = {}; TDP.onPageLoad = () => {setTimeout(() => { console.log("Tick"); if (!TD.ready) { TDP.onPageLoad(); } else { TD.controller.progressIndicator.addMessage(TD.i("TweetDeck Player v2.00 by @sokcuri")); }}, 1000)}; TDP.onPageLoad();`)
     win.on("close", function() {
         var data = {
           bounds: win.getBounds()

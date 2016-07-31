@@ -203,7 +203,7 @@ window.addEventListener('contextmenu', (e) => {
         target = 'image'
     }
     // link
-    else if (document.querySelector('a:hover'))
+    else if (document.querySelector('a:hover') && document.querySelector('a:hover').href)
     {
         link_addr = document.querySelector('a:hover').href;
         target = 'link'

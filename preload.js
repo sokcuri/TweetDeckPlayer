@@ -48,7 +48,6 @@ var getLinkFilename = (link) => {
 var img_addr, link_addr;
 
 ipcRenderer.on('command', (event, cmd) => {
-  console.log(cmd);
     switch(cmd)
     {
         case 'cut':

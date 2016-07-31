@@ -134,13 +134,23 @@ var sub_copy_link = (webContents) => {return {
 }};
 
 app.on("ready", function() {
-    win = new BrowserWindow({
-        webPreferences: {
-            nodeIntegration: false,
-            partition: "persist:main",
-						preload: path.join(__dirname, 'preload.js')
-        }
-    });
+    var path = require("path");
+    var fs = require("fs");
+    var initPath = path.join(__dirname, "init.json");
+    var data;
+    try {
+        data = JSON.parse(fs.readFileSync(initPath, 'utf8'));
+    }
+    catch(e) {
+    }
+
+    var preference = new Object((data && data.bounds) ? data.bounds : "");
+    preference.webPreferences = {
+        nodeIntegration: false,
+        partition: "persist:main",
+        preload: path.join(__dirname, 'preload.js')
+    }
+    win = new BrowserWindow(preference);
     win.loadURL("https://tweetdeck.twitter.com/");
     //win.webContents.openDevTools();
 
@@ -151,15 +161,30 @@ app.on("ready", function() {
             e.preventDefault();
         }
     });
-    var handleRedirect = (e, url) => {
-    if(url != win.webContents.getURL()) {
-	        e.preventDefault()
-            require('electron').shell.openExternal(url)
+    win.on("close", function() {
+        var data = {
+          bounds: win.getBounds()
         }
-    }
+        fs.writeFileSync(initPath, JSON.stringify(data));
+    });
 
-    //win.webContents.on('will-navigate', handleRedirect);
-    win.webContents.on('new-window', handleRedirect);
+    win.webContents.on('new-window', (e, url) => {
+      /*
+        if(url != win.webContents.getURL()) {
+            var request = require('request');
+            request({
+                method: 'GET',
+                followAllRedirects: true,
+                url: url
+            }, function (error, response, body) {
+                console.warn(response);
+                console.warn(body);
+                require('electron').shell.openExternal(url)
+            });
+        }*/
+	      e.preventDefault()
+        require('electron').shell.openExternal(url)
+    });
 
     cacheClear = () => 
 	{
@@ -263,13 +288,12 @@ app.on('ready-to-show', () => {
 })
 
 app.on('window-all-closed', () => {
-	if(process.platform !== 'darwin') {
 		app.quit()
-	}
 })
-
+/*
 app.on('activate', () => {
 	if(win === null) {
 		createWindow()
 	}
 })
+*/

@@ -1,6 +1,8 @@
-const {remote} = require('electron')
+const {remote, clipboard} = require('electron')
 const {dialog} = remote
 const ses = remote.session.fromPartition('persist:main')
+const ipcRenderer = require('electron').ipcRenderer;
+
 getMemoryInfo = () =>
 {
     var i = process.getProcessMemoryInfo()
@@ -13,168 +15,165 @@ getMemoryInfo = () =>
 getMemoryInfo();
 
 const {Menu, MenuItem} = remote;
-var link_addr;
 
-var sub_cut = new MenuItem({
-  label: 'Cut',
-  click: function() {
-    document.execCommand("cut");
+// 링크가 트위터 이미지면 원본 해상도를 구한다 
+var getLinkOrig = (link) => {
+  var l = link;
+  if (l.search('twimg.com/media') != -1)
+  {
+    l = l.substr(0, l.lastIndexOf(':'));
+	  l = l + ':orig';
   }
-});
-var sub_copy = new MenuItem({
-  label: 'Copy',
-  click: function() {
-    document.execCommand("copy");
+  // 프로필 이미지는 (파일명)_small/_bigger/_400x400 등으로 구분됨
+  // 언더바 이후를 지우면 원본 이미지가 튀어나온다 
+  else if (l.search('pbs.twimg.com/profile_images') != -1)
+  {
+    // 확장자를 구해놓고 언더바 이후부터 파일경로를 날리고 확장자를 붙인다
+    var ext = l.substr(l.lastIndexOf('.'));
+    l = l.substr(0, l.lastIndexOf('_')) + ext;
   }
-});
-var sub_paste = new MenuItem({
-  label: 'Paste',
-  click: function() {
-//    var content = require('nw.gui').Clipboard.get().get();
-//    document.execCommand("insertHTML", false, content);
-    document.execCommand("paste")
-  }
-});
-var sub_delete = new MenuItem({
-  label: 'Delete',
-  click: function() {
-    document.execCommand("delete");
-  }
-});
-var sub_selectall = new MenuItem({
-  label: 'Select All',
-  click: function() {
-    document.execCommand("selectall");
-  }
-});
-var sub_reload = new MenuItem({
-  label: 'Reload',
-  click: function() {
-    document.location.reload();
-    //iframe.src = iframe.contentDocument.location.href;
-  }
-});
-var sub_save_img = new MenuItem({
-  label: 'Save image as..',
-  click: function() {
-    // download original resolution image
+  
+  return l;
+}
 
-    var filename;
-    var link = link_addr;
-    if(link.search('twimg.com/media') != -1)
-      link = link.substr(0, link.lastIndexOf(':'));
-      
-    filename = link.substr(link.lastIndexOf('/') + 1);
+// 링크의 파일 이름을 구한다
+var getLinkFilename = (link) => {
+  var l = link;
+  if(l.search('twimg.com/media') != -1)
+    l = l.substr(0, l.lastIndexOf(':'));
+  return l.substr(l.lastIndexOf('/') + 1);
+}
 
-    
-    if(link.search('twimg.com/media') != -1)
-      link = link + ':orig';
+// 임시 저장되는 주소 변수들
+var img_addr, link_addr;
 
-    var path = dialog.showSaveDialog({defaultPath: filename 
-/*
-, title: 'title', buttonLabel: 'buttonLabel',
-    filters: [
-      {name: 'Images', extensions: ['jpg', 'png', 'gif']},
-      {name: 'Movies', extensions: ['mkv', 'avi', 'mp4']},
-      {name: 'Custom File Type', extensions: ['as']},
-      {name: 'All Files', extensions: ['*']}
-    ]*/})
-    if (typeof path == 'undefined')
-      return;
+ipcRenderer.on('command', (event, cmd) => {
+  console.log(cmd);
+    switch(cmd)
+    {
+        case 'cut':
+	          document.execCommand("cut");
+        break;
+        case 'copy':
+   	        document.execCommand("copy");
+        break;
+        case 'paste':
+            document.execCommand("paste")
+        break;
+        case 'delete':
+            document.execCommand("delete");
+        break;
+        case 'selectall':
+            document.execCommand("selectall");
+        break;
+        case 'saveimage':
+        {
+            // download original resolution image
+            var filename = getLinkFilename(img_addr);
+            var link = getLinkOrig(img_addr);
+            
+            var path = dialog.showSaveDialog({defaultPath: filename})
+            if (typeof path == 'undefined')
+              return;
 
-    console.log('path: ' + path);
+            console.log('path: ' + path);
 
-    console.log('link: ' + link);
-    var https = require('https');
-    var fs   = require('fs');
+            console.log('link: ' + link);
+            var https = require('https');
+            var fs   = require('fs');
 
-    var file = fs.createWriteStream(path);
-    var request = https.get(link_addr, function(response) {
-      response.pipe(file);
-    });
-    //iframe.src = iframe.contentDocument.location.href;
-  }
-});
+            var file = fs.createWriteStream(path);
+            var request = https.get(img_addr, function(response) {
+              response.pipe(file);
+            });
+        }
+        break;
+        case 'copyimage':
+            var link = getLinkOrig(img_addr);
+            clipboard.writeText(link);
+        break;
+        case 'openimage':
+            var link = getLinkOrig(img_addr);
+            window.open(link);
+        break;
+        case 'googleimage':
+            var link = 'https://www.google.com/searchbyimage?image_url=' + encodeURI(getLinkOrig(img_addr));
+            window.open(link);
+        break;
+        case 'openlink':
+            var link = getLinkOrig(link_addr);
+            window.open(link);
+        break;
+        case 'savelink':
+        {
+            var filename = getLinkFilename(link_addr);
+            var ext = filename.substr(filename.lastIndexOf('.'));
+            var link = getLinkOrig(link_addr);
+            
+            var path = dialog.showSaveDialog({defaultPath: filename})
+            if (typeof path == 'undefined')
+              return;
 
-var menu = {
-  main: new Menu(),
-  selection: new Menu(),
-  text: new Menu(),
-  text_sel: new Menu(),
-  image: new Menu()
-};
-// Add some items with label
-menu.main.append(new MenuItem({
-  label: 'Item A',
-  click: function(){
-    alert('You have clicked at "Item A"');
-  }
-}));
-menu.main.append(new MenuItem({ label: 'Item B' }));
-menu.main.append(new MenuItem({ type: 'separator' }));
-menu.main.append(sub_reload);
+            console.log('path: ' + path);
 
-// input & textarea menu
-menu.text.append(new MenuItem({ label: 'Cut', enabled: false }));
-menu.text.append(new MenuItem({ label: 'Copy', enabled: false }));
-menu.text.append(sub_paste);
-menu.text.append(new MenuItem({ label: 'Delete', enabled: false }));
-menu.text.append(new MenuItem({ type: 'separator' }));
-menu.text.append(sub_selectall);
-menu.text.append(new MenuItem({ type: 'separator' }));
-menu.text.append(sub_reload);
+            console.log('link: ' + link);
+            var https = require('https');
+            var fs   = require('fs');
 
-// input & textarea menu (selection)
-menu.text_sel.append(sub_cut);
-menu.text_sel.append(sub_copy);
-menu.text_sel.append(sub_paste);
-menu.text_sel.append(sub_delete);
-menu.text_sel.append(new MenuItem({ type: 'separator' }));
-menu.text_sel.append(sub_selectall);
-menu.text_sel.append(new MenuItem({ type: 'separator' }));
-menu.text_sel.append(sub_reload);
-
-// selection menu
-menu.selection.append(sub_copy);
-menu.selection.append(new MenuItem({ type: 'separator' }));
-menu.selection.append(sub_reload);
-
-// image menu
-menu.image.append(sub_save_img);
-
+            var file = fs.createWriteStream(path);
+            var request = https.get(img_addr, function(response) {
+              response.pipe(file);
+            });
+        }
+        break;
+        case 'copylink':
+            var link = getLinkOrig(link_addr);
+            clipboard.writeText(link);
+        break;
+        case 'reload':
+            document.location.reload();
+        break;
+    }
+})
 //menu.append(sub_cut);
 window.addEventListener('contextmenu', (e) => {
-  e.preventDefault()
+    e.preventDefault()
+    var el = document.activeElement;
+    var hover = document.querySelectorAll(":hover");
+    var is_range = (document.getSelection().type == 'Range');
+    var target = "main";
+    
+    if(el && (el.tagName.toLowerCase() == 'input' && el.type == 'text' ||
+        el.tagName.toLowerCase() == 'textarea'))
+    {
+        if(is_range)
+           target = 'text_sel'
+        else
+            target = 'text'
+    }
+    else if (document.querySelector('img:hover'))
+    {
+        img_addr = document.querySelector('img:hover').src;
+        if (document.querySelector('a:hover'))
+        {
+            link_addr = document.querySelector('a:hover').href;
+            target = 'linkandimage'
+        }
+        else
+            target = 'image'
+    }
+    else if (document.querySelector('.js-media-image-link:hover'))
+    {
+        img_addr = document.querySelector('.js-media-image-link').style.backgroundImage.slice(5, -2);
+        target = 'image'
+    }
+    else if (document.querySelector('a:hover'))
+    {
+        link_addr = document.querySelector('a:hover').href;
+        target = 'link'
+    }
+    else
+        target = 'main'
 
-  var el = document.activeElement;
-  var hover = document.querySelectorAll(":hover");
-  //var hover_last = hover[hover.length-1];
-  //console.log(hover);
-  var is_range = (document.getSelection().type == 'Range');
-  if(el && (el.tagName.toLowerCase() == 'input' && el.type == 'text' ||
-      el.tagName.toLowerCase() == 'textarea'))
-  {
-      if(is_range)
-        menu.text_sel.popup(e.x, e.y);
-      else
-        menu.text.popup(e.x, e.y);
-  }
-  else if (document.querySelector('img:hover'))
-  {
-      link_addr = document.querySelector('img:hover').src;
-      menu.image.popup(e.x, e.y);
-  }
-  else if (document.querySelector('.js-media-image-link:hover'))
-  {
-      console.log(document.querySelector('.js-media-image-link:hover'))
-      //console.log("TTTTTTTTTTTTTTTTTT");
-      link_addr = document.querySelector('.js-media-image-link').style.backgroundImage.slice(5, -2);
-      menu.image.popup(e.x, e.y);
-  }
-  else
-      menu.main.popup(e.x, e.y);
-
-
-
-//  menu.popup(remote.getCurrentWindow())
+    ipcRenderer.send('context-menu', target, is_range)
 }, false)

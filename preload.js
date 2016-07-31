@@ -66,6 +66,10 @@ var sub_save_img = new MenuItem({
       
     filename = link.substr(link.lastIndexOf('/') + 1);
 
+    
+    if(link.search('twimg.com/media') != -1)
+      link = link + ':orig';
+
     var path = dialog.showSaveDialog({defaultPath: filename 
 /*
 , title: 'title', buttonLabel: 'buttonLabel',
@@ -80,7 +84,7 @@ var sub_save_img = new MenuItem({
 
     console.log('path: ' + path);
 
-    console.log('link_addr: ' + link_addr);
+    console.log('link: ' + link);
     var https = require('https');
     var fs   = require('fs');
 

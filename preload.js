@@ -253,7 +253,7 @@ window.addEventListener('contextmenu', (e) => {
 
     ipcRenderer.send('context-menu', target, is_range)
 }, false)
-
+/*
 var open = XMLHttpRequest.prototype.open;
 
 XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
@@ -282,7 +282,7 @@ XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
     // call original open method
     return open.apply(this, arguments);
 }
-
+*/
 
 /*
 XMLHttpRequest.prototype.realSend = XMLHttpRequest.prototype.send;

@@ -7,6 +7,8 @@ const Menu = electron.Menu;
 const MenuItem = electron.MenuItem;
 const ipcMain = electron.ipcMain;
 
+const tdp_version = "TweetDeck Player v2.00 by @sokcuri"
+
 let win
 global.sharedObj = {prop1: null};
 
@@ -191,7 +193,71 @@ ses.webRequest.onHeadersReceived(filter, (details, callback) => {
         }
     });
     win.webContents.on('did-finish-load', function() {
-        win.webContents.executeJavaScript(`var TDP = {}; TDP.onPageLoad = () => {setTimeout(() => { if (!TD.ready) { TDP.onPageLoad(); } else { TD.controller.progressIndicator.addMessage(TD.i("TweetDeck Player v2.00 by @sokcuri")); setTimeout(() => TD.settings.setUseStream(TD.settings.getUseStream()), 3000); }}, 1000)}; TDP.onPageLoad();`)
+
+        // 가을별(Gaeulbyul) 님의 트윗덱 이미지 붙여넣기 스크립트
+        // 0.3b1 / 트윗덱에 클립보드 붙여넣기(Ctrl-V)로 이미지를 업로드하는 기능을 추가한다.
+        const gaeulbyul_paste = `var catcher = $('<div>')
+        .attr('contenteditable',true)
+        .css('opacity', 0)
+        .appendTo(document.body)
+        .focus();
+
+        function dataURIToBlob (dataURI) {
+            var [ mimeString, encodedData ] = dataURI.split(',');
+            var byteString;
+            if (dataURI.split(',')[0].indexOf('base64') >= 0) {
+                byteString = atob(encodedData);
+            } else {
+                byteString = unescape(encodedData);
+            }
+            var type = mimeString.match(/^data:(.+);/)[1];
+            var ia = new Uint8Array(byteString.length);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            var blob = new Blob([ ia ], { type });
+            return blob;
+        }
+
+        function waitClipboard () {
+            var cer = catcher[0];
+            var child = cer.childNodes && cer.childNodes[0];
+            if (child) {
+                if (child.tagName === 'IMG') {
+                    var file = dataURIToBlob(child.src);
+                    pasteFile([ file ]);
+                }
+                cer.innerHTML = '';
+            } else {
+                setTimeout(waitClipboard, 100);
+            }
+        }
+
+        function pasteFile (files) {
+            // 트윗 입력창을 닫은 이후에 멘션 안 남게
+            if (!$('.app-content').hasClass('is-open')) {
+                $(document).trigger("uiComposeTweet", { type: 'tweet' });
+            }
+            $(document).trigger('uiFilesAdded', { files });
+        }
+
+        $(document.body).on('paste', function (event) {
+            try {
+                var clipdata = event.originalEvent.clipboardData;
+                var items = clipdata.items;
+                var item = items[0];
+            } catch (e) {
+                catcher.focus();
+                setTimeout(waitClipboard, 300);
+                return;
+            }
+            if (item.kind !== 'file') return;
+            var file = [ item.getAsFile() ];
+            pasteFile(file);
+        });`
+
+        // 시작시 트윗덱 플레이어 툴팁 표시 및 스크립트 동작 
+        win.webContents.executeJavaScript(`var TDP = {}; TDP.onPageLoad = () => {setTimeout(() => { if (!TD.ready) { TDP.onPageLoad(); } else { TD.controller.progressIndicator.addMessage(TD.i("${tdp_version}")); ${gaeulbyul_paste}; setTimeout(() => TD.settings.setUseStream(TD.settings.getUseStream()), 3000); }}, 1000)}; TDP.onPageLoad();`)
     });
 
     win.on("close", function() {

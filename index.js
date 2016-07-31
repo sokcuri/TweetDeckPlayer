@@ -162,7 +162,7 @@ app.on("ready", function() {
         }
     });
 
-    win.webContents.executeJavaScript(`var TDP = {}; TDP.onPageLoad = () => {setTimeout(() => { console.log("Tick"); if (!TD.ready) { TDP.onPageLoad(); } else { TD.controller.progressIndicator.addMessage(TD.i("TweetDeck Player v2.00 by @sokcuri")); }}, 1000)}; TDP.onPageLoad();`)
+    win.webContents.executeJavaScript(`var TDP = {}; TDP.onPageLoad = () => {setTimeout(() => { console.log("Tick"); if (!TD.ready) { TDP.onPageLoad(); } else { TD.controller.progressIndicator.addMessage(TD.i("TweetDeck Player v2.00 by @sokcuri")); TD.settings.setUseStream(true); }}, 1000)}; TDP.onPageLoad();`)
     win.on("close", function() {
         var data = {
           bounds: win.getBounds()

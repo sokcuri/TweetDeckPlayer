@@ -70,9 +70,27 @@ ipcRenderer.on('command', (event, cmd) => {
         {
             // download original resolution image
             var filename = getLinkFilename(img_addr);
+            var ext = filename.substr(filename.lastIndexOf('.'));
             var link = getLinkOrig(img_addr);
+            var filters = new Array();
             
-            var path = dialog.showSaveDialog({defaultPath: filename})
+            if (ext == '.jpg')
+            {
+                filters.push(new Object({name: 'JPG File', extensions: ['jpg']}))
+                filters.push(new Object({name: 'All Files', extensions: ['*']}))
+            }
+            else if (ext == '.png')
+            {
+                filters.push(new Object({name: 'PNG File', extensions: ['png']}))
+                filters.push(new Object({name: 'All Files', extensions: ['*']}))
+            }
+            else if (ext == '.gif')
+            {
+                filters.push(new Object({name: 'GIF File', extensions: ['gif']}))
+                filters.push(new Object({name: 'All Files', extensions: ['*']}))
+            }
+
+            var path = dialog.showSaveDialog({defaultPath: filename, filters: filters})
             if (typeof path == 'undefined')
               return;
 
@@ -106,23 +124,36 @@ ipcRenderer.on('command', (event, cmd) => {
         break;
         case 'savelink':
         {
+            var fs = require('fs');
+            var http = require('http');
+            var request = require('request');
             var filename = getLinkFilename(link_addr);
             var ext = filename.substr(filename.lastIndexOf('.'));
             var link = getLinkOrig(link_addr);
+            var filters = new Array();
             
-            var path = dialog.showSaveDialog({defaultPath: filename})
-            if (typeof path == 'undefined')
-              return;
+            request({
+                method: 'HEAD',
+                followAllRedirects: true,
+                url: link_addr
+            }, function (error, response, body) {
+              if (!error)
+              {
+                  console.log(response);
+                  if (response.headers['content-type'] && response.headers['content-type'].toLowerCase().search('text/html') != -1)
+                  {
+                      filename += '.htm';
+                      filters.push(new Object({name: 'HTML Document', extensions: ['htm']}))
+                      filters.push(new Object({name: 'All Files', extensions: ['*']}))
+                  }
+                  var path = dialog.showSaveDialog({defaultPath: filename, filters: filters})
+                  if (typeof path == 'undefined')
+                    return;
 
-            console.log('path: ' + path);
-
-            console.log('link: ' + link);
-            var https = require('https');
-            var fs   = require('fs');
-
-            var file = fs.createWriteStream(path);
-            var request = https.get(img_addr, function(response) {
-              response.pipe(file);
+                  console.log('path: ' + path);
+                  console.log('link: ' + link);
+                  request(response.request.uri.href).pipe(fs.createWriteStream(path))
+              }
             });
         }
         break;
@@ -135,7 +166,8 @@ ipcRenderer.on('command', (event, cmd) => {
         break;
     }
 })
-//menu.append(sub_cut);
+
+// context menu event listener
 window.addEventListener('contextmenu', (e) => {
     e.preventDefault()
     var el = document.activeElement;
@@ -143,6 +175,7 @@ window.addEventListener('contextmenu', (e) => {
     var is_range = (document.getSelection().type == 'Range');
     var target = "main";
     
+    // textbox/input
     if(el && (el.tagName.toLowerCase() == 'input' && el.type == 'text' ||
         el.tagName.toLowerCase() == 'textarea'))
     {
@@ -151,6 +184,7 @@ window.addEventListener('contextmenu', (e) => {
         else
             target = 'text'
     }
+    // image
     else if (document.querySelector('img:hover'))
     {
         img_addr = document.querySelector('img:hover').src;
@@ -162,11 +196,13 @@ window.addEventListener('contextmenu', (e) => {
         else
             target = 'image'
     }
+    // media image box
     else if (document.querySelector('.js-media-image-link:hover'))
     {
-        img_addr = document.querySelector('.js-media-image-link').style.backgroundImage.slice(5, -2);
+        img_addr = document.querySelector('.js-media-image-link:hover').style.backgroundImage.slice(5, -2);
         target = 'image'
     }
+    // link
     else if (document.querySelector('a:hover'))
     {
         link_addr = document.querySelector('a:hover').href;

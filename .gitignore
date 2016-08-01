@@ -57,3 +57,4 @@ version
 !.gitignore
 !*.js
 !package.json
+!tweetdeck.ico

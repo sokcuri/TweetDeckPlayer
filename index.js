@@ -250,6 +250,9 @@ ses.webRequest.onHeadersReceived(filter, (details, callback) => {
         // 트윗덱에 클립보드 붙여넣기(Ctrl-V)로 이미지를 업로드하는 기능을 추가한다.
         // https://gist.github.com/zn/4f622ba80513e0f4d0dd3f13dcd085db
         var gaeulbyul_paste = `$(document.body).on('paste', function (event) {
+        if ($('.js-add-image-button').hasClass('is-disabled')) {
+            return;
+        }
         var items = event.originalEvent.clipboardData.items;
         var item = items[0];
         if (item.kind !== 'file') return;
@@ -261,6 +264,7 @@ ses.webRequest.onHeadersReceived(filter, (details, callback) => {
         $(document).trigger('uiFilesAdded', { files });
         });`
         
+        // inject to stylesheet
         var inject_style = `function injectStyles(rule) {
         var div = $("<div />", {
             html: '&shy;<style>' + rule + '</style>'

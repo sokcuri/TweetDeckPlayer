@@ -314,11 +314,8 @@ ses.webRequest.onHeadersReceived(filter, (details, callback) => {
         }).appendTo("body");    
         }`
 
-        // contenteditable='true' 인 div를 감추기 위한 패치
-        var td_patch = `var el; if(document.body) el = document.body.querySelector('[contenteditable="true"]'); if (el) { document.body.querySelector('[contenteditable="true"]').style = 'display: none'; }`
-
         // 시작시 트윗덱 플레이어 툴팁 표시 및 스크립트 동작 
-        win.webContents.executeJavaScript(`${inject_style}; ${td_patch}; var TDP = {}; TDP.onPageLoad = () => {setTimeout(() => { if (!TD || !TD.ready) { TDP.onPageLoad(); } else { TD.controller.progressIndicator.addMessage(TD.i("${tdp_version}")); ${gaeulbyul_paste}; setTimeout(() => TD.settings.setUseStream(TD.settings.getUseStream()), 3000); if (Pace) setTimeout(() => { injectStyles('.pace-progress { display: none }') }, 2000) }}, 1000)}; TDP.onPageLoad();`)
+        win.webContents.executeJavaScript(`${inject_style}; var TDP = {}; TDP.onPageLoad = () => {setTimeout(() => { if (!TD || !TD.ready) { TDP.onPageLoad(); } else { TD.controller.progressIndicator.addMessage(TD.i("${tdp_version}")); ${gaeulbyul_paste}; setTimeout(() => TD.settings.setUseStream(TD.settings.getUseStream()), 3000); if (Pace) setTimeout(() => { injectStyles('.pace-progress { display: none }') }, 2000) }}, 1000)}; TDP.onPageLoad();`)
     });
 
     win.on("close", function() {

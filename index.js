@@ -11,7 +11,7 @@ const tdp_version = "TweetDeck Player v2.00 by @sokcuri"
 
 var fs = require("fs");
 var initPath = path.join(__dirname, "init.json");
-var config;
+var config = {};
 try {
     config = JSON.parse(fs.readFileSync(initPath, 'utf8'));
 }

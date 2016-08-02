@@ -10,7 +10,12 @@ const tdp_version = "TweetDeck Player v2.00 by @sokcuri"
 let win
 var Config = {
     // 설정파일 로드
+    data: {},
+    initPath: path.join(__dirname, "init.json"),
+    load()
+    {
         try {
+            Config.data = JSON.parse(fs.readFileSync(Config.initPath, 'utf8'))
         }
         catch(e) {
         }
@@ -161,6 +166,7 @@ var sub_copy_link = (webContents) => {return {
 app.on("ready", function() {
     const ses = session.fromPartition('persist:main')
 
+    var preference = new Object((Config.data && Config.data.bounds) ? Config.data.bounds : "")
     preference.icon = __dirname + '/tweetdeck.ico'
     preference.webPreferences = {
         nodeIntegration: false,
@@ -223,6 +229,8 @@ app.on("ready", function() {
     })
 
     win.on("close", function() {
+        Config.data.bounds = win.getBounds()
+        fs.writeFileSync(Config.initPath, JSON.stringify(Config.data))
     })
 
     win.webContents.on('new-window', (e, url) => {

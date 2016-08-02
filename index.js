@@ -30,7 +30,7 @@ var Config = {
 Config.load()
 
 // 프로그램의 중복실행 방지
-const existInst = app.makeSingleInstance((commandLine, workingDirectory) => {
+var existInst = app.makeSingleInstance((commandLine, workingDirectory) => {
     // 새로운 인스턴스가 실행되었을 때 기존 프로그램의 작동
     if (win) {
         win.show()
@@ -42,6 +42,11 @@ const existInst = app.makeSingleInstance((commandLine, workingDirectory) => {
 if (existInst) {
     app.quit()
 }
+
+// 렌더러 프로세스가 죽었을때 이벤트
+app.on('gpu-process-crashed', () => {
+    
+})
 
 // 
 // edit
@@ -164,6 +169,47 @@ var sub_copy_link = (webContents) => {return {
 }}
 
 app.on("ready", function() {
+    // 리눅스 일부 환경에서 검은색으로 화면이 뜨는 문제 해결을 위한 코드
+    // chrome://gpu/ 를 확인해 Canvas Hardware acceleration이 사용 불가면 disable-gpu를 달아준다
+    // --
+    var chk_win;
+    var is_relaunch = false;
+
+    // process.argv를 확인해 --relaunch 인자가 있는지 확인
+    for (var e of process.argv)
+    {
+        if ('--relaunch'.search(e) != -1)
+            is_relaunch = true
+    }
+    
+    // --relaunch 인자가 없다면 pre_check
+    if (!is_relaunch)
+    {
+        chk_win = new BrowserWindow({show: false, width: 0, height: 0, webPreferences: { preload: path.join(__dirname, 'pre_check.js') }})
+        chk_win.loadURL("chrome://gpu/")
+    }
+    // --relaunch 인자가 있다면 바로 run
+    else
+        run()
+
+    // 렌더러 프로세스에서 run 명령을 받으면 실행
+    ipcMain.on('run', () => run(chk_win))
+})
+
+// disable-gpu 항목으로 재시작이 필요할 때
+ipcMain.on('nogpu-relaunch', () => {
+    app.releaseSingleInstance()
+    existInst = null
+    var exec = require('child_process').exec;
+    var x = process.execPath + ' ' + process.argv[1] + ' --disable-gpu --relaunch';
+    exec(x);
+    setTimeout(() => app.quit(), 100)
+})
+
+// 트윗덱 플레이어 실행 프로시저
+run = (chk_win) => 
+{
+    var win;
     const ses = session.fromPartition('persist:main')
 
     var preference = new Object((Config.data && Config.data.bounds) ? Config.data.bounds : "")
@@ -174,10 +220,16 @@ app.on("ready", function() {
         preload: path.join(__dirname, 'preload.js')
     }
     win = new BrowserWindow(preference)
-    win.loadURL("https://tweetdeck.twitter.com/")
-    //win.loadURL("https://userstream.twitter.com")
+    win.loadURL("https://tweetdeck.twitter.com")
+
+    // 체크를 위한 윈도우가 존재하는 경우 닫기
+    if (chk_win)
+        chk_win.close()
+
+    // devtool 열기
     //win.webContents.openDevTools()
 
+    // electron post 리다이렉트 문제 해결 코드 
     win.webContents.on('did-get-redirect-request', function(e, oldURL, newURL, isMainFrame, httpResponseCode, requestMethod, refeerrer, header) {
         if (isMainFrame)
 	    {
@@ -245,9 +297,9 @@ app.on("ready", function() {
         setTimeout(cacheClear, 60000)
     }
     cacheClear()
+}
 
-
-
+// 컨텍스트 메뉴
 ipcMain.on('context-menu', function(event, menu, is_range) {
 
     var template = new Array()
@@ -338,8 +390,6 @@ ipcMain.on('context-menu', function(event, menu, is_range) {
     contextMenu.popup(win)
     return
  })
-})
-
 app.on('ready-to-show', () => {
 
 })

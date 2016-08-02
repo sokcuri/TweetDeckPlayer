@@ -58,3 +58,7 @@ version
 !*.js
 !package.json
 !tweetdeck.ico
+
+# NodeJS files
+node_modules
+*.log

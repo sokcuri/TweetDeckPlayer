@@ -3,6 +3,8 @@ const electron = require('electron')
 const path = require('path')
 var fs = require("fs")
 
+var Util = require('./util.js')
+
 // TweetDeck Player 버전
 const tdp_version = "TweetDeck Player v2.00 by @sokcuri"
 
@@ -120,10 +122,53 @@ modal: true, show: false})
 //
 // image
 //
-var sub_save_img = (webContents) => {return {
+var sub_save_img = (webContents, Addr) => {return {
   label: 'Save image as..',
   click() {
-      webContents.send('command', 'saveimage')
+    var fs = require('fs')
+    var request = require('request')
+
+    // 원본 해상도 이미지 경로를 가져온다
+    var path = Util.getOrigPath(Addr.img)
+    var filename = Util.getFileName(path)
+    var ext = Util.getFileExtension(path)
+    var filters = new Array()
+
+    // Save dialog에 들어갈 파일 필터 정의
+    switch(ext)
+    {
+        case 'jpg':
+            filters.push(new Object({name: 'JPG File', extensions: ['jpg']}))
+        break
+        case 'png':
+            filters.push(new Object({name: 'PNG File', extensions: ['png']}))
+        break
+        case 'gif':
+            filters.push(new Object({name: 'GIF File', extensions: ['gif']}))
+        break
+        default:
+            filters.push(new Object({name: ext.toUpperCase() + ' File', extensions: [ext.toLowerCase()]}))
+    }
+    filters.push(new Object({name: 'All Files', extensions: ['*']}))
+
+    // 모든 포인터 이벤트를 잠시 없앤다
+    webContents.send('pointer-events', 'none')
+
+    // Save Dialog를 띄운다
+    var savepath = dialog.showSaveDialog(
+    {
+        defaultPath: filename,
+        filters: filters
+    })
+
+    // 포인터 이벤트를 되살린다
+    webContents.send('pointer-events', 'all')
+
+    // savepath가 없는 경우 리턴
+    if (typeof savepath == 'undefined') return
+    
+    // http 요청을 보내고 저장
+    request(path).pipe(fs.createWriteStream(savepath))
   }
 }}
 var sub_copy_img = (webContents) => {return {
@@ -155,10 +200,55 @@ var sub_open_link = (webContents) => {return {
   }
 }}
 
-var sub_save_link = (webContents) => {return {
+var sub_save_link = (webContents, Addr) => {return {
   label: 'Save link as..',
   click() {
-        webContents.send('command', 'savelink')
+    var fs = require('fs')
+    var request = require('request')
+
+    // 될 수 있으면 원본 화질의 이미지를 가져온다
+    var path = Util.getOrigPath(Addr.link)
+    var filename = Util.getFileName(path)
+    var ext = Util.getFileExtension(path)
+    var filters = new Array()
+    
+    // 리퀘스트를 때려서 해당 링크의 MIME TYPE을 얻어온다
+    request(
+    {
+        method: 'HEAD',
+        followAllRedirects: true, // 리다이렉트 따라가기 켬
+        url: path
+    }, function (error, response, body)
+    {
+        // 에러가 발생하면 동작하지 않음
+        if (error)
+            return
+
+        // 컨텍스트 타입이 text/html인 경우 htm을 붙이고 필터에 추가
+        if (response.headers['content-type'] &&
+            response.headers['content-type'].toLowerCase().search('text/html') != -1)
+        {
+            filename += '.htm'
+            filters.push(new Object({name: 'HTML Document', extensions: ['htm']}))
+        }
+        filters.push(new Object({name: 'All Files', extensions: ['*']}))
+
+        // 모든 포인터 이벤트를 잠시 없앤다
+        webContents.send('pointer-events', 'none')
+
+        // 저장 다이얼로그를 띄운다
+        var savepath = dialog.showSaveDialog({defaultPath: filename, filters: filters})
+    
+        // 포인터 이벤트를 되살린다
+        webContents.send('pointer-events', 'all')
+        
+        if (typeof savepath == 'undefined')
+            return
+
+        // http 요청해서 링크를 저장
+        var req_url = response.request.uri.href
+        request(req_url).pipe(fs.createWriteStream(savepath))
+    })
   }
 }}
 var sub_copy_link = (webContents) => {return {
@@ -193,7 +283,7 @@ app.on("ready", function() {
         run()
 
     // 렌더러 프로세스에서 run 명령을 받으면 실행
-    ipcMain.on('run', () => run(chk_win))
+    ipcMain.on('run', (event) => run(chk_win))
 })
 
 // disable-gpu 항목으로 재시작이 필요할 때
@@ -209,7 +299,6 @@ ipcMain.on('nogpu-relaunch', () => {
 // 트윗덱 플레이어 실행 프로시저
 run = (chk_win) => 
 {
-    var win;
     const ses = session.fromPartition('persist:main')
 
     var preference = new Object((Config.data && Config.data.bounds) ? Config.data.bounds : "")
@@ -300,7 +389,7 @@ run = (chk_win) =>
 }
 
 // 컨텍스트 메뉴
-ipcMain.on('context-menu', function(event, menu, is_range) {
+ipcMain.on('context-menu', function(event, menu, is_range, Addr) {
 
     var template = new Array()
     switch(menu)
@@ -352,7 +441,7 @@ ipcMain.on('context-menu', function(event, menu, is_range) {
         break
 
         case 'image':
-            template.push(sub_save_img(event.sender))
+            template.push(sub_save_img(event.sender, Addr))
             template.push(sub_copy_img(event.sender))
             template.push(sub_open_img(event.sender))
             template.push(sub_search_img_google(event.sender))
@@ -362,7 +451,7 @@ ipcMain.on('context-menu', function(event, menu, is_range) {
 
         case 'link':
             template.push(sub_open_link(event.sender))
-            template.push(sub_save_link(event.sender))
+            template.push(sub_save_link(event.sender, Addr))
             template.push(sub_copy_link(event.sender))
             template.push(new Object({ type: 'separator' }))
             if (is_range)
@@ -374,11 +463,11 @@ ipcMain.on('context-menu', function(event, menu, is_range) {
         break
 
         case 'linkandimage':
-            template.push(sub_save_link(event.sender))
+            template.push(sub_save_link(event.sender, Addr))
             template.push(sub_copy_link(event.sender))
             template.push(sub_open_link(event.sender))
             template.push(new Object({ type: 'separator' }))
-            template.push(sub_save_img(event.sender))
+            template.push(sub_save_img(event.sender, Addr))
             template.push(sub_copy_img(event.sender))
             template.push(sub_open_img(event.sender))
             template.push(sub_search_img_google(event.sender))

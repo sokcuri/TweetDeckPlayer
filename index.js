@@ -1,7 +1,7 @@
 const {app, BrowserWindow, dialog, session, Menu, MenuItem, ipcMain} = require('electron')
 const electron = require('electron')
 const path = require('path')
-var fs = require("fs")
+const fs = require("fs")
 
 var Util = require('./util.js')
 
@@ -385,7 +385,7 @@ run = (chk_win) =>
         })
         setTimeout(cacheClear, 60000)
     }
-    cacheClear()
+    //cacheClear()
 }
 
 // 컨텍스트 메뉴

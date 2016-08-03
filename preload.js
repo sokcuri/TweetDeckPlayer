@@ -105,7 +105,7 @@ window.addEventListener('contextmenu', (e) => {
        (el.tagName.toLowerCase() == 'input' && el.type == 'text') ||
        (el.tagName.toLowerCase() == 'textarea'))
     {
-        target = (is_rang ? 'text_sel' : 'text')
+        target = (is_range ? 'text_sel' : 'text')
     }
     // 설정 버튼
     else if (document.querySelector('.js-app-settings:hover'))

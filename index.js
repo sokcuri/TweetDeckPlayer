@@ -11,22 +11,45 @@ const Util = require('./util');
 const VERSION = require('./version');
 
 // 설정
-let win;
+let win, settingsWin;
 const Config = {
   // 설정파일 로드
+  _filePath: path.join(__dirname, 'config.json'),
+  _defaultConfig: {},
   data: {},
-  initPath: path.join(__dirname, 'init.json'),
   load () {
+    var config = this._defaultConfig;
+    var userConfig = {};
+    var fc = fs.constants; // shortcut
     try {
-      Config.data = JSON.parse(fs.readFileSync(Config.initPath, 'utf8'));
+      fs.accessSync(this._filePath, (fc.F_OK | fc.R_OK | fc.W_OK));
+      userConfig = JSON.parse(fs.readFileSync(this._filePath, 'utf8'));
     } catch (e) {
+      userConfig = {};
     }
+    Object.assign(config, userConfig);
+    
+    Config.data = config;
+    return config;
   },
   // 설정파일 저장
   save () {
-
+    const jsonStr = JSON.stringify(Config.data, null, 2);
+    fs.writeFileSync(this._filePath, jsonStr, 'utf8');
   },
 };
+
+ipcMain.on('load-config', (event, arg) => {
+  var config = Config.load();
+  win.webContents.send('reload-config');
+  event.returnValue = config;
+});
+
+ipcMain.on('save-config', (event, config) => {
+  Config.data = config;
+  Config.save();
+});
+
 // 프로그램 시작시 설정파일을 로드
 Config.load();
 
@@ -100,25 +123,11 @@ var sub_alwaystop = window => ({
     window.setAlwaysOnTop(!window.isAlwaysOnTop());
   },
 });
+
 var sub_setting = window => ({
   label: 'Setting',
   click () {
-    var width = 500;
-    var height = 800;
-    var b = window.getBounds();
-    var x = Math.floor(b.x + (b.width - width) / 2);
-    var y = Math.floor(b.y + (b.height - height) / 2);
-    let child = new BrowserWindow({
-      width, height, x, y,
-      parent: window,
-      modal: true,
-      show: false,
-    });
-    child.setMenu(null);
-    child.loadURL(path.join(__dirname, 'setting.htm'));
-    child.once('ready-to-show', () => {
-      child.show();
-    });
+    ipcMain.emit('open-settings');
   },
 });
 
@@ -250,6 +259,7 @@ var sub_save_link = (webContents, Addr) => ({
     });
   },
 });
+
 var sub_copy_link = webContents => ({
   label: 'Copy link URL',
   click () {
@@ -307,8 +317,8 @@ var run = chk_win => {
   var preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
   preference.icon = path.join(__dirname, 'tweetdeck.ico');
   preference.webPreferences = {
-    nodeIntegration: false,
-    partition: 'persist:main',
+    nodeIntegration: true,
+    partition: ses,
     preload: path.join(__dirname, 'preload.js'),
   };
   win = new BrowserWindow(preference);
@@ -319,8 +329,8 @@ var run = chk_win => {
     chk_win.close();
   }
 
-    // devtool 열기
-    //win.webContents.openDevTools()
+  // devtool 열기
+  //win.webContents.openDevTools()
 
   // electron post 리다이렉트 문제 해결 코드
   win.webContents.on('did-get-redirect-request', (e, oldURL, newURL, isMainFrame) => {
@@ -340,7 +350,7 @@ var run = chk_win => {
 
   win.on('close', () => {
     Config.data.bounds = win.getBounds();
-    fs.writeFileSync(Config.initPath, JSON.stringify(Config.data));
+    Config.save();
   });
 
   win.webContents.on('new-window', (e, url) => {
@@ -445,11 +455,33 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr) => {
   contextMenu.popup(win);
   return;
 });
-app.on('ready-to-show', () => {
 
+ipcMain.on('open-settings', (event, arg) => {
+  if (settingsWin) {
+    settingsWin.focus();
+    return;
+  }
+  var width = 500;
+  var height = 800;
+  var b = win.getBounds();
+  var x = Math.floor(b.x + (b.width - width) / 2);
+  var y = Math.floor(b.y + (b.height - height) / 2);
+  settingsWin = new BrowserWindow({
+    width, height, x, y,
+    parent: win,
+    modal: true,
+    show: false,
+  });
+  // settingsWin.setMenu(null);
+  settingsWin.loadURL('file:///' + path.join(__dirname, 'settings.html'));
+  settingsWin.once('ready-to-show', () => {
+    settingsWin.show();
+  });
+  settingsWin.on('closed', () => {
+    settingsWin = null;
+  });
 });
 
 app.on('window-all-closed', () => {
   app.quit();
 });
-

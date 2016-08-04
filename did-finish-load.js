@@ -64,6 +64,4 @@ TDP.onPageLoad = () => {
   // setInterval(clearCache, 60000);
 };
 
-$(document).ready(() => {
-  TDP.onPageLoad();
-});
+TDP.onPageLoad();

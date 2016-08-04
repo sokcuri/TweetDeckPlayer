@@ -46,19 +46,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Exclude to electron files
-locales/
-pnacl/
-resources/
-/*.*
-LICENSE
-version
-!.gitattributes
-!.gitignore
-!*.js
-!package.json
-!tweetdeck.ico
-
 # NodeJS files
 node_modules
 *.log
+
+# Configuration Files
+config.json
+init.json

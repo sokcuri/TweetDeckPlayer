@@ -1,0 +1,16 @@
+# Editorconfig ( http://editorconfig.org )
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+
+[*.{htm,html}]
+indent_size = 2
+
+[*.css]
+indent_size = 2
+
+[*.{js,json}]
+indent_size = 2

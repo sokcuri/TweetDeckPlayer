@@ -341,11 +341,32 @@ var run = chk_win => {
   });
 
   win.webContents.on('did-finish-load', () => {
-    let paceCSS = fs.readFileSync('./pace.css', { encoding: 'utf8' });
+    let paceCSS = fs.readFileSync('./pace.css', 'utf8');
     win.webContents.insertCSS(paceCSS);
-    let didFinishLoadScript = fs.readFileSync('./did-finish-load.js', { encoding: 'utf8' });
+    let didFinishLoadScript = fs.readFileSync('./did-finish-load.js', 'utf8');
     didFinishLoadScript = didFinishLoadScript.replace(/#VERSION/g, VERSION);
     win.webContents.executeJavaScript(didFinishLoadScript);
+    fs.readdir('./scripts', (error, files) => {
+      if (error) {
+        if (error.code === 'ENOENT') {
+          fs.mkdir('./scripts', () => {});
+        } else {
+          console.error('Fail to read scripts directory!');
+        }
+        return;
+      }
+      let jsFiles = files.filter(f => f.endsWith('.js'));
+      for (let file of jsFiles) {
+        let filepath = path.join('./scripts', file);
+        fs.readFile(filepath, 'utf8', (error, script) => {
+          if (error) {
+            console.error('Fail to read userscript "%s"!', filepath);
+          } else {
+            win.webContents.executeJavaScript(script);
+          }
+        });
+      }
+    });
   });
 
   win.on('close', () => {

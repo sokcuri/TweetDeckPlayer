@@ -53,6 +53,7 @@ resources/
 /*.*
 LICENSE
 version
+!setting.html
 !.gitattributes
 !.gitignore
 !*.js

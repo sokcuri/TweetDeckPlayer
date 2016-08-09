@@ -367,6 +367,9 @@ run = (chk_win) =>
 
         // 시작시 트윗덱 플레이어 툴팁 표시 및 스크립트 동작 
         win.webContents.executeJavaScript(`${inject_style}; var TDP = {}; TDP.onPageLoad = () => {setTimeout(() => { if (!TD || !TD.ready) { TDP.onPageLoad(); } else { TD.controller.progressIndicator.addMessage(TD.i("${tdp_version}")); ${gaeulbyul_paste}; setTimeout(() => { TD.settings.setUseStream(TD.settings.getUseStream()); ${cont_div_patch}; }, 3000); if (Pace) setTimeout(() => { injectStyles('.pace-progress { display: none }') }, 2000) }}, 1000)}; TDP.onPageLoad();`)
+
+        // 맥용 한글 기본 입력기 이슈 해결
+        win.webContents.executeJavaScript(`$(document).on('keydown',(e)=>{if(document.activeElement==document.body&&e.key>='ㄱ'&&e.key<='ㅣ'){e.preventDefault();e.stopPropagation();$(document.activeElement).trigger(jQuery.Event('keypress',{which:e.which}))}});`);
     })
 
     win.on("close", function() {

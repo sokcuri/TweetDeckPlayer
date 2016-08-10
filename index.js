@@ -126,9 +126,20 @@ var sub_alwaystop = window => ({
 
 var sub_setting = window => ({
   label: 'Setting',
-  click () {
-    ipcMain.emit('open-settings');
-  },
+  click() {
+      var width = 500;
+      var height = 400;
+      var b = win.getBounds();
+      var x = Math.floor(b.x + (b.width - width) / 2);
+      var y = Math.floor(b.y + (b.height - height) / 2);
+      let child = new BrowserWindow({parent: win, width: width, height: height, x: x, y: y, 
+modal: true, show: false});
+      child.setMenu(null);
+      child.loadURL(path.join(__dirname, 'setting.html'));
+      child.once('ready-to-show', () => {
+          child.show();
+      });
+  }
 });
 
 //

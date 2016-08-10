@@ -133,9 +133,9 @@ var sub_setting = window => ({
       var x = Math.floor(b.x + (b.width - width) / 2);
       var y = Math.floor(b.y + (b.height - height) / 2);
       let child = new BrowserWindow({parent: win, width: width, height: height, x: x, y: y, 
-modal: true, show: false});
+modal: false, show: true});
       child.setMenu(null);
-      child.loadURL(path.join(__dirname, 'setting.html'));
+      child.loadURL('file:///' + path.join(__dirname, 'setting.html'));
       child.once('ready-to-show', () => {
           child.show();
       });

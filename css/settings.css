@@ -183,3 +183,7 @@ section .multicolumn > div {
   border-radius: 3px;
   font-size: 1em;
 }
+
+.settings-item.description {
+  opacity: .75;
+}

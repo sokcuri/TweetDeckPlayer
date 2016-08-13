@@ -41,7 +41,6 @@ const Config = {
 
 ipcMain.on('load-config', (event, arg) => {
   var config = Config.load();
-  win.webContents.send('reload-config');
   event.returnValue = config;
 });
 
@@ -126,19 +125,30 @@ var sub_alwaystop = window => ({
 
 var sub_setting = window => ({
   label: 'Setting',
-  click() {
-      var width = 500;
-      var height = 400;
-      var b = win.getBounds();
-      var x = Math.floor(b.x + (b.width - width) / 2);
-      var y = Math.floor(b.y + (b.height - height) / 2);
-      let child = new BrowserWindow({parent: win, width: width, height: height, x: x, y: y, 
-modal: false, show: true});
-      child.setMenu(null);
-      child.loadURL('file:///' + path.join(__dirname, 'setting.html'));
-      child.once('ready-to-show', () => {
-          child.show();
-      });
+  click () {
+    if (settingsWin) {
+      settingsWin.focus();
+      return;
+    }
+    var width = 500;
+    var height = 400;
+    var b = win.getBounds();
+    var x = Math.floor(b.x + (b.width - width) / 2);
+    var y = Math.floor(b.y + (b.height - height) / 2);
+    settingsWin = new BrowserWindow({
+      width, height, x, y,
+      parent: win,
+      modal: false,
+      show: true,
+      autoHideMenuBar: true,
+      webPreferences: {
+        nodeIntegration: true,
+      },
+    });
+    settingsWin.on('close', () => {
+      settingsWin = null;
+    });
+    settingsWin.loadURL('file:///' + path.join(__dirname, 'setting.html'));
   }
 });
 
@@ -357,6 +367,14 @@ var run = chk_win => {
     let didFinishLoadScript = fs.readFileSync('./did-finish-load.js', 'utf8');
     didFinishLoadScript = didFinishLoadScript.replace(/#VERSION/g, VERSION);
     win.webContents.executeJavaScript(didFinishLoadScript);
+    if (Config.data.customFonts) {
+      win.webContents.insertCSS(`
+        * {
+          font-family: ${Config.data.customFonts} !important;
+        }
+      `);
+    }
+    // 유저 스크립트 로딩
     fs.readdir('./scripts', (error, files) => {
       if (error) {
         if (error.code === 'ENOENT') {
@@ -383,6 +401,7 @@ var run = chk_win => {
   win.on('close', () => {
     Config.data.bounds = win.getBounds();
     Config.save();
+    win = null;
   });
 
   win.webContents.on('new-window', (e, url) => {
@@ -486,32 +505,6 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr) => {
   var contextMenu = Menu.buildFromTemplate(template);
   contextMenu.popup(win);
   return;
-});
-
-ipcMain.on('open-settings', (event, arg) => {
-  if (settingsWin) {
-    settingsWin.focus();
-    return;
-  }
-  var width = 500;
-  var height = 800;
-  var b = win.getBounds();
-  var x = Math.floor(b.x + (b.width - width) / 2);
-  var y = Math.floor(b.y + (b.height - height) / 2);
-  settingsWin = new BrowserWindow({
-    width, height, x, y,
-    parent: win,
-    modal: true,
-    show: false,
-  });
-  // settingsWin.setMenu(null);
-  settingsWin.loadURL('file:///' + path.join(__dirname, 'settings.html'));
-  settingsWin.once('ready-to-show', () => {
-    settingsWin.show();
-  });
-  settingsWin.on('closed', () => {
-    settingsWin = null;
-  });
 });
 
 app.on('window-all-closed', () => {

@@ -37,7 +37,7 @@ function onload () {
       if (elem.type === 'checkbox') {
         config[id] = elem.checked ? value : null;
       } else {
-        config[id] = elem.value;
+        config[id] = value;
       }
     }
     saveConfig(config);

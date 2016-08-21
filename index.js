@@ -11,33 +11,9 @@ const Util = require('./util');
 const VERSION = require('./version');
 
 // 설정
+const Config = require('./config');
+
 let win, settingsWin;
-const Config = {
-  // 설정파일 로드
-  _filePath: path.join(__dirname, 'config.json'),
-  _defaultConfig: {},
-  data: {},
-  load () {
-    var config = this._defaultConfig;
-    var userConfig = {};
-    var fc = fs.constants; // shortcut
-    try {
-      fs.accessSync(this._filePath, (fc.F_OK | fc.R_OK | fc.W_OK));
-      userConfig = JSON.parse(fs.readFileSync(this._filePath, 'utf8'));
-    } catch (e) {
-      userConfig = {};
-    }
-    Object.assign(config, userConfig);
-    
-    Config.data = config;
-    return config;
-  },
-  // 설정파일 저장
-  save () {
-    const jsonStr = JSON.stringify(Config.data, null, 2);
-    fs.writeFileSync(this._filePath, jsonStr, 'utf8');
-  },
-};
 
 ipcMain.on('load-config', (event, arg) => {
   var config = Config.load();

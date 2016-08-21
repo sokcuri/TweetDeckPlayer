@@ -107,7 +107,7 @@ var sub_setting = window => ({
       return;
     }
     var width = 500;
-    var height = 400;
+    var height = 620;
     var b = win.getBounds();
     var x = Math.floor(b.x + (b.width - width) / 2);
     var y = Math.floor(b.y + (b.height - height) / 2);

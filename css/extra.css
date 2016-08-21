@@ -1,0 +1,6 @@
+/* 필터링된 트윗 */
+.masked-tweet {
+  text-align: center;
+  font-size: smaller;
+  opacity: .8;
+}

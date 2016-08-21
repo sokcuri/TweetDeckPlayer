@@ -175,7 +175,8 @@ section .multicolumn > div {
   width: 75px;
 }
 
-.settings-item input[type='text'] {
+.settings-item input[type='text'],
+.settings-item textarea {
   box-sizing: border-box;
   padding: 7px;
   width: 100%;

@@ -27,6 +27,29 @@
               <div class="settings-item"><input type="text" id="customFonts"></div>
               <div class="settings-item description">Leave it blank if you want to use the default font.</div>
             </div>
+            <header><span>Timeline</span></header>
+            <div class="contents">
+              <div class="settings-item"><b>Word Filter</b></div>
+              <div class="settings-item">
+                <label>
+                  <input type="checkbox" id="enableWordFilter"><label for="enableWordFilter"><div></div></label>
+                  Enable word filter
+                </label>
+              </div>
+              <div class="settings-item">
+                <label>
+                  <input type="checkbox" id="hideFilteredTweet"><label for="hideFilteredTweet"><div></div></label>
+                  Completely hide tweet
+                </label>
+              </div>
+              <div class="settings-item">
+                <textarea id="filterWords" rows="5"></textarea>
+              </div>
+              <div class="settings-item description">
+                Enter one word per line. Word that wrapped with slash will parse as RegExp (ex. /spam/)
+                <br>* <b>Require reload to apply</b>
+              </div>
+            </div>
           </section>
         </form>
       </main>

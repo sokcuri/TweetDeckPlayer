@@ -340,6 +340,8 @@ var run = chk_win => {
   win.webContents.on('did-finish-load', () => {
     let paceCSS = fs.readFileSync('./pace.css', 'utf8');
     win.webContents.insertCSS(paceCSS);
+    let extraCSS = fs.readFileSync('./css/extra.css', 'utf8');
+    win.webContents.insertCSS(extraCSS);
     let didFinishLoadScript = fs.readFileSync('./did-finish-load.js', 'utf8');
     didFinishLoadScript = didFinishLoadScript.replace(/#VERSION/g, VERSION);
     win.webContents.executeJavaScript(didFinishLoadScript);

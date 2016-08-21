@@ -143,7 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // /로 감싼 단어는 정규식으로 변환한다.
     let match = word.match(/^\/(.+)\/$/);
     if (match) {
-      return new RegExp(match[1], 'ig');
+      // global flag 붙이지 말것
+      // see: http://stackoverflow.com/a/2630538
+      return new RegExp(match[1], 'i');
     } else {
       return word;
     }

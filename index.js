@@ -314,7 +314,7 @@ var run = chk_win => {
   var preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
   preference.icon = path.join(__dirname, 'tweetdeck.ico');
   preference.webPreferences = {
-    nodeIntegration: true,
+    nodeIntegration: false,
     partition: ses,
     preload: path.join(__dirname, 'preload.js'),
   };

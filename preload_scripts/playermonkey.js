@@ -1,0 +1,35 @@
+// PlayerMonkey - Greasemonkey/Tampermonkey compatible function
+// for port userscript to TweetDeck Player
+
+const request = require('request');
+
+function GM_xmlhttpRequest (params) {
+  let {method, url, onload, onerror} = params;
+  method = method.toLowerCase();
+  if (!(method in request)) {
+    throw new Error('Unknown HTTP Method!');
+  }
+  request[method](url, (error, response, body) => {
+    if (error) {
+      onerror(error);
+      return;
+    }
+    if (response.statusCode !== 200) {
+      onerror(new Error(`Response code isn\'t HTTP 200 (got ${response.statusCode})`));
+      return;
+    }
+    let gmResponse = {
+      finalUrl: response.request.uri.href,
+      response: body,
+      responseHeaders: response.headers,
+      status: response.statusCode,
+    };
+    onload(gmResponse);
+  });
+}
+
+const PlayerMonkey = {
+  GM_xmlhttpRequest,
+};
+
+module.exports = PlayerMonkey;

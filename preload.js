@@ -4,9 +4,13 @@ const {Menu, MenuItem, dialog} = remote;
 const ses = remote.session.fromPartition('persist:main');
 const Util = require('./util');
 
+const Config = require('./config');
 const WordFilter = require('./preload_scripts/wordfilter');
+const Unlinkis = require('./preload_scripts/unlinkis');
 // 로딩 프로그레스 바 모듈 로드 
 require('./pace.min.js');
+
+const config = Config.load();
 
 //
 // 디버그 관련 함수들을 모아놓는 오브젝트
@@ -136,3 +140,7 @@ window.addEventListener('contextmenu', e => {
 }, false);
 
 document.addEventListener('DOMContentLoaded', WordFilter);
+
+if (config.enableUnlinkis) {
+  document.addEventListener('DOMContentLoaded', Unlinkis);
+}

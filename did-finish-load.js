@@ -1,4 +1,3 @@
-/*globals $ TD Pace*/
 // TweetDeck Clipboard Paste script
 // https://gist.github.com/zn/4f622ba80513e0f4d0dd3f13dcd085db
 
@@ -55,7 +54,6 @@ TDP.onPageLoad = () => {
     if (!TD || !TD.ready) {
       TDP.onPageLoad();
     } else {
-      // TODO
       TD.controller.progressIndicator.addMessage(TD.i('#VERSION'));
       enablePaste();
       setTimeout(() => {
@@ -69,8 +67,6 @@ TDP.onPageLoad = () => {
       }
     }
   }, 1000);
-  // TODO: event-ify
-  // setInterval(clearCache, 60000);
 };
 
 TDP.onPageLoad();

@@ -387,13 +387,6 @@ var run = chk_win => {
     shell.openExternal(url);
   });
 
-  // TODO: event-ify
-  /*
-  function clearCache () {
-    win.webContents.session.clearCache(() => { });
-  }
-  */
-
 };
 
 // 컨텍스트 메뉴

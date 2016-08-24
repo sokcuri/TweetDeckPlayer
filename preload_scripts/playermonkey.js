@@ -28,8 +28,15 @@ function GM_xmlhttpRequest (params) {
   });
 }
 
+function GM_addStyle (css) {
+  const div = document.createElement('div');
+  div.innerHTML = `&shy;<style>${rule}</style>`;
+  document.body.appendChild(div);
+}
+
 const PlayerMonkey = {
   GM_xmlhttpRequest,
+  GM_addStyle,
 };
 
 module.exports = PlayerMonkey;

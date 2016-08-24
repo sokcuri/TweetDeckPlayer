@@ -7,9 +7,6 @@ const child_process = require('child_process');
 
 const Util = require('./util');
 
-// TweetDeck Player 버전
-const VERSION = require('./version');
-
 // 설정
 const Config = require('./config');
 
@@ -342,9 +339,6 @@ var run = chk_win => {
     win.webContents.insertCSS(paceCSS);
     let extraCSS = fs.readFileSync('./css/extra.css', 'utf8');
     win.webContents.insertCSS(extraCSS);
-    let didFinishLoadScript = fs.readFileSync('./did-finish-load.js', 'utf8');
-    didFinishLoadScript = didFinishLoadScript.replace(/#VERSION/g, VERSION);
-    win.webContents.executeJavaScript(didFinishLoadScript);
     if (Config.data.customFonts) {
       win.webContents.insertCSS(`
         * {

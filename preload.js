@@ -5,8 +5,13 @@ const ses = remote.session.fromPartition('persist:main');
 const Util = require('./util');
 
 const Config = require('./config');
+const VERSION = require('./version');
+
+const PlayerMonkey = require('./preload_scripts/playermonkey');
 const WordFilter = require('./preload_scripts/wordfilter');
 const Unlinkis = require('./preload_scripts/unlinkis');
+const CBPaste = require('./preload_scripts/clipboard-paste');
+
 // 로딩 프로그레스 바 모듈 로드 
 require('./pace.min.js');
 
@@ -140,7 +145,57 @@ window.addEventListener('contextmenu', e => {
 }, false);
 
 document.addEventListener('DOMContentLoaded', WordFilter);
+document.addEventListener('DOMContentLoaded', CBPaste);
 
 if (config.enableUnlinkis) {
   document.addEventListener('DOMContentLoaded', Unlinkis);
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  function patchContentEditable () {
+    $('[contenteditable="true"]').css({
+      opacity: 0,
+      pointerEvents: 'none',
+    });
+  }
+  if (window.TD_mustaches) {
+    window.TD_mustaches['version.mustache'] = `${VERSION} (TweetDeck {{version}}{{#buildIDShort}}-{{buildIDShort}}{{/buildIDShort}})`;
+  }
+
+  if (document.title === 'TweetDeck') {
+    document.title = 'TweetDeck Player';
+  } else {
+    document.title = `TweetDeck Player - ${document.title}`;
+  }
+
+  // 맥용 한글 기본 입력기 이슈 해결
+  $(document).on('keydown', e => {
+    if (document.activeElement === document.body && e.key >= 'ㄱ' && e.key <= 'ㅣ') {
+      e.preventDefault();
+      e.stopPropagation();
+      $(document.activeElement).trigger(jQuery.Event('keypress', {which: e.which}))
+    }
+  });
+
+  var TDP = {};
+  TDP.onPageLoad = () => {
+    setTimeout(() => {
+      if (!TD || !TD.ready) {
+        TDP.onPageLoad();
+      } else {
+        TD.controller.progressIndicator.addMessage(TD.i(VERSION));
+        setTimeout(() => {
+          TD.settings.setUseStream(TD.settings.getUseStream());
+          patchContentEditable();
+        }, 3000);
+        if (Pace) {
+          setTimeout(() => {
+            PlayerMonkey.GM_addStyle('.pace-progress { display: none }');
+          }, 2000);
+        }
+      }
+    }, 1000);
+  };
+
+  TDP.onPageLoad();
+});

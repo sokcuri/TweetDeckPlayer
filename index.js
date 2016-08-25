@@ -44,7 +44,7 @@ app.on('gpu-process-crashed', () => {
 
 });
 
-// 
+//
 // edit
 //
 var sub_cut = webContents => ({
@@ -167,7 +167,7 @@ var sub_save_img = (webContents, Addr) => ({
 
     // savepath가 없는 경우 리턴
     if (typeof savepath === 'undefined') return;
-    
+
     // http 요청을 보내고 저장
     request(path).pipe(fs.createWriteStream(savepath));
   },
@@ -209,7 +209,7 @@ var sub_save_link = (webContents, Addr) => ({
     var filename = Util.getFileName(path);
     var ext = Util.getFileExtension(path);
     var filters = [];
-    
+
     // 리퀘스트를 때려서 해당 링크의 MIME TYPE을 얻어온다
     let reqOption = {
       method: 'HEAD',
@@ -241,10 +241,10 @@ var sub_save_link = (webContents, Addr) => ({
         defaultPath: filename,
         filters: filters,
       });
-    
+
         // 포인터 이벤트를 되살린다
       webContents.send('pointer-events', 'all');
-        
+
       if (typeof savepath === 'undefined') return;
 
         // http 요청해서 링크를 저장
@@ -274,7 +274,7 @@ app.on('ready', () => {
       is_relaunch = true;
     }
   }
-    
+
     // --relaunch 인자가 없다면 pre_check
   if (!is_relaunch) {
     chk_win = new BrowserWindow({

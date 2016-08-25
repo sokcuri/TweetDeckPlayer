@@ -12,12 +12,11 @@ const WordFilter = require('./preload_scripts/wordfilter');
 const Unlinkis = require('./preload_scripts/unlinkis');
 const CBPaste = require('./preload_scripts/clipboard-paste');
 
-// 로딩 프로그레스 바 모듈 로드 
+// 로딩 프로그레스 바 모듈 로드
 require('./pace.min.js');
 
 const config = Config.load();
 
-//
 // 디버그 관련 함수들을 모아놓는 오브젝트
 const _Debug = {
   // 메모리 정보를 콘솔에 출력
@@ -31,7 +30,7 @@ const _Debug = {
     }
   },
 };
-// 일정 시간마다 반복해서 출력라고 싶은 경우
+// 일정 시간마다 반복해서 출력하고 싶은 경우
 _Debug.showMemoryInfo.repeat = true;
 _Debug.showMemoryInfo.tick = 5000;
 
@@ -95,10 +94,10 @@ ipcRenderer.on('command', (event, cmd) => {
 // 컨텍스트 메뉴 이벤트 리스너
 window.addEventListener('contextmenu', e => {
   var target;
-    
+
   // 기존 메뉴 이벤트를 무시
   e.preventDefault();
-    
+
   // 현재 활성화된 element
   var el = document.activeElement;
 

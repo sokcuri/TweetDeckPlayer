@@ -48,11 +48,10 @@ $(document).on('keydown', e => {
     $(document.activeElement).trigger(jQuery.Event('keypress', {which: e.which}))
   }
 });
-
 var TDP = {};
 TDP.onPageLoad = () => {
   setTimeout(() => {
-    if (!TD || !TD.ready) {
+    if (typeof TD == 'undefined' || !TD.ready) {
       TDP.onPageLoad();
     } else {
       // TODO

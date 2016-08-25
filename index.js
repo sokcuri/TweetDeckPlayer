@@ -1,7 +1,7 @@
 const electron = require('electron');
 const {app, BrowserWindow, dialog, session, Menu, MenuItem, ipcMain, shell} = electron;
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 const request = require('request');
 const child_process = require('child_process');
 
@@ -328,7 +328,7 @@ var run = chk_win => {
   var preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
   preference.icon = path.join(__dirname, 'tweetdeck.ico');
   preference.webPreferences = {
-    nodeIntegration: true,
+    nodeIntegration: false,
     partition: ses,
     preload: path.join(__dirname, 'preload.js'),
   };
@@ -346,7 +346,7 @@ var run = chk_win => {
   // electron post 리다이렉트 문제 해결 코드
   win.webContents.on('did-get-redirect-request', (e, oldURL, newURL, isMainFrame) => {
     if (isMainFrame) {
-      setTimeout(() => win.loadURL(newURL), 100);
+      setTimeout(() => win.loadURL(newURL), 200);
       e.preventDefault();
     }
   });

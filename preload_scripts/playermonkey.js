@@ -30,7 +30,7 @@ function GM_xmlhttpRequest (params) {
 
 function GM_addStyle (css) {
   const div = document.createElement('div');
-  div.innerHTML = `&shy;<style>${rule}</style>`;
+  div.innerHTML = `&shy;<style>${css}</style>`;
   document.body.appendChild(div);
 }
 

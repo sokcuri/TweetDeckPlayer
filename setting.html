@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>Settings</title>
-		<link href="css/settings.css" rel="stylesheet">
-	</head>
-	<body>
-		<div id="wrapper">
+  <head>
+    <meta charset="utf-8">
+    <title>Settings</title>
+    <link href="css/settings.css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="wrapper">
       <header class="top">
         <span>Settings</span>
       </header>
       <main>
-        <form>
+        <form id="settingform">
           <section>
             <header><span>Display</span></header>
             <div class="contents">
@@ -24,12 +24,36 @@
               </div>
               <div class="settings-item" style="padding-left: 41px; opacity: 0.75">&nbsp;If checked, TweetDeck Player window will be set to be always on top on startup.</div>
               <div class="settings-item"><b>Display Font</b></div>
-              <div class="settings-item"><input type="text"></div>
-              <div class="settings-item" style="opacity:0.75">Leave it blank if you want to use the default font.</div>
+              <div class="settings-item"><input type="text" id="customFonts"></div>
+              <div class="settings-item description">Leave it blank if you want to use the default font.</div>
+            </div>
+            <header><span>Timeline</span></header>
+            <div class="contents">
+              <div class="settings-item"><b>Word Filter</b></div>
+              <div class="settings-item">
+                <label>
+                  <input type="checkbox" id="enableWordFilter"><label for="enableWordFilter"><div></div></label>
+                  Enable word filter
+                </label>
+              </div>
+              <div class="settings-item">
+                <label>
+                  <input type="checkbox" id="hideFilteredTweet"><label for="hideFilteredTweet"><div></div></label>
+                  Completely hide tweet
+                </label>
+              </div>
+              <div class="settings-item">
+                <textarea id="filterWords" rows="5"></textarea>
+              </div>
+              <div class="settings-item description">
+                Enter one word per line. Word that wrapped with slash will parse as RegExp (ex. /spam/)
+                <br>* <b>Require reload to apply</b>
+              </div>
             </div>
           </section>
         </form>
       </main>
     </div>
-	</body>
+    <script src="setting.js"></script>
+  </body>
 </html>

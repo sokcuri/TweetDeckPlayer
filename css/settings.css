@@ -175,11 +175,16 @@ section .multicolumn > div {
   width: 75px;
 }
 
-.settings-item input[type='text'] {
+.settings-item input[type='text'],
+.settings-item textarea {
   box-sizing: border-box;
   padding: 7px;
   width: 100%;
   border: 1px solid gray;
   border-radius: 3px;
   font-size: 1em;
+}
+
+.settings-item.description {
+  opacity: .75;
 }

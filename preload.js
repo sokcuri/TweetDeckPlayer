@@ -176,6 +176,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  $(document).on('mouseover', '.tweet-timestamp', e => {
+    const target = e.currentTarget;
+    const time = target.getAttribute('data-time');
+    const date = new Date(parseInt(time, 10));
+    target.setAttribute('title', date.toLocaleString());
+  });
+
   var TDP = {};
   TDP.onPageLoad = () => {
     setTimeout(() => {

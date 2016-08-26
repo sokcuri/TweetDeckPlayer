@@ -378,7 +378,18 @@ var run = chk_win => {
 
   win.webContents.on('new-window', (e, url) => {
     e.preventDefault();
-    shell.openExternal(url);
+    if (Config.data.openURLInInternalBrowser) {
+      let popup = new BrowserWindow({
+        parent: win,
+        webPreferences: {
+          webSecurity: true,
+          nodeIntegration: false,
+        },
+      });
+      popup.loadURL(url);
+    } else {
+      shell.openExternal(url);
+    }
   });
 
 };

@@ -80,9 +80,17 @@ function Unlinkis () {
     if (elem.tagName === 'IFRAME' && card_iframe_regex.test(elem.id)) {
       $(elem).on('load', function (event) {
         var card_hostname = elem.contentWindow.document.querySelector('span.SummaryCard-destination');
-        if (card_hostname !== null && linkis_card_detect.test(card_hostname.textContent)) {
+        if (card_hostname === null) return;
+        if (linkis_card_detect.test(card_hostname.textContent)) {
           var link = elem.contentWindow.document.querySelector('a.js-openLink');
           convert_and_patch(link.href, $(link), 0);
+        } else {
+          var twt_link = $(elem).closest('.tweet').find('a.twitter-timeline-link');
+          var xpurl = twt_link.data('expanded-url');
+          if (linkis_detect.test(xpurl)) {
+            var link = elem.contentWindow.document.querySelector('a.js-openLink');
+            convert_and_patch(link.href, $(link), 0);
+          }
         }
       });
     } else {
@@ -95,7 +103,18 @@ function Unlinkis () {
         var match = $(links[i]).text().match(linkis_detect);
 
         if (match !== null) {
-          convert_and_patch(links[i].href, $(links[i]), 0);
+          var url = links[i].href;
+          // expanded-url is for Twitter, full-url is for TweetDeck
+          if (links[i].hasAttribute('data-expanded-url')) {
+            url = links[i].getAttribute('data-expanded-url');
+          } else if (links[i].hasAttribute('data-full-url')) {
+            url = links[i].getAttribute('data-full-url');
+          }
+          convert_and_patch(url, $(links[i]), 0);
+          var media_url = $(elem).find('a.PlayableMedia-externalUrl');
+          if (media_url.length > 0) {
+            convert_and_patch(media_url[0].href, media_url, 0);
+          }
         }
       }
     }

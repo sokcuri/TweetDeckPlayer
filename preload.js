@@ -192,6 +192,11 @@ document.addEventListener('DOMContentLoaded', () => {
             PlayerMonkey.GM_addStyle('.pace-progress { display: none }');
           }, 2000);
         }
+        if (config.useStarForFavorite) {
+          const cl = document.body.classList;
+          cl.remove('hearty');
+          cl.add('starry');
+        }
       }
     }, 1000);
   };

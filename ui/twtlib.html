@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko"><head>
+  <meta charset="UTF-8">
+  <title>Library - TweetDeck Player</title>
+  <style>
+  *, *:before, *:after {
+    box-sizing: border-box;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  .outer {
+    max-width: 400px;
+    margin: 10px auto;
+    padding: 5px;
+  }
+  #common-text-list {
+  }
+  .common-text {
+    display: block;
+    margin: 5px 0;
+    padding: 5px;
+    margin: 5px;
+    width: 100%;
+  }
+  #common-text-add-form {
+    margin: 5px 0;
+    padding: 15px;
+    background-color: #eee;
+  }
+  #common-text-add-input {
+    display: block;
+    margin: 5px 0;
+    padding: 5px;
+    width: 100%;
+  }
+  </style>
+</head><body>
+  <div class="outer">
+    <div id="common-text-list"></div>
+    <hr>
+    <form id="common-text-add-form" action="#">
+      <input required type="text" id="common-text-add-input">
+      <button type="submit">추가하기</button>
+      <button id="common-text-remove" type="button">삭제하기</button>
+    </form>
+  </div>
+  <script>
+  (function () {
+    const electron = require('electron');
+    const {ipcRenderer} = electron;
+    const config = ipcRenderer.sendSync('load-config');
+    const TEXTS = new Set(config.commonTexts || []);
+    function rendercommonTextList (texts) {
+      const commonTextList = document.getElementById('common-text-list');
+      commonTextList.innerHTML = '';
+      for (const txt of texts) {
+        const commonText = document.createElement('button');
+        commonText.className = 'common-text';
+        commonText.textContent = txt;
+        commonText.addEventListener('click', event => {
+          event.preventDefault();
+          ipcRenderer.send('twtlib-send-text', txt);
+          document.getElementById('common-text-add-input').value = txt;
+        });
+        commonTextList.appendChild(commonText);
+      }
+      config.commonTexts = Array.from(texts);
+
+      ipcRenderer.send('save-config', config);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      rendercommonTextList(TEXTS);
+      const form = document.getElementById('common-text-add-form');
+      const input = document.getElementById('common-text-add-input');
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        TEXTS.add(input.value);
+        input.value = '';
+        rendercommonTextList(TEXTS);
+      });
+      document.getElementById('common-text-remove').addEventListener('click', event => {
+        event.preventDefault();
+        if (!confirm(`상용구 "${input.value}"를 삭제하시겠어요?`)) return;
+        TEXTS.delete(input.value);
+        input.value = '';
+        rendercommonTextList(TEXTS);
+      });
+    });
+  })();
+  </script>
+</body></html>

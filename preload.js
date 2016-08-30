@@ -11,6 +11,7 @@ const PlayerMonkey = require('./preload_scripts/playermonkey');
 const WordFilter = require('./preload_scripts/wordfilter');
 const Unlinkis = require('./preload_scripts/unlinkis');
 const CBPaste = require('./preload_scripts/clipboard-paste');
+const TwtLib = require('./preload_scripts/twtlib');
 
 // 로딩 프로그레스 바 모듈 로드
 require('./pace.min.js');
@@ -145,6 +146,7 @@ window.addEventListener('contextmenu', e => {
 
 document.addEventListener('DOMContentLoaded', WordFilter);
 document.addEventListener('DOMContentLoaded', CBPaste);
+document.addEventListener('DOMContentLoaded', TwtLib);
 
 if (config.enableUnlinkis) {
   document.addEventListener('DOMContentLoaded', Unlinkis);

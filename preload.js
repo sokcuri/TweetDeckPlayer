@@ -22,21 +22,22 @@ ipcRenderer.on('apply-config', event => {
   var { detectFont, supportedFonts } = require('detect-font');
   config = Config.load();
 
-  var node = document.createElement('div');
-  node.id = 'fontDetect';
-  node.style = `font-family: ${config.customFonts} !important`;
-  document.body.insertBefore(node, document.body.firstChild);
-
-  var df = detectFont(node);
-  document.getElementById('fontDetect').remove();
-  if (df !== config.customFonts) {
-    console.warn(`Not Supported Font : ${config.customFonts}`);
-    document.body.style = '';
-    return;
-  }
-
   if (Config.data.customFonts) {
-    document.body.style = `font-family: ${config.customFonts} !important`;
+    var node = document.createElement('div');
+    node.id = 'fontDetect';
+    node.style = `font-family: ${config.customFonts} !important`;
+    document.body.insertBefore(node, document.body.firstChild);
+
+    var df = detectFont(node);
+    document.getElementById('fontDetect').remove();
+    if (df !== config.customFonts) {
+      console.warn(`Not Supported Font : ${config.customFonts}`);
+      document.body.style = '';
+    }
+    else
+    {
+      document.body.style = `font-family: ${config.customFonts} !important`;
+    }
   } else {
     document.body.style = '';
   }

@@ -188,3 +188,7 @@ section .multicolumn > div {
 .settings-item.description {
   opacity: .75;
 }
+
+.settings-item.description.for-checkbox {
+  padding-left: 46px;
+}

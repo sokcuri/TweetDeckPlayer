@@ -10,7 +10,7 @@ const Util = require('./util');
 // 설정
 const Config = require('./config');
 
-let win, settingsWin;
+let win, settingsWin, twtlibWin;
 
 ipcMain.on('load-config', (event, arg) => {
   var config = Config.load();
@@ -378,6 +378,7 @@ var run = chk_win => {
   });
 
   win.on('close', () => {
+    Config.load();
     Config.data.bounds = win.getBounds();
     Config.save();
     win = null;
@@ -385,7 +386,18 @@ var run = chk_win => {
 
   win.webContents.on('new-window', (e, url) => {
     e.preventDefault();
-    shell.openExternal(url);
+    if (Config.data.openURLInInternalBrowser) {
+      let popup = new BrowserWindow({
+        parent: win,
+        webPreferences: {
+          webSecurity: true,
+          nodeIntegration: false,
+        },
+      });
+      popup.loadURL(url);
+    } else {
+      shell.openExternal(url);
+    }
   });
 
 };
@@ -481,4 +493,35 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr) => {
 
 app.on('window-all-closed', () => {
   app.quit();
+});
+
+ipcMain.on('twtlib-open', (event, arg) => {
+  if (twtlibWin) {
+    twtlibWin.focus();
+    return;
+  }
+  let width = 500;
+  let height = 480;
+  let b = win.getBounds();
+  let x = Math.floor(b.x + (b.width - width) / 2);
+  let y = Math.floor(b.y + (b.height - height) / 2);
+  twtlibWin = new BrowserWindow({
+    width, height, x, y,
+    parent: win,
+    modal: false,
+    show: true,
+    autoHideMenuBar: true,
+    webPreferences: {
+      nodeIntegration: true,
+    },
+  });
+  twtlibWin.on('close', () => {
+    twtlibWin = null;
+
+  });
+  twtlibWin.loadURL('file:///' + path.join(__dirname, 'ui/twtlib.html'));
+});
+
+ipcMain.on('twtlib-send-text', (event, arg) => {
+  win.webContents.send('twtlib-add-text', arg);
 });

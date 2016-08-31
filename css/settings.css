@@ -154,6 +154,15 @@ section .multicolumn > div {
   border: 1px solid gray;
   background: white;
   border-radius: 2px;
+  cursor: pointer;
+}
+
+.settings-item input[type='checkbox'] + label:hover {
+  background: #f0f0f0;
+}
+
+.settings-item input[type='checkbox'] + label:active div {
+  opacity: 0.7;
 }
 
 .settings-item input[type='checkbox'] + label div {

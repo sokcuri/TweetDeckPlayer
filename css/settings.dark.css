@@ -19,6 +19,10 @@
   background: #222;
 }
 
+.settings-root.dark .settings-item input[type='checkbox'] + label:hover {
+  background: #2a2a2a;
+}
+
 .settings-root.dark .settings-item input[type='checkbox'] + label div {
   background: gray linear-gradient(transparent, rgba(0, 0, 0, 0.3));
 }

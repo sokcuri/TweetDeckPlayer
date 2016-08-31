@@ -25,7 +25,8 @@ function onload () {
     }
   }
   let settingForm = document.getElementById('settingform');
-  settingForm.addEventListener('change', event => {
+
+  save = event => {
     let settingElements = settingForm.querySelectorAll('input, textarea');
     for (let elem of settingElements) {
       let id = elem.id;
@@ -41,7 +42,11 @@ function onload () {
       }
     }
     saveConfig(config);
-  });
+    ipcRenderer.send('apply-config');
+  };
+
+  window.addEventListener("beforeunload", save);
+  settingForm.addEventListener('change', save);
 }
 
 document.addEventListener('DOMContentLoaded', onload);

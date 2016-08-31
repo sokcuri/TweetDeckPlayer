@@ -22,6 +22,10 @@ ipcMain.on('save-config', (event, config) => {
   Config.save();
 });
 
+ipcMain.on('apply-config', (event, config) => {
+  win.webContents.send('apply-config');
+});
+
 // 프로그램 시작시 설정파일을 로드
 Config.load();
 
@@ -339,12 +343,15 @@ var run = chk_win => {
     win.webContents.insertCSS(paceCSS);
     let extraCSS = fs.readFileSync('./css/extra.css', 'utf8');
     win.webContents.insertCSS(extraCSS);
+    win.webContents.send('apply-config');
     if (Config.data.customFonts) {
+      
+      /*
       win.webContents.insertCSS(`
         * {
           font-family: ${Config.data.customFonts} !important;
         }
-      `);
+      `);*/
     }
     // 유저 스크립트 로딩
     fs.readdir('./scripts', (error, files) => {

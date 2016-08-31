@@ -1,7 +1,6 @@
 const {remote, clipboard, ipcRenderer} = require('electron');
 const {Menu, MenuItem, dialog} = remote;
 
-const ses = remote.session.fromPartition('persist:main');
 const Util = require('./util');
 
 const Config = require('./config');
@@ -15,24 +14,42 @@ const CBPaste = require('./preload_scripts/clipboard-paste');
 // 로딩 프로그레스 바 모듈 로드
 require('./pace.min.js');
 
-const config = Config.load();
+// 설정 파일 읽기
+var config = Config.load();
 
-// 디버그 관련 함수들을 모아놓는 오브젝트
-const _Debug = {
-  // 메모리 정보를 콘솔에 출력
-  showMemoryInfo () {
-    var i = process.getProcessMemoryInfo();
-    console.log(`W: ${i.workingSetSize} PW: ${i.peakWorkingSetSize} PB: ${i.privateBytes} SB: ${i.sharedBytes}`);
+ipcRenderer.on('apply-config', (event) => {
+  var { detectFont, supportedFonts } = require('detect-font');
+  config = Config.load();
 
-    ses.getCacheSize(size => console.log(`cache size: ${size}`));
-    if (_Debug.showMemoryInfo.repeat) {
-      setTimeout(_Debug.showMemoryInfo, _Debug.showMemoryInfo.tick);
-    }
-  },
-};
-// 일정 시간마다 반복해서 출력하고 싶은 경우
-_Debug.showMemoryInfo.repeat = true;
-_Debug.showMemoryInfo.tick = 5000;
+  var node = document.createElement('div');
+  node.id = 'fontDetect';
+  node.style = `font-family: ${config.customFonts} !important`;
+  document.body.insertBefore(node, document.body.firstChild);
+
+  var df = detectFont(node);
+  document.getElementById("fontDetect").remove();
+  if (df != config.customFonts) {
+    console.warn(`Not Supported Font : ${config.customFonts}`);
+    document.body.style = '';
+    return;
+  } 
+  
+  if (Config.data.customFonts) {
+    document.body.style = `font-family: ${config.customFonts} !important`;
+  }
+  else document.body.style = '';
+
+  const cl = document.body.classList;
+  if (config.useStarForFavorite) {
+    cl.remove('hearty');
+    cl.add('starry');
+  }
+  else
+  {
+    cl.remove('starry');
+    cl.add('hearty');
+  }
+});
 
 // 우클릭시 임시 저장하는 이미지 주소와 링크 주소를 담는 변수
 var Addr = {

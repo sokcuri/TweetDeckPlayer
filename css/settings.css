@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: 'Segoe UI', 'Yu Gothic UI', 'Meiryo UI', 'Malgun Gothic', 'Tahoma', 'Gulim', sans-serif;
+  font-family: ".SFNSText-Regular", 'Segoe UI', 'Yu Gothic UI', 'Meiryo UI', 'Malgun Gothic', 'Tahoma', 'Gulim', sans-serif;
   color: #333;
   -webkit-user-select: none;
   cursor: default;
@@ -69,6 +69,7 @@ section > .contents {
 
 section > .contents .settings-item {
   margin-bottom: 5px;
+  line-height: 1.3;
 }
 
 section .multicolumn {
@@ -183,6 +184,7 @@ section .multicolumn > div {
   border: 1px solid gray;
   border-radius: 3px;
   font-size: 1em;
+  resize: none;
 }
 
 .settings-item.description {

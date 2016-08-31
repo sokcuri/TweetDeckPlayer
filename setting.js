@@ -45,7 +45,7 @@ function onload () {
     ipcRenderer.send('apply-config');
   };
 
-  window.addEventListener("beforeunload", save);
+  window.addEventListener('beforeunload', save);
   settingForm.addEventListener('change', save);
 }
 

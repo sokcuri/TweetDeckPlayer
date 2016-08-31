@@ -126,7 +126,7 @@ var sub_setting = window => ({
       settingsWin = null;
     });
     settingsWin.loadURL('file:///' + path.join(__dirname, 'setting.html'));
-  }
+  },
 });
 
 //

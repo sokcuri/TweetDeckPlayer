@@ -18,7 +18,7 @@ require('./pace.min.js');
 // 설정 파일 읽기
 var config = Config.load();
 
-ipcRenderer.on('apply-config', (event) => {
+ipcRenderer.on('apply-config', event => {
   var { detectFont, supportedFonts } = require('detect-font');
   config = Config.load();
 
@@ -28,25 +28,24 @@ ipcRenderer.on('apply-config', (event) => {
   document.body.insertBefore(node, document.body.firstChild);
 
   var df = detectFont(node);
-  document.getElementById("fontDetect").remove();
-  if (df != config.customFonts) {
+  document.getElementById('fontDetect').remove();
+  if (df !== config.customFonts) {
     console.warn(`Not Supported Font : ${config.customFonts}`);
     document.body.style = '';
     return;
-  } 
-  
+  }
+
   if (Config.data.customFonts) {
     document.body.style = `font-family: ${config.customFonts} !important`;
+  } else {
+    document.body.style = '';
   }
-  else document.body.style = '';
 
   const cl = document.body.classList;
   if (config.useStarForFavorite) {
     cl.remove('hearty');
     cl.add('starry');
-  }
-  else
-  {
+  } else {
     cl.remove('starry');
     cl.add('hearty');
   }
@@ -191,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.activeElement === document.body && e.key >= 'ㄱ' && e.key <= 'ㅣ') {
       e.preventDefault();
       e.stopPropagation();
-      $(document.activeElement).trigger(jQuery.Event('keypress', {which: e.which}))
+      $(document.activeElement).trigger(jQuery.Event('keypress', {which: e.which}));
     }
   });
 

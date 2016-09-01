@@ -6,13 +6,18 @@ module.exports = {
   getOrigPath (_href) {
     var href = _href;
     if (href.search(this.twimg_media) !== -1) {
-      href = href.substr(0, href.lastIndexOf(':')) + ':orig';
+      var pos = href.substr(href.lastIndexOf('/')).lastIndexOf(':');
+      if (pos == -1)
+        pos = href.substr(href.lastIndexOf('/')).length;
+      href = href.substr(0, href.lastIndexOf('/') + pos) + ":orig";
     } else {
       if (href.search(this.twimg_profile) !== -1) {
-        href = href.substr(0, href.lastIndexOf('_')) + href.substr(href.lastIndexOf('.'));
+        var pos = href.substr(href.lastIndexOf('/')).lastIndexOf('_');
+        if (pos == -1)
+          pos = href.substr(href.lastIndexOf('/')).lastIndexOf('.');
+        href = href.substr(0, href.lastIndexOf('/') + pos) + href.substr(href.lastIndexOf('.'));
       }
     }
-
     return href;
   },
 

@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.TD_mustaches['compose/compose_inline_reply.mustache'] = window.TD_mustaches['compose/compose_inline_reply.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text');
     window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text'); 
   }
-  
+
   function applyHighlights(text) {
     text = text
       .replace(/\n$/g, '\n\n')
@@ -250,11 +250,12 @@ document.addEventListener('DOMContentLoaded', () => {
           x.dataset.initcompl = true;
           $(x).on({'scroll': handleScroll});
         }
-        if (prev_focus != document.querySelector(':focus') && window.getSelection().toString() != "")
+        if (prev_focus != document.querySelector(':focus'))
         {
           setTimeout(() => {
             var v = $(x).val();
-            $(x).focus().val("").val(v);
+            if (window.getSelection().toString() != "")
+              $(x).focus().val("").val(v);
           }, 100);
         }
       }

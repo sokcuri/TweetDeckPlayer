@@ -1,0 +1,57 @@
+.settings-root.dark {
+  background: #222;
+  color: #ddd;
+}
+
+.settings-root.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  background-clip: padding-box;
+}
+
+.settings-root.dark header.top {
+  background: #222;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Custom input appearance */
+.settings-root.dark .settings-item input[type='checkbox'] + label {
+  border: 1px solid #606060;
+  background: #222;
+}
+
+.settings-root.dark .settings-item input[type='checkbox'] + label:hover {
+  background: #2a2a2a;
+}
+
+.settings-root.dark .settings-item input[type='checkbox'] + label div {
+  background: gray linear-gradient(transparent, rgba(0, 0, 0, 0.3));
+}
+
+.settings-root.dark .settings-item input[type='checkbox']:checked + label div {
+  left: 17px;
+  background-color: #55acee;
+}
+
+.settings-root.dark .settings-item input[type='text'],
+.settings-root.dark .settings-item textarea {
+  background: rgba(255,255,255,0.02);
+  color: #ddd;
+  border: 1px solid #606060;
+  border-radius: 3px;
+  font-size: 1em;
+  resize: none;
+}
+
+.settings-root.dark .settings-item button {
+  background: #333;
+  color: white;
+}
+
+.settings-root.dark .settings-item button.blue {
+  background: #55acee;
+  color: white;
+}
+
+.settings-root.dark .settings-item.description {
+  opacity: .5;
+}

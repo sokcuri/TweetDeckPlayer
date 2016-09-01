@@ -2,49 +2,45 @@
 <html lang="ko"><head>
   <meta charset="UTF-8">
   <title>Library - TweetDeck Player</title>
+  <link href="../css/settings.css" rel="stylesheet">
+  <link href="../css/settings.dark.css" rel="stylesheet">
   <style>
-  *, *:before, *:after {
-    box-sizing: border-box;
-  }
-  html, body {
-    margin: 0;
-    padding: 0;
-  }
-  .outer {
-    max-width: 400px;
-    margin: 10px auto;
-    padding: 5px;
-  }
-  #common-text-list {
-  }
   .common-text {
     display: block;
-    margin: 5px 0;
+    margin: 7px 0;
     padding: 5px;
-    margin: 5px;
     width: 100%;
-  }
-  #common-text-add-form {
-    margin: 5px 0;
-    padding: 15px;
-    background-color: #eee;
   }
   #common-text-add-input {
-    display: block;
     margin: 5px 0;
-    padding: 5px;
-    width: 100%;
   }
   </style>
 </head><body>
-  <div class="outer">
-    <div id="common-text-list"></div>
-    <hr>
-    <form id="common-text-add-form" action="#">
-      <input required type="text" id="common-text-add-input">
-      <button type="submit">추가하기</button>
-      <button id="common-text-remove" type="button">삭제하기</button>
-    </form>
+  <div id="wrapper" class="settings-root">
+    <header class="top" style="padding-bottom:0">
+      <span>Tweet library™</span>
+      <section>
+        <div class="contents">
+          <form id="common-text-add-form" action="#">
+            <div class="settings-item">
+              <input required type="text" id="common-text-add-input">
+            </div>
+            <div class="settings-item" style="text-align: center">
+              <button class="blue" type="submit">Add</button>
+              <button class="blue" id="common-text-remove" type="button">Remove</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </header>
+    <main>
+      <section>
+        <header><span>Word List</span></header>
+        <div class="contents">
+          <div class="settings-item" id="common-text-list"></div>
+        </div>
+      </section>
+    </main>
   </div>
   <script>
   (function () {
@@ -52,6 +48,17 @@
     const {ipcRenderer} = electron;
     const config = ipcRenderer.sendSync('load-config');
     const TEXTS = new Set(config.commonTexts || []);
+
+    var theme = ipcRenderer.sendSync('request-theme');
+    if (theme == 'dark')
+      wrapper.classList.add('dark');
+
+    var settingsTop = wrapper.getElementsByClassName('top')[0];
+    var settingsMain = wrapper.getElementsByTagName('main')[0];
+    var topHeight = window.getComputedStyle(settingsTop).height;
+    settingsMain.style.marginTop = topHeight;
+    settingsMain.style.height = `calc(100% - ${topHeight})`;
+
     function rendercommonTextList (texts) {
       const commonTextList = document.getElementById('common-text-list');
       commonTextList.innerHTML = '';

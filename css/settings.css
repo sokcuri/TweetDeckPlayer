@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: 'Segoe UI', 'Yu Gothic UI', 'Meiryo UI', 'Malgun Gothic', 'Tahoma', 'Gulim', sans-serif;
+  font-family: ".SFNSText-Regular", 'Segoe UI', 'Yu Gothic UI', 'Meiryo UI', 'Malgun Gothic', 'Tahoma', 'Gulim', sans-serif;
   color: #333;
   -webkit-user-select: none;
   cursor: default;
@@ -33,6 +33,7 @@ header.top {
   position: fixed;
   top: 0;
   left: 0;
+  box-sizing: border-box;
   width: 100%;
   padding: 10px;
   background: white;
@@ -69,6 +70,7 @@ section > .contents {
 
 section > .contents .settings-item {
   margin-bottom: 5px;
+  line-height: 1.3;
 }
 
 section .multicolumn {
@@ -93,6 +95,10 @@ section .multicolumn > div {
 
 .expander:checked + label + label + .expander-item {
   display: block;
+}
+
+.settings-item {
+  position: relative;
 }
 
 .settings-item table {
@@ -151,6 +157,15 @@ section .multicolumn > div {
   border: 1px solid gray;
   background: white;
   border-radius: 2px;
+  cursor: pointer;
+}
+
+.settings-item input[type='checkbox'] + label:hover {
+  background: #f0f0f0;
+}
+
+.settings-item input[type='checkbox'] + label:active div {
+  opacity: 0.7;
 }
 
 .settings-item input[type='checkbox'] + label div {
@@ -183,6 +198,35 @@ section .multicolumn > div {
   border: 1px solid gray;
   border-radius: 3px;
   font-size: 1em;
+  resize: none;
+}
+
+.settings-item button
+{
+  position: relative;
+  top: 0;
+  padding: 7px 15px;
+  border: none;
+  border-radius: 3px;
+  background: #eee;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.settings-item button.blue {
+  background: #55acee;
+  color: white;
+}
+
+.settings-item button:hover {
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.settings-item button:active {
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  opacity: 0.8;
+  top: 2px;
 }
 
 .settings-item.description {

@@ -13,6 +13,17 @@ var config;
 
 function onload () {
   config = loadConfig();
+  // 트윗덱 테마를 바탕으로 설정창 테마 변경.
+  var theme = ipcRenderer.sendSync('request-theme');
+  if (theme == 'dark')
+    wrapper.classList.add('dark');
+
+  var settingsTop = wrapper.getElementsByClassName('top')[0];
+  var settingsMain = wrapper.getElementsByTagName('main')[0];
+  var topHeight = window.getComputedStyle(settingsTop).height;
+  settingsMain.style.marginTop = topHeight;
+  settingsMain.style.height = `calc(100% - ${topHeight})`;
+
   // 로딩한 config를 바탕으로 input/textarea의 값을 세팅한다.
   for (let key of Object.keys(config)) {
     let value = config[key];

@@ -26,6 +26,14 @@ ipcMain.on('apply-config', (event, config) => {
   win.webContents.send('apply-config');
 });
 
+ipcMain.on('request-theme', event => {
+  win.webContents.executeJavaScript(
+    '(()=>{var x=document.querySelector("meta[http-equiv=Default-Style]");return x&&x.content||"light";})()',
+    false,
+    theme => { event.returnValue = theme; }
+  );
+});
+
 // 프로그램 시작시 설정파일을 로드
 Config.load();
 

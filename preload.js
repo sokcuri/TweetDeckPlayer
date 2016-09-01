@@ -258,7 +258,8 @@ document.addEventListener('DOMContentLoaded', () => {
         {
           setTimeout(() => {
             var v = $(x).val();
-            if (window.getSelection().toString() != "")
+            console.log(window.getSelection().toString());
+            if (window.getSelection().toString().length > 3)
               $(x).focus().val("").val(v);
           }, 100);
         }

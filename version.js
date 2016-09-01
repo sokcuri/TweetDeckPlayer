@@ -1,1 +1,1 @@
-module.exports = 'TweetDeck Player v2.00 by @sokcuri';
+module.exports = 'TweetDeck Player v2.00 by @sokcuri @d57_kr @gaeulbyul';

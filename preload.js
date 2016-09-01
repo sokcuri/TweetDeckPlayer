@@ -172,6 +172,7 @@ if (config.enableUnlinkis) {
 // 트윗에 첨부된 이미지를 드래그해서 저장할 수 있도록 함
 document.addEventListener('dragstart', (evt) => {
   var imageSrc = "";
+  var imageOrgSrc = "";
   // 트윗 미디어 이미지
   if (evt.srcElement.classList.contains('js-media-image-link'))
     imageSrc = evt.srcElement.style.backgroundImage.slice(5, -2);
@@ -182,6 +183,7 @@ document.addEventListener('dragstart', (evt) => {
   // 이미지인 경우
   if (imageSrc)
   {
+    imageOrgSrc = imageSrc;
     var image = Util.getOrigPath(imageSrc);
     var ext = image.substr(image.lastIndexOf('.')+1);
     var filename = image.substr(image.lastIndexOf('/')+1);
@@ -190,7 +192,6 @@ document.addEventListener('dragstart', (evt) => {
       filename = filename.substr(0, filename.lastIndexOf(':'));
     }
     var detail = `image/${ext}:${filename}:${image}`;
-    console.log(detail);
     evt.dataTransfer.setData("DownloadURL", detail);
   }
 

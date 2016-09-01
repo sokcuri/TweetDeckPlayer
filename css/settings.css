@@ -35,7 +35,6 @@ header.top {
   left: 0;
   box-sizing: border-box;
   width: 100%;
-  height: 41px;
   padding: 10px;
   background: white;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
@@ -96,6 +95,10 @@ section .multicolumn > div {
 
 .expander:checked + label + label + .expander-item {
   display: block;
+}
+
+.settings-item {
+  position: relative;
 }
 
 .settings-item table {
@@ -196,6 +199,34 @@ section .multicolumn > div {
   border-radius: 3px;
   font-size: 1em;
   resize: none;
+}
+
+.settings-item button
+{
+  position: relative;
+  top: 0;
+  padding: 7px 15px;
+  border: none;
+  border-radius: 3px;
+  background: #eee;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.settings-item button.blue {
+  background: #55acee;
+  color: white;
+}
+
+.settings-item button:hover {
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.settings-item button:active {
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  opacity: 0.8;
+  top: 2px;
 }
 
 .settings-item.description {

@@ -42,6 +42,16 @@
   resize: none;
 }
 
+.settings-root.dark .settings-item button {
+  background: #333;
+  color: white;
+}
+
+.settings-root.dark .settings-item button.blue {
+  background: #55acee;
+  color: white;
+}
+
 .settings-root.dark .settings-item.description {
   opacity: .5;
 }

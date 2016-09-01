@@ -169,6 +169,34 @@ if (config.enableUnlinkis) {
   document.addEventListener('DOMContentLoaded', Unlinkis);
 }
 
+// 트윗에 첨부된 이미지를 드래그해서 저장할 수 있도록 함
+document.addEventListener('dragstart', (evt) => {
+  var imageSrc = "";
+  var imageOrgSrc = "";
+  // 트윗 미디어 이미지
+  if (evt.srcElement.classList.contains('js-media-image-link'))
+    imageSrc = evt.srcElement.style.backgroundImage.slice(5, -2);
+  // 일반 이미지
+  else if (typeof evt.srcElement.currentSrc != 'undefined' && evt.srcElement.currentSrc != '')
+    imageSrc = evt.srcElement.currentSrc;
+
+  // 이미지인 경우
+  if (imageSrc)
+  {
+    imageOrgSrc = imageSrc;
+    var image = Util.getOrigPath(imageSrc);
+    var ext = image.substr(image.lastIndexOf('.')+1);
+    var filename = image.substr(image.lastIndexOf('/')+1);
+    if (filename.lastIndexOf(':') != -1) {
+      ext = ext.substr(0, ext.lastIndexOf(':'));
+      filename = filename.substr(0, filename.lastIndexOf(':'));
+    }
+    var detail = `image/${ext}:${filename}:${image}`;
+    evt.dataTransfer.setData("DownloadURL", detail);
+  }
+
+}, false);
+
 document.addEventListener('DOMContentLoaded', () => {
   function patchContentEditable () {
     $('[contenteditable="true"]').css({
@@ -177,7 +205,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   if (window.TD_mustaches) {
+    // version
     window.TD_mustaches['version.mustache'] = `${VERSION} (TweetDeck {{version}}{{#buildIDShort}}-{{buildIDShort}}{{/buildIDShort}})`;
+
+    // set min_width to modal context
+    window.TD_mustaches['modal/modal_context.mustache'] = window.TD_mustaches['modal/modal_context.mustache'].replace('<div class="js-modal-context', '<div style="min-width: 560px;" class="js-modal-context');
   }
 
   if (document.title === 'TweetDeck') {

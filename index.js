@@ -385,7 +385,13 @@ var run = chk_win => {
         color: transparent;
         background-color: transparent;
         -webkit-text-fill-color: red;
-      }`);
+      }
+      .placeholder {
+        color: transparent;
+        background-color: transparent;
+        -webkit-text-fill-color: #e2e8ed;
+      }
+      `);
     win.webContents.send('apply-config');
     if (Config.data.customFonts) {
       

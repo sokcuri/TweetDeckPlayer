@@ -242,6 +242,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // html 하이라이트 반영
         $(el[i]).parent().children('div').children('div').html(applyHighlights(text));
 
+        // placeholder
+        if (text == "")
+          $(el[i]).parent().children('div').children('div').html('<span class="placeholder">' + el[i].placeholder + '</span>');
+
         // 마지막 멘션 아이디가 셀렉션 지정되는 버그 회피
         var x = el[i];
         
@@ -268,8 +272,14 @@ document.addEventListener('DOMContentLoaded', () => {
   {
     if (evt.target.classList.contains('js-compose-text'))
     {
+      // html 하이라이트 반영
       var text = $(evt.target).val();
       $(evt.target).parent().children('div').children('div').html(applyHighlights(text));
+
+      // placeholder
+      if (text == "")
+        $(evt.target).parent().children('div').children('div').html('<span class="placeholder">' + $(evt.target)[0].placeholder + '</span>');
+
     }
   }
 

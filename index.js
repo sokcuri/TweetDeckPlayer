@@ -351,6 +351,41 @@ var run = chk_win => {
     win.webContents.insertCSS(paceCSS);
     let extraCSS = fs.readFileSync('./css/extra.css', 'utf8');
     win.webContents.insertCSS(extraCSS);
+    win.webContents.insertCSS(`
+      .backdrop {
+        position: absolute;
+        z-index: 1;
+        background-color: transparent;
+        overflow: auto;
+        pointer-events: none;
+        width: 100%;
+        height: 130px;
+        transition: transform 1s;
+      }
+      
+      .highlights {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        color: transparent;
+        -webkit-text-fill-color: black;
+        padding: 10px;
+        line-height: 18px;
+      }
+      
+      .js-compose-text {
+        z-index: 2;
+        position: inherit;
+        background-color: transparent;
+        color: rgb(60, 0, 248);
+        text-shadow: 0px 0px 0px transparent;
+        -webkit-text-fill-color: transparent;
+      }
+      .mark {
+        #border-radius: 3px;
+        color: transparent;
+        background-color: transparent;
+        -webkit-text-fill-color: red;
+      }`);
     win.webContents.send('apply-config');
     if (Config.data.customFonts) {
       

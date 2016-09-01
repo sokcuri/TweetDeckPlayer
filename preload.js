@@ -211,7 +211,79 @@ document.addEventListener('DOMContentLoaded', () => {
     // set min_width to modal context
     window.TD_mustaches['modal/modal_context.mustache'] = window.TD_mustaches['modal/modal_context.mustache'].replace('<div class="js-modal-context', '<div style="min-width: 560px;" class="js-modal-context');
     window.TD_mustaches['app_container.mustache'] = window.TD_mustaches['app_container.mustache'].replace('<div id="open-modal', '<div style="min-width: 650px;" id="open-modal');
+
+    // mention/url highlight
+    window.TD_mustaches['compose/compose_inline_reply.mustache'] = window.TD_mustaches['compose/compose_inline_reply.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text');
+    window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text'); 
   }
+  
+  function applyHighlights(text) {
+    text = text
+      .replace(/\n$/g, '\n\n')
+      .replace(/\B@[a-z0-9_-]+/gi, '<span class="mark">$&</span>');
+    return text;
+  }
+
+  var prev_focus;
+  // mention/url highlight
+  function handleChange(evt)
+  {
+    if (evt.target.id == "account-safeguard-checkbox" || evt.target.id == "inline-account-safeguard-checkbox")
+    {
+      var el = $('.js-compose-text');
+      for (var i = 0; i < el.length; i++)
+      {
+        var text = $(el[i]).val();
+
+        // 인라인 height 반영
+        if ($(el[i]).parent().children('div')[0].style != el[i].style.cssText)
+          $(el[i]).parent().children('div')[0].style = el[i].style.cssText;
+        
+        // html 하이라이트 반영
+        $(el[i]).parent().children('div').children('div').html(applyHighlights(text));
+
+        // 마지막 멘션 아이디가 셀렉션 지정되는 버그 회피
+        var x = el[i];
+        
+        if (typeof x.dataset.initcompl == 'undefined')
+        {
+          x.dataset.initcompl = true;
+          $(x).on({'scroll': handleScroll});
+        }
+        if (prev_focus != document.querySelector(':focus') && window.getSelection().toString() != "")
+        {
+          setTimeout(() => {
+            var v = $(x).val();
+            $(x).focus().val("").val(v);
+          }, 100);
+        }
+      }
+    }
+    prev_focus = document.querySelector(':focus');
+  }
+
+
+  function handleInput(evt)
+  {
+    if (evt.target.classList.contains('js-compose-text'))
+    {
+      var text = $(evt.target).val();
+      $(evt.target).parent().children('div').children('div').html(applyHighlights(text));
+    }
+  }
+
+  function handleScroll(evt)
+  {
+    if (evt.target.classList.contains('js-compose-text'))
+    {
+      var scrollTop = evt.target.scrollTop;
+      $(evt.target).parent().children('div').scrollTop(scrollTop);
+    
+      var scrollLeft = evt.target.scrollLeft;
+      $(evt.target).parent().children('div').scrollLeft(scrollLeft);
+    }
+  }
+  $(document).on({'input': handleInput, 'change': handleChange});
 
   if (document.title === 'TweetDeck') {
     document.title = 'TweetDeck Player';

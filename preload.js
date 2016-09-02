@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
         part = text.substr(start, end).replace(entities[i].url, '<span class="mark_url">$&</span>');
       else
         part = text.substr(start, end);
-        
+
       html_text += text.substr(prev_pos, start - prev_pos);
       html_text += part;
       prev_pos = end + start;
@@ -284,7 +284,6 @@ document.addEventListener('DOMContentLoaded', () => {
         {
           setTimeout(() => {
             var v = $(x).val();
-            console.log(window.getSelection().toString());
             if (window.getSelection().toString().length > 3)
               $(x).focus().val("").val(v);
           }, 100);

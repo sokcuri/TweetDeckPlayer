@@ -385,19 +385,17 @@ var run = chk_win => {
         #border-radius: 3px;
         color: transparent;
         background-color: transparent;
-        -webkit-text-fill-color: red;
+        -webkit-text-fill-color: #cb4f5f;
       }
       .mark_hashtag {
-        #border-radius: 3px;
         color: transparent;
         background-color: transparent;
-        -webkit-text-fill-color: blue;
+        -webkit-text-fill-color: #2b7bb9;
       }
       .mark_url {
-        #border-radius: 3px;
         color: transparent;
         background-color: transparent;
-        -webkit-text-fill-color: purple;
+        -webkit-text-fill-color: #a84dba;
       }
       .placeholder {
         color: transparent;

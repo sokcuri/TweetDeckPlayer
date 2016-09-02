@@ -241,9 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
         part = text.substr(start, end).replace(entities[i].url, '<span class="mark_url">$&</span>');
       else
         part = text.substr(start, end);
-
-      console.log(entities[i].indices);
-      console.log(i + ') ' + text.substr(start, end));
+        
       html_text += text.substr(prev_pos, start - prev_pos);
       html_text += part;
       prev_pos = end + start;

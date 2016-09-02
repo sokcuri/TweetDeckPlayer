@@ -373,7 +373,6 @@ var run = chk_win => {
         padding: 10px;
         line-height: 18px;
       }
-      
       .js-compose-text {
         z-index: 2;
         position: inherit;
@@ -382,11 +381,23 @@ var run = chk_win => {
         text-shadow: 0px 0px 0px transparent;
         -webkit-text-fill-color: transparent;
       }
-      .mark {
+      .mark_mention {
         #border-radius: 3px;
         color: transparent;
         background-color: transparent;
         -webkit-text-fill-color: red;
+      }
+      .mark_hashtag {
+        #border-radius: 3px;
+        color: transparent;
+        background-color: transparent;
+        -webkit-text-fill-color: blue;
+      }
+      .mark_url {
+        #border-radius: 3px;
+        color: transparent;
+        background-color: transparent;
+        -webkit-text-fill-color: purple;
       }
       .placeholder {
         color: transparent;

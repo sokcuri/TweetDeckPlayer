@@ -1,5 +1,6 @@
 const {remote, clipboard, ipcRenderer} = require('electron');
 const {Menu, MenuItem, dialog} = remote;
+const twitter = require('twitter-text');
 
 const Util = require('./util');
 
@@ -219,8 +220,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function applyHighlights(text) {
     text = text
-      .replace(/\n$/g, '\n\n')
-      .replace(/\B@[a-z0-9_-]+/gi, '<span class="mark">$&</span>');
+      .replace(/\n$/g, '\n\n');
+    //  .replace(/\B@[a-z0-9_-]+/gi, '<span class="mark">$&</span>');
+
+    var mentions = twttr.txt.extractMentions(text);
+    for(var i = 0; i < mentions.length; i++)
+      text = text.replace('@' + mentions[i], '<span class="mark_mention">$&</span>');
+      
+    var hashtags = twttr.txt.extractHashtags(text);
+    for(var i = 0; i < hashtags.length; i++)
+      text = text.replace('#' + hashtags[i], '<span class="mark_hashtag">$&</span>');
+
+    var urls = twttr.txt.extractUrls(text);
+    for(var i = 0; i < urls.length; i++)
+      text = text.replace(urls[i], '<span class="mark_url">$&</span>');
+    
+
     return text;
   }
 

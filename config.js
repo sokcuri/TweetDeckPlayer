@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
   // 설정파일 로드
-  _filePath: path.join(__dirname, 'config.json'),
+  _filePath: './config.json',
   _defaultConfig: {},
   data: {},
   load () {

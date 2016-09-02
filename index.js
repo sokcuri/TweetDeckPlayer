@@ -397,6 +397,11 @@ var run = chk_win => {
         background-color: transparent;
         -webkit-text-fill-color: #a84dba;
       }
+      .mark_heart {
+        color: transparent;
+        background-color: transparent;
+        -webkit-text-fill-color: #dd2e44;
+      }
       .placeholder {
         color: transparent;
         background-color: transparent;

@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyHighlights(text) {
     text = text
       .replace(/\n$/g, '\n\n')
-      .replace(/♥/gi, '<span class="mark_heart">$&</span>');
+      .replace(/♥/gi, '<mark class="mark_heart">$&</mark>');
 
     var entities = twitter.extractEntitiesWithIndices(text);
     var part;
@@ -235,11 +235,11 @@ document.addEventListener('DOMContentLoaded', () => {
       padd = 0;
 
       if (typeof entities[i].screenName != 'undefined' && entities[i].screenName.length > 2)
-        part = text.substr(start, end).replace('@' + entities[i].screenName, '<span class="mark_mention">$&</span>');
+        part = text.substr(start, end).replace('@' + entities[i].screenName, '<mark class="mark_mention">$&</mark>');
       else if (typeof entities[i].hashtag != 'undefined')
-        part = text.substr(start, end).replace('#' + entities[i].hashtag, '<span class="mark_hashtag">$&</span>');
+        part = text.substr(start, end).replace('#' + entities[i].hashtag, '<mark class="mark_hashtag">$&</mark>');
       else if (typeof entities[i].url != 'undefined')
-        part = text.substr(start, end).replace(entities[i].url, '<span class="mark_url">$&</span>');
+        part = text.substr(start, end).replace(entities[i].url, '<mark class="mark_url">$&</mark>');
       else
         part = text.substr(start, end);
 

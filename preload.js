@@ -221,22 +221,35 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyHighlights(text) {
     text = text
       .replace(/\n$/g, '\n\n');
-    //  .replace(/\B@[a-z0-9_-]+/gi, '<span class="mark">$&</span>');
 
-    var mentions = twttr.txt.extractMentions(text);
-    for(var i = 0; i < mentions.length; i++)
-      text = text.replace('@' + mentions[i], '<span class="mark_mention">$&</span>');
-      
-    var hashtags = twttr.txt.extractHashtags(text);
-    for(var i = 0; i < hashtags.length; i++)
-      text = text.replace('#' + hashtags[i], '<span class="mark_hashtag">$&</span>');
+    var entities = twitter.extractEntitiesWithIndices(text);
+    var part;
+    var html_text = "";
+    var prev_pos = 0;
+    var start, end;
+    for (var i = 0; i < entities.length; i++)
+    {
+      start = entities[i].indices[0];
+      end = entities[i].indices[1] - start;
+      padd = 0;
 
-    var urls = twttr.txt.extractUrls(text);
-    for(var i = 0; i < urls.length; i++)
-      text = text.replace(urls[i], '<span class="mark_url">$&</span>');
-    
+      if (typeof entities[i].screenName != 'undefined' && entities[i].screenName.length > 2)
+        part = text.substr(start, end).replace('@' + entities[i].screenName, '<span class="mark_mention">$&</span>');
+      else if (typeof entities[i].hashtag != 'undefined')
+        part = text.substr(start, end).replace('#' + entities[i].hashtag, '<span class="mark_hashtag">$&</span>');
+      else if (typeof entities[i].url != 'undefined')
+        part = text.substr(start, end).replace(entities[i].url, '<span class="mark_url">$&</span>');
+      else
+        part = text.substr(start, end);
 
-    return text;
+      console.log(entities[i].indices);
+      console.log(i + ') ' + text.substr(start, end));
+      html_text += text.substr(prev_pos, start - prev_pos);
+      html_text += part;
+      prev_pos = end + start;
+    }
+    html_text += text.substr(prev_pos);
+    return html_text;
   }
 
   var prev_focus;

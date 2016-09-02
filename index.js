@@ -360,6 +360,8 @@ var run = chk_win => {
         pointer-events: none;
         width: 100%;
         height: 130px;
+        font-weight: normal;
+        line-height: 18px;
         transition: transform 1s;
       }
       

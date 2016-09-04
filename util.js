@@ -9,7 +9,7 @@ module.exports = {
       var pos = href.substr(href.lastIndexOf('/')).lastIndexOf(':');
       if (pos == -1)
         pos = href.substr(href.lastIndexOf('/')).length;
-      href = href.substr(0, href.lastIndexOf('/') + pos) + ":orig";
+      href = href.substr(0, href.lastIndexOf('/') + pos) + ':orig';
     } else {
       if (href.search(this.twimg_profile) !== -1) {
         var pos = href.substr(href.lastIndexOf('/')).lastIndexOf('_');

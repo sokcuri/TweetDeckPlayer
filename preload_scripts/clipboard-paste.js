@@ -15,4 +15,4 @@ module.exports = function enablePaste () {
     }
     $(document).trigger('uiFilesAdded', { files });
   });
-}
+};

@@ -12,6 +12,7 @@ const WordFilter = require('./preload_scripts/wordfilter');
 const Unlinkis = require('./preload_scripts/unlinkis');
 const CBPaste = require('./preload_scripts/clipboard-paste');
 const TwtLib = require('./preload_scripts/twtlib');
+const AutoSaveFav = require('./preload_scripts/autosave-favorites');
 
 // 로딩 프로그레스 바 모듈 로드
 require('./pace.min.js');
@@ -165,15 +166,16 @@ window.addEventListener('contextmenu', e => {
 document.addEventListener('DOMContentLoaded', WordFilter);
 document.addEventListener('DOMContentLoaded', CBPaste);
 document.addEventListener('DOMContentLoaded', TwtLib);
+document.addEventListener('DOMContentLoaded', AutoSaveFav);
 
 if (config.enableUnlinkis) {
   document.addEventListener('DOMContentLoaded', Unlinkis);
 }
 
 // 트윗에 첨부된 이미지를 드래그해서 저장할 수 있도록 함
-document.addEventListener('dragstart', (evt) => {
-  var imageSrc = "";
-  var imageOrgSrc = "";
+document.addEventListener('dragstart', evt => {
+  var imageSrc = '';
+  var imageOrgSrc = '';
   // 트윗 미디어 이미지
   if (evt.srcElement.classList.contains('js-media-image-link'))
     imageSrc = evt.srcElement.style.backgroundImage.slice(5, -2);
@@ -186,14 +188,14 @@ document.addEventListener('dragstart', (evt) => {
   {
     imageOrgSrc = imageSrc;
     var image = Util.getOrigPath(imageSrc);
-    var ext = image.substr(image.lastIndexOf('.')+1);
-    var filename = image.substr(image.lastIndexOf('/')+1);
+    var ext = image.substr(image.lastIndexOf('.') + 1);
+    var filename = image.substr(image.lastIndexOf('/') + 1);
     if (filename.lastIndexOf(':') != -1) {
       ext = ext.substr(0, ext.lastIndexOf(':'));
       filename = filename.substr(0, filename.lastIndexOf(':'));
     }
     var detail = `image/${ext}:${filename}:${image}`;
-    evt.dataTransfer.setData("DownloadURL", detail);
+    evt.dataTransfer.setData('DownloadURL', detail);
   }
 
 }, false);
@@ -215,24 +217,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // mention/url highlight
     window.TD_mustaches['compose/compose_inline_reply.mustache'] = window.TD_mustaches['compose/compose_inline_reply.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text');
-    window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text'); 
+    window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text');
   }
 
   // detect to non-unicode char, purpose to inject to char before mark tag
-  function getFillCh(c) {
-    if (RegExp("^[a-zA-Z0-9]$").test(c) || c == '-')
+  function getFillCh (c) {
+    if (RegExp('^[a-zA-Z0-9]$').test(c) || c == '-')
       return ' ';
-    if (RegExp("^[\x20-\x7F]$").test(c))
+    if (RegExp('^[\x20-\x7F]$').test(c))
       return '.';
     return ' ';
   }
-  function applyHighlights(text) {
+  function applyHighlights (text) {
     text = text
       .replace(/\n$/g, '\n\n');
 
     var entities = twitter.extractEntitiesWithIndices(text);
     var part;
-    var html_text = "";
+    var html_text = '';
     var prev_pos = 0;
     var start, end;
     for (var i = 0; i < entities.length; i++)
@@ -240,13 +242,13 @@ document.addEventListener('DOMContentLoaded', () => {
       start = entities[i].indices[0];
       end = entities[i].indices[1] - start;
       padd = 0;
-      part = "";
+      part = '';
 
       // mentions
       if (typeof entities[i].screenName != 'undefined' && entities[i].screenName.length > 2)
       {
         if (start != 0)
-          part = '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>';
+          part = '<mark class="zero_char">' + getFillCh(text[start - 1]) + '</mark>';
         part += text.substr(start, end).replace('@' + entities[i].screenName, '<mark class="mark_mention">$&</mark>');
       }
 
@@ -254,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (typeof entities[i].hashtag != 'undefined')
       {
         if (start != 0)
-          part = '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>';
+          part = '<mark class="zero_char">' + getFillCh(text[start - 1]) + '</mark>';
         part += text.substr(start, end).replace('#' + entities[i].hashtag, '<mark class="mark_hashtag">$&</mark>');
       }
 
@@ -269,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
           entities[i].url = entities[i].url.substr(1);
         }
         if (start != 0)
-          part = '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>';
+          part = '<mark class="zero_char">' + getFillCh(text[start - 1]) + '</mark>';
         part += text.substr(start, end).replace(entities[i].url, '<mark class="mark_url">$&</mark>');
       }
       else
@@ -287,8 +289,8 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       if (html_text[i] == '♥')
       {
-        if(i != 0)
-          result += '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>';
+        if (i != 0)
+          result += '<mark class="zero_char">' + getFillCh(text[start - 1]) + '</mark>';
         result += '<mark class="mark_heart">' + html_text[i] + '</mark>';
       }
       else
@@ -300,9 +302,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   var prev_focus;
   // mention/url highlight
-  function handleChange(evt)
+  function handleChange (evt)
   {
-    if (evt.target.id == "account-safeguard-checkbox" || evt.target.id == "inline-account-safeguard-checkbox")
+    if (evt.target.id == 'account-safeguard-checkbox' || evt.target.id == 'inline-account-safeguard-checkbox')
     {
       var el = $('.js-compose-text');
       for (var i = 0; i < el.length; i++)
@@ -312,17 +314,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // 인라인 height 반영
         if ($(el[i]).parent().children('div')[0].style != el[i].style.cssText)
           $(el[i]).parent().children('div')[0].style = el[i].style.cssText;
-        
+
         // html 하이라이트 반영
         $(el[i]).parent().children('div').children('div').html(applyHighlights(text));
 
         // placeholder
-        if (text == "")
+        if (text == '')
           $(el[i]).parent().children('div').children('div').html('<span class="placeholder">' + el[i].placeholder + '</span>');
 
         // 마지막 멘션 아이디가 셀렉션 지정되는 버그 회피
         var x = el[i];
-        
+
         if (typeof x.dataset.initcompl == 'undefined')
         {
           x.dataset.initcompl = true;
@@ -333,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
           setTimeout(() => {
             var v = $(x).val();
             if (window.getSelection().toString().length > 3)
-              $(x).focus().val("").val(v);
+              $(x).focus().val('').val(v);
           }, 100);
         }
       }
@@ -342,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  function handleInput(evt)
+  function handleInput (evt)
   {
     if (evt.target.classList.contains('js-compose-text'))
     {
@@ -351,19 +353,19 @@ document.addEventListener('DOMContentLoaded', () => {
       $(evt.target).parent().children('div').children('div').html(applyHighlights(text));
 
       // placeholder
-      if (text == "")
+      if (text == '')
         $(evt.target).parent().children('div').children('div').html('<span class="placeholder">' + $(evt.target)[0].placeholder + '</span>');
 
     }
   }
 
-  function handleScroll(evt)
+  function handleScroll (evt)
   {
     if (evt.target.classList.contains('js-compose-text'))
     {
       var scrollTop = evt.target.scrollTop;
       $(evt.target).parent().children('div').scrollTop(scrollTop);
-    
+
       var scrollLeft = evt.target.scrollLeft;
       $(evt.target).parent().children('div').scrollLeft(scrollLeft);
     }

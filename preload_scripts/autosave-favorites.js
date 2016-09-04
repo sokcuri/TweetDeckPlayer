@@ -9,7 +9,7 @@ const config = Config.load();
 function download (url, filename) {
   let savepath = (config.autoSavePath || '').trim();
   if (!savepath) {
-    savepath = path.join(__dirname, '/images');
+    savepath = path.join(__dirname, '../Favorited Images');
     try {
       fs.mkdirSync(savepath);
     } catch (error) {

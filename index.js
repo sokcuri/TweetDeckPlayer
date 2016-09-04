@@ -402,6 +402,11 @@ var run = chk_win => {
         background-color: transparent;
         -webkit-text-fill-color: #dd2e44;
       }
+      .zero_char {
+        letter-spacing: -0.31em;
+        background-color: transparent;
+        -webkit-text-fill-color: transparent;
+      }
       .placeholder {
         color: transparent;
         background-color: transparent;

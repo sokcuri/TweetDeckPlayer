@@ -218,6 +218,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text'); 
   }
 
+  function getFillCh(c) {
+    if (RegExp("^[a-zA-Z0-9]$").test(c) || c == '-')
+      return ' ';
+    if (RegExp("^[\x20-\x7F]$").test(c))
+      return '.';
+    return ' ';
+  }
   function applyHighlights(text) {
     text = text
       .replace(/\n$/g, '\n\n')
@@ -233,13 +240,33 @@ document.addEventListener('DOMContentLoaded', () => {
       start = entities[i].indices[0];
       end = entities[i].indices[1] - start;
       padd = 0;
+      part = "";
 
       if (typeof entities[i].screenName != 'undefined' && entities[i].screenName.length > 2)
-        part = text.substr(start, end).replace('@' + entities[i].screenName, '<mark class="mark_mention">$&</mark>');
+      {
+        if (start != 0)
+          part = '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>'
+        part += text.substr(start, end).replace('@' + entities[i].screenName, '<mark class="mark_mention">$&</mark>');
+      }
       else if (typeof entities[i].hashtag != 'undefined')
-        part = text.substr(start, end).replace('#' + entities[i].hashtag, '<mark class="mark_hashtag">$&</mark>');
+      {
+        if (start != 0)
+          part = '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>'
+        part += text.substr(start, end).replace('#' + entities[i].hashtag, '<mark class="mark_hashtag">$&</mark>');
+      }
       else if (typeof entities[i].url != 'undefined')
-        part = text.substr(start, end).replace(entities[i].url, '<mark class="mark_url">$&</mark>');
+      {
+        if (start != 0 && text[start] == '-')
+        {
+          part = '';
+          start++;
+          end--;
+          entities[i].url = entities[i].url.substr(1);
+        }
+        if (start != 0)
+          part = '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>'
+        part += text.substr(start, end).replace(entities[i].url, '<mark class="mark_url">$&</mark>');
+      }
       else
         part = text.substr(start, end);
 

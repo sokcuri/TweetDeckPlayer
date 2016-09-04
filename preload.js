@@ -218,6 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text'); 
   }
 
+  // detect to non-unicode char, purpose to inject to char before mark tag
   function getFillCh(c) {
     if (RegExp("^[a-zA-Z0-9]$").test(c) || c == '-')
       return ' ';
@@ -227,8 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function applyHighlights(text) {
     text = text
-      .replace(/\n$/g, '\n\n')
-      .replace(/♥/gi, '<mark class="mark_heart">$&</mark>');
+      .replace(/\n$/g, '\n\n');
 
     var entities = twitter.extractEntitiesWithIndices(text);
     var part;
@@ -242,18 +242,23 @@ document.addEventListener('DOMContentLoaded', () => {
       padd = 0;
       part = "";
 
+      // mentions
       if (typeof entities[i].screenName != 'undefined' && entities[i].screenName.length > 2)
       {
         if (start != 0)
-          part = '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>'
+          part = '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>';
         part += text.substr(start, end).replace('@' + entities[i].screenName, '<mark class="mark_mention">$&</mark>');
       }
+
+      // hashtag
       else if (typeof entities[i].hashtag != 'undefined')
       {
         if (start != 0)
-          part = '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>'
+          part = '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>';
         part += text.substr(start, end).replace('#' + entities[i].hashtag, '<mark class="mark_hashtag">$&</mark>');
       }
+
+      // url
       else if (typeof entities[i].url != 'undefined')
       {
         if (start != 0 && text[start] == '-')
@@ -264,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
           entities[i].url = entities[i].url.substr(1);
         }
         if (start != 0)
-          part = '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>'
+          part = '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>';
         part += text.substr(start, end).replace(entities[i].url, '<mark class="mark_url">$&</mark>');
       }
       else
@@ -275,7 +280,22 @@ document.addEventListener('DOMContentLoaded', () => {
       prev_pos = end + start;
     }
     html_text += text.substr(prev_pos);
-    return html_text;
+
+    // heart highlight
+    var result = '';
+    for (var i = 0; i < html_text.length; i++)
+    {
+      if (html_text[i] == '♥')
+      {
+        if(i != 0)
+          result += '<mark class="zero_char">' + getFillCh(text[start-1]) + '</mark>';
+        result += '<mark class="mark_heart">' + html_text[i] + '</mark>';
+      }
+      else
+        result += html_text[i];
+    }
+
+    return result;
   }
 
   var prev_focus;

@@ -12,6 +12,9 @@ const Config = require('./config');
 
 let win, settingsWin, twtlibWin;
 
+// set to userdata folder
+app.setPath('userData', path.join(__dirname, '/data/'));
+
 ipcMain.on('load-config', (event, arg) => {
   var config = Config.load();
   event.returnValue = config;

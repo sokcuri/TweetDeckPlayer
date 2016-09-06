@@ -297,14 +297,19 @@ document.addEventListener('DOMContentLoaded', () => {
       {
         html_text += text.substr(prev_pos, start - prev_pos - (len - 140));
         prev_pos = start - (len - 140);
+        len = 140;
+        break;
       }
       else if (len + twitter.getTweetLength(text.substr(start, end)) > 140)
       {
         html_text += text.substr(prev_pos, start - prev_pos);
         prev_pos = start;
+        len = 140;
+        break;
       }
       else
       {
+        len += twitter.getTweetLength(text.substr(start, end));
         html_text += text.substr(prev_pos, start - prev_pos);
         html_text += part;
         prev_pos = end + start;

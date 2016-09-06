@@ -53,11 +53,6 @@ ipcRenderer.on('apply-config', event => {
     cl.remove('starry');
     cl.add('hearty');
   }
-
-  if (config.enableFastRetweet)
-    TD.services.TwitterStatus.prototype.retweet = TD.services.TwitterStatus.prototype.retweet_direct;
-  else
-    TD.services.TwitterStatus.prototype.retweet = TD.services.TwitterStatus.prototype.retweet_old;
 });
 
 // 우클릭시 임시 저장하는 이미지 주소와 링크 주소를 담는 변수
@@ -454,34 +449,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Fast Retweet
   TD.services.TwitterStatus.prototype.retweet_direct = function(e) {
-    var t, i, s, n;
-    var r = this.isRetweeted;
-    var o = TD.controller.clients.getClient(this.account.getKey());
-    this.setRetweeted(!this.isRetweeted);
-    var n = function(e) {
-        /*TD.controller.progressIndicator.addMessage(r ? TD.i("Unretweet failed") : TD.i("Retweet failed"))*/
-    }
-    var s = function(e) {
-      var t = TD.core.defer.fail();
-      if (403 === e.status || 404 === e.status)
-      {
-        TD.controller.progressIndicator.addMessage((r ? TD.i("Failed: Unretweet -") : TD.i("Failed: Retweet -")) + " " + JSON.parse(e.responseText).errors[0].message)
+    if (config.enableFastRetweet)
+    {
+      var t, i, s, n;
+      var r = this.isRetweeted;
+      var o = TD.controller.clients.getClient(this.account.getKey());
+      this.setRetweeted(!this.isRetweeted);
+      var n = function(e) {
       }
-      403 !== e.status && 404 !== e.status || (t = this.refreshRetweet(o)),
-      t.addErrback(function() {
-        this.setRetweeted(r),
-        n(e)
+      var s = function(e) {
+        var t = TD.core.defer.fail();
+        if (403 === e.status || 404 === e.status)
+        {
+          TD.controller.progressIndicator.addMessage((r ? TD.i("Failed: Unretweet -") : TD.i("Failed: Retweet -")) + " " + JSON.parse(e.responseText).errors[0].message)
+        }
+        403 !== e.status && 404 !== e.status || (t = this.refreshRetweet(o)),
+        t.addErrback(function() {
+          this.setRetweeted(r),
+          n(e)
+        }
+        .bind(this))
       }
-      .bind(this))
+      .bind(this)
+      var i = function(e) {
+          e.error && s()
+      }
+      r ? (o.unretweet(this.id, i, s),
+      t = ()=>{}) : (o.retweet(this.id, i, s),
+      t = TD.controller.stats.retweet),
+      t(this.getScribeItemData(), this.account.getUserID())
     }
-    .bind(this)
-    var i = function(e) {
-        e.error && s()
+    else
+    {
+      TD.services.TwitterStatus.prototype.retweet = function() {
+          var e = 1 === TD.storage.accountController.getAccountsForService("twitter").length;
+          this.isRetweeted && e ? (this.setRetweeted(!1),
+          $(document).trigger("uiUndoRetweet", {
+              tweetId: this.getMainTweet().id,
+              from: this.account.getKey()
+          })) : new TD.components.ActionDialog(this)
+      }
     }
-    r ? (o.unretweet(this.id, i, s),
-    t = ()=>{}) : (o.retweet(this.id, i, s),
-    t = TD.controller.stats.retweet),
-    t(this.getScribeItemData(), this.account.getUserID())
+
   }
   TD.services.TwitterStatus.prototype.refreshRetweet = function(e) {
     var t = new TD.core.defer.Deferred;
@@ -511,12 +520,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }, "POST", this.processTweet, n, i)
   }
   TD.services.TwitterStatus.prototype.retweet_old = TD.services.TwitterStatus.prototype.retweet;
+  TD.services.TwitterStatus.prototype.retweet = TD.services.TwitterStatus.prototype.retweet_direct;
   
-  var retweetFunc = TD.services.TwitterStatus.prototype.retweet.toString().substr(12);
-  retweetFunc = retweetFunc.substr(0, retweetFunc.length - 1);
-  retweetFunc = `if (config.enableFastRetweet == 'on'){ return new TD.services.TwitterStatus.prototype.retweet_direct };` + retweetFunc;
-  //TD.services.TwitterStatus.prototype.retweet = Function('', retweetFunc);
-
+  // TweetDeck Ready Check
   var TDP = {};
   TDP.onPageLoad = () => {
     setTimeout(() => {

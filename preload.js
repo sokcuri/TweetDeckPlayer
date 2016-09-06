@@ -54,13 +54,10 @@ ipcRenderer.on('apply-config', event => {
     cl.add('hearty');
   }
 
-  var pattern = `((c||a&&(!s||n||l))&&(h||m||this.publishChirpsInternal("publish","home",[e])))`;
-  if (TD.services.TwitterClient.prototype.processMiscTweet.toString().search(pattern) == -1)
-    console.warn("processMiscTweet inject failed");
+  if (config.enableFastRetweet)
+    TD.services.TwitterStatus.prototype.retweet = TD.services.TwitterStatus.prototype.retweet_direct;
   else
-  {
-
-  }
+    TD.services.TwitterStatus.prototype.retweet = TD.services.TwitterStatus.prototype.retweet_old;
 });
 
 // 우클릭시 임시 저장하는 이미지 주소와 링크 주소를 담는 변수
@@ -454,6 +451,71 @@ document.addEventListener('DOMContentLoaded', () => {
     processMiscTweet = processMiscTweet.replace(processMiscTweet_ptn, processMiscTweet_rep);
     TD.services.TwitterClient.prototype.processMiscTweet = Function('e', processMiscTweet);
   }
+
+  // Fast Retweet
+  TD.services.TwitterStatus.prototype.retweet_direct = function(e) {
+    var t, i, s, n;
+    var r = this.isRetweeted;
+    var o = TD.controller.clients.getClient(this.account.getKey());
+    this.setRetweeted(!this.isRetweeted);
+    var n = function(e) {
+        /*TD.controller.progressIndicator.addMessage(r ? TD.i("Unretweet failed") : TD.i("Retweet failed"))*/
+    }
+    var s = function(e) {
+      var t = TD.core.defer.fail();
+      if (403 === e.status || 404 === e.status)
+      {
+        TD.controller.progressIndicator.addMessage((r ? TD.i("Failed: Unretweet -") : TD.i("Failed: Retweet -")) + " " + JSON.parse(e.responseText).errors[0].message)
+      }
+      403 !== e.status && 404 !== e.status || (t = this.refreshRetweet(o)),
+      t.addErrback(function() {
+        this.setRetweeted(r),
+        n(e)
+      }
+      .bind(this))
+    }
+    .bind(this)
+    var i = function(e) {
+        e.error && s()
+    }
+    r ? (o.unretweet(this.id, i, s),
+    t = ()=>{}) : (o.retweet(this.id, i, s),
+    t = TD.controller.stats.retweet),
+    t(this.getScribeItemData(), this.account.getUserID())
+  }
+  TD.services.TwitterStatus.prototype.refreshRetweet = function(e) {
+    var t = new TD.core.defer.Deferred;
+    return e.show(this.id, t.callback.bind(t), t.errback.bind(t)),
+    t.addCallback(function(e) {
+      this.setRetweeted(e.isRetweeted)
+    }
+    .bind(this)),
+    t
+  }
+  TD.services.TwitterClient.prototype.retweet = function(e, t, i) {
+    var s = this;
+    var n = function(e) {
+      t(e)
+    }
+    this.makeTwitterCall(this.API_BASE_URL + "statuses/retweet/" + e + ".json", {
+        id: e
+    }, "POST", this.processTweet, n, i)
+  }
+  TD.services.TwitterClient.prototype.unretweet = function(e, t, i) {
+      var s = this;
+      var n = function(e) {
+          t(e)
+      }
+      this.makeTwitterCall(this.API_BASE_URL + "statuses/unretweet/" + e + ".json", {
+          id: e
+      }, "POST", this.processTweet, n, i)
+  }
+  TD.services.TwitterStatus.prototype.retweet_old = TD.services.TwitterStatus.prototype.retweet;
+  
+  var retweetFunc = TD.services.TwitterStatus.prototype.retweet.toString().substr(12);
+  retweetFunc = retweetFunc.substr(0, retweetFunc.length - 1);
+  retweetFunc = `if (config.enableFastRetweet == 'on'){ return new TD.services.TwitterStatus.prototype.retweet_direct };` + retweetFunc;
+  //TD.services.TwitterStatus.prototype.retweet = Function('', retweetFunc);
 
   var TDP = {};
   TDP.onPageLoad = () => {

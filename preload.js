@@ -450,26 +450,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Shift key detect
   window.shiftDown = false;
-  var setShiftDown = function(event){
-      if(event.keyCode === 16 || event.charCode === 16){
-          window.shiftDown = true;
-      }
-  };
-
-  var setShiftUp = function(event){
-      if(event.keyCode === 16 || event.charCode === 16){
-          window.shiftDown = false;
-      }
-  };
-
   var setShiftCheck = function(event){
       window.shiftDown = event.shiftKey;
   };
 
-  window.addEventListener? document.addEventListener('keydown', setShiftDown) : document.attachEvent('keydown', setShiftDown);
-  window.addEventListener? document.addEventListener('keyup', setShiftUp) : document.attachEvent('keyup', setShiftUp);
-  window.addEventListener? document.addEventListener('mousedown', setShiftCheck) : document.attachEvent('mousedown', setShiftCheck);
-  window.addEventListener? document.addEventListener('mouseup', setShiftCheck) : document.attachEvent('mouseup', setShiftCheck);
+  document.addEventListener('keydown', setShiftCheck);
+  document.addEventListener('keyup', setShiftCheck);
+  document.addEventListener('mousedown', setShiftCheck);
+  document.addEventListener('mouseup', setShiftCheck);
 
   // Fast Retweet
   TD.services.TwitterStatus.prototype.retweet_direct = function(e) {

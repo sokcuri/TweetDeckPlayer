@@ -471,6 +471,10 @@ var run = chk_win => {
           nodeIntegration: false,
         },
       });
+      popup.webContents.on('new-window', (e, url) => {
+        e.preventDefault();
+        shell.openExternal(url);
+      });
       popup.loadURL(url);
     } else {
       shell.openExternal(url);

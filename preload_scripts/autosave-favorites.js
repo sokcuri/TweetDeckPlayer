@@ -26,6 +26,7 @@ function download (url, filename) {
 function generateFilename (imgurl) {
   let splitted = imgurl.split('.');
   let ext = splitted[splitted.length - 1];
+  ext = ext.replace(/:\w+/, '');
   const now = new Date();
   let [date, time, zone] = now.toISOString().split(/T|\./);
   time = time.replace(/:/g, '');
@@ -56,7 +57,7 @@ function heartClickEventHandler (event) {
     images.each((i, elem) => {
       let match = elem.style.backgroundImage.match(/url\("(.+)"\)/);
       if (!match) return;
-      let imageURL = match[1].replace(':small',':orig');
+      let imageURL = match[1].replace(':small', ':orig');
       let filename = generateFilename(imageURL);
       download(imageURL, filename);
     });

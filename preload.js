@@ -290,15 +290,25 @@ document.addEventListener('DOMContentLoaded', () => {
         part = text.substr(start, end);
 
       // tweet text over 140
-      len += twitter.getTweetLength(text.substr(prev_pos, start - prev_pos)) + twitter.getTweetLength(text.substr(start, end));
-      html_text += text.substr(prev_pos, start - prev_pos);
+      len += twitter.getTweetLength(text.substr(prev_pos, start - prev_pos));
+
+      var size = start - prev_pos;
       if (len > 140)
       {
-        prev_pos = start;
-        break;
+        html_text += text.substr(prev_pos, start - prev_pos - (len - 140));
+        prev_pos = start - (len - 140);
       }
-      html_text += part;
-      prev_pos = end + start;
+      else if (len + twitter.getTweetLength(text.substr(start, end)) > 140)
+      {
+        html_text += text.substr(prev_pos, start - prev_pos);
+        prev_pos = start;
+      }
+      else
+      {
+        html_text += text.substr(prev_pos, start - prev_pos);
+        html_text += part;
+        prev_pos = end + start;
+      }
     }
     for (var i = prev_pos; i < text.length; i++)
     {

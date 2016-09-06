@@ -447,9 +447,26 @@ document.addEventListener('DOMContentLoaded', () => {
     TD.services.TwitterClient.prototype.processMiscTweet = Function('e', processMiscTweet);
   }
 
+  // Shift key detect
+  window.shiftDown = false;
+  var setShiftDown = function(event){
+      if(event.keyCode === 16 || event.charCode === 16){
+          window.shiftDown = true;
+      }
+  };
+
+  var setShiftUp = function(event){
+      if(event.keyCode === 16 || event.charCode === 16){
+          window.shiftDown = false;
+      }
+  };
+
+  window.addEventListener? document.addEventListener('keydown', setShiftDown) : document.attachEvent('keydown', setShiftDown);
+  window.addEventListener? document.addEventListener('keyup', setShiftUp) : document.attachEvent('keyup', setShiftUp);
+
   // Fast Retweet
   TD.services.TwitterStatus.prototype.retweet_direct = function(e) {
-    if (config.enableFastRetweet)
+    if (config.enableFastRetweet && !shiftDown)
     {
       var t, i, s, n;
       var r = this.isRetweeted;
@@ -488,7 +505,6 @@ document.addEventListener('DOMContentLoaded', () => {
           from: this.account.getKey()
       })) : new TD.components.ActionDialog(this)
     }
-
   }
   TD.services.TwitterStatus.prototype.refreshRetweet = function(e) {
     var t = new TD.core.defer.Deferred;

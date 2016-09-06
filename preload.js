@@ -481,14 +481,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     else
     {
-      TD.services.TwitterStatus.prototype.retweet = function() {
-          var e = 1 === TD.storage.accountController.getAccountsForService("twitter").length;
-          this.isRetweeted && e ? (this.setRetweeted(!1),
-          $(document).trigger("uiUndoRetweet", {
-              tweetId: this.getMainTweet().id,
-              from: this.account.getKey()
-          })) : new TD.components.ActionDialog(this)
-      }
+      var e = 1 === TD.storage.accountController.getAccountsForService("twitter").length;
+      this.isRetweeted && e ? (this.setRetweeted(!1),
+      $(document).trigger("uiUndoRetweet", {
+          tweetId: this.getMainTweet().id,
+          from: this.account.getKey()
+      })) : new TD.components.ActionDialog(this)
     }
 
   }

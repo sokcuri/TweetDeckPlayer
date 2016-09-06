@@ -1,7 +1,6 @@
 const fs = require('fs');
 const request = require('request');
 const path = require('path');
-const url = require('url');
 const Config = require('../config');
 
 const config = Config.load();
@@ -25,13 +24,8 @@ function download (url, filename) {
 }
 
 function generateFilename (imgurl) {
-  let ext = imgurl.match(/\.(\w+):/);
-  if (ext) {
-    ext = ext[1];
-  } else {
-    console.warn('Fail to get extension from url %s!', imgurl);
-    ext = 'png';
-  }
+  let splitted = imgurl.split('.');
+  let ext = splitted[splitted.length - 1];
   const now = new Date();
   let [date, time, zone] = now.toISOString().split(/T|\./);
   time = time.replace(/:/g, '');
@@ -66,6 +60,14 @@ function heartClickEventHandler (event) {
       let filename = generateFilename(imageURL);
       download(imageURL, filename);
     });
+  }
+  // find GIF
+  let video = tweet.find('video.js-media-gif');
+  if (video.length > 0) {
+    video = video[0];
+    let src = video.currentSrc;
+    let filename = generateFilename(src);
+    download(src, filename);
   }
 }
 

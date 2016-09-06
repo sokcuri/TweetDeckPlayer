@@ -307,9 +307,10 @@ document.addEventListener('DOMContentLoaded', () => {
         prev_pos = end + start;
       }
     }
+    var jc_cnt = parseInt($('.js-character-count')[0].value);
     for (var i = prev_pos; i < text.length; i++)
     {
-      if (len >= 140) break;
+      if (jc_cnt < 0 && len >= 140) break;
       html_text += text[i];
       len++;
       prev_pos++;

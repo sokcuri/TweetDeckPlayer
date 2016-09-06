@@ -231,7 +231,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // detect to non-unicode char, purpose to inject to char before mark tag
   function getFillCh (c) {
-    if (RegExp('^[a-zA-Z0-9]$').test(c) || c == '-')
+    if (RegExp('^[a-zA-Z0-9]$').test(c))
+      return '.';
+    if (c == '-')
       return ' ';
     if (RegExp('^[\x20-\x7F]$').test(c))
       return '.';
@@ -246,6 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var html_text = '';
     var prev_pos = 0;
     var start, end;
+    var len = 0;
     for (var i = 0; i < entities.length; i++)
     {
       start = entities[i].indices[0];
@@ -286,12 +289,29 @@ document.addEventListener('DOMContentLoaded', () => {
       else
         part = text.substr(start, end);
 
+      // tweet text over 140
+      len += twitter.getTweetLength(text.substr(prev_pos, start - prev_pos)) + twitter.getTweetLength(text.substr(start, end));
       html_text += text.substr(prev_pos, start - prev_pos);
+      if (len > 140)
+      {
+        prev_pos = start;
+        break;
+      }
       html_text += part;
       prev_pos = end + start;
     }
-    html_text += text.substr(prev_pos);
-
+    for (var i = prev_pos; i < text.length; i++)
+    {
+      if (len >= 140) break;
+      html_text += text[i];
+      len++;
+      prev_pos++;
+    }
+    if (len >= 140)
+    {
+      html_text += '<mark class="zero_char">' + getFillCh(text[prev_pos - 1]) + '</mark>';
+      html_text += '<mark class="mark_exceed">' + text.substr(prev_pos) + '</mark>';
+    }
     // heart highlight
     var result = '';
     for (var i = 0; i < html_text.length; i++)

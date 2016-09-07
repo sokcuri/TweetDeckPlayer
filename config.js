@@ -1,9 +1,12 @@
+const electron = require('electron');
+const {app} = electron;
 const fs = require('fs');
 const path = require('path');
+const Util = require('./util');
 
 module.exports = {
   // 설정파일 로드
-  _filePath: './config.json',
+  _filePath: Util.getUserDataPath() + '/config.json',
   _defaultConfig: {},
   data: {},
   load () {

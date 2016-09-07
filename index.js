@@ -4,16 +4,22 @@ const fs = require('fs');
 const path = require('path');
 const request = require('request');
 const child_process = require('child_process');
-
 const Util = require('./util');
+
+// set to userdata folder
+app.setPath('userData', Util.getUserDataPath());
 
 // 설정
 const Config = require('./config');
 
 let win, settingsWin, twtlibWin;
 
-// set to userdata folder
-app.setPath('userData', path.join(__dirname, '/data/'));
+function getSamePos(x, y)
+{
+  for (var i = 0; i < max(x.length, y.length); i++)
+    if (i == x.length || i == y.length || x[i] != y[i])
+      return i;
+}
 
 ipcMain.on('load-config', (event, arg) => {
   var config = Config.load();

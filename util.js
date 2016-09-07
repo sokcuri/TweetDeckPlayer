@@ -43,4 +43,12 @@ module.exports = {
     // 확장자를 반환
     return filename.substr(filename.lastIndexOf('.') + 1);
   },
+
+  // 유저 데이터 폴더를 리턴함
+  // 일반적인 환경 : __dirname/data/
+  // MacOS 패키징 : __dirname/<package-name> (ex. /TweetDeckPlayer.app -> /TweetDeckPlayer)
+  getUserDataPath () {
+    var d = __dirname.lastIndexOf('.app/Contents/Resources/app');
+    return (d != -1 ? __dirname.substr(0, d) + '/' : __dirname + '/data/');
+  }
 };

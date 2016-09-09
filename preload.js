@@ -307,9 +307,10 @@ document.addEventListener('DOMContentLoaded', () => {
         prev_pos = end + start;
       }
     }
+    var jc_cnt = parseInt($('.js-character-count')[0].value);
     for (var i = prev_pos; i < text.length; i++)
     {
-      if (len >= 140) break;
+      if (jc_cnt < 0 && len >= 140) break;
       html_text += text[i];
       len++;
       prev_pos++;
@@ -449,20 +450,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Shift key detect
   window.shiftDown = false;
-  var setShiftDown = function(event){
-      if(event.keyCode === 16 || event.charCode === 16){
-          window.shiftDown = true;
-      }
+  var setShiftCheck = function(event){
+      window.shiftDown = event.shiftKey;
   };
 
-  var setShiftUp = function(event){
-      if(event.keyCode === 16 || event.charCode === 16){
-          window.shiftDown = false;
-      }
-  };
-
-  window.addEventListener? document.addEventListener('keydown', setShiftDown) : document.attachEvent('keydown', setShiftDown);
-  window.addEventListener? document.addEventListener('keyup', setShiftUp) : document.attachEvent('keyup', setShiftUp);
+  document.addEventListener('keydown', setShiftCheck);
+  document.addEventListener('keyup', setShiftCheck);
+  document.addEventListener('mousedown', setShiftCheck);
+  document.addEventListener('mouseup', setShiftCheck);
 
   // Fast Retweet
   TD.services.TwitterStatus.prototype.retweet_direct = function(e) {

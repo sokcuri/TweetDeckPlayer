@@ -12,6 +12,7 @@ module.exports = (function(win, doc, undefined) {
   var rootElement = doc.createElement('div');
   rootElement.className = 'emojipad';
   rootElement.innerHTML = '<header class="emoji-category"></header><div class="emoji-container"></div><div class="emoji-tabs"></div>';
+  rootElement.onclick = e => e.stopPropagation();
 
   var me = {
     element: rootElement,
@@ -20,8 +21,14 @@ module.exports = (function(win, doc, undefined) {
       rootElement.style.left = `${x}px`;
       rootElement.style.top = `${y}px`;
     },
-    hide: () => rootElement.style.display = 'none',
-    onEmojiClick: chr => console.log('Not implemented: ' + chr)
+    hide: () => {
+      rootElement.style.display = 'none';
+    },
+    onEmojiClick: chr => console.log('Not implemented: ' + chr),
+    get isOpen() {
+      if (rootElement.style.display == 'none') return false;
+      else return true;
+    }
   };
 
   for (let d of data)

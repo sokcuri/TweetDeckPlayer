@@ -467,6 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
       var r = this.isRetweeted;
       var o = TD.controller.clients.getClient(this.account.getKey());
       this.setRetweeted(!this.isRetweeted);
+      this.animateRetweet(e.element);
       var n = function(e) {
       }
       var s = function(e) {
@@ -509,6 +510,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     .bind(this)),
     t
+  }
+  TD.services.TwitterStatus.prototype.animateRetweet = function(e) {
+        var t = "anim anim-slower anim-bounce-in";
+        window.requestAnimationFrame(function() {
+            e.find('a[rel="retweet"]').toggleClass(t, this.isRetweeted)
+        }
+        .bind(this))
   }
   TD.services.TwitterClient.prototype.retweet = function(e, t, i) {
     var s = this;

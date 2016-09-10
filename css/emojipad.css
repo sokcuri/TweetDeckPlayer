@@ -1,0 +1,121 @@
+.emojipad {
+  display: inline-block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  padding: 4px;
+  width: 290px;
+  background: rgba(240, 240, 240, 0.85);
+  border: 1px solid silver;
+  border-radius: 5px;
+  font-family: ".SFNSText-Regular", 'Segoe UI', 'Yu Gothic UI', 'Meiryo UI', 'Malgun Gothic', 'Tahoma', 'Gulim', sans-serif;
+  color: black;
+  -webkit-user-select: none;
+  user-select: none;
+  z-index: 2147483647;
+}
+
+.emoji-category {
+  padding: 0 5px 5px 5px;
+  font-family: -apple-system, '.SFNSText-Regular';
+  font-size: 13px;
+  font-weight: bold;
+  cursor: default;
+}
+
+.emoji-container {
+  padding: 5px;
+  width: 270px;
+  height: 224px;
+  overflow: hidden;
+  background: white;
+  border-radius: 3px;
+}
+
+.emoji-container.first-tab {
+  border-bottom-left-radius: 0;
+}
+
+.emoji-container.last-tab {
+  border-bottom-right-radius: 0;
+}
+
+.emoji-page {
+  width: 270px;
+  height: 224px;
+  overflow-y: scroll;
+  line-height: 0;
+  display: none;
+}
+
+.emoji-page.active {
+  display: block;
+}
+
+.emoji-page::-webkit-scrollbar {
+  width: 14px;
+}
+
+.emoji-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.emoji-page::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border: 3px solid transparent;
+  border-radius: 9999px;
+  background-clip: padding-box;
+}
+
+.emoji-item {
+  display: inline-block;
+  padding: 2px 4px;
+  width: 24px;
+  height: 24px;
+}
+
+.emoji-item img.emoji {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.emoji-tabs {
+  width: 280px;
+  line-height: 0;
+}
+
+.emoji-tab {
+  box-sizing: border-box;
+  width: 12.5%;
+  line-height: 0;
+  background-color: transparent;
+  border: none;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+.emoji-tab:not(.active):hover {
+}
+
+.emoji-tab:focus {
+  outline: none;
+}
+
+.emoji-tab.active {
+  background-color: white;
+}
+
+.emoji-tab img.emoji {
+  margin: 2px 0;
+  width: 18px;
+  height: 18px;
+  transition: -webkit-filter 0.3s;
+  -webkit-filter: grayscale(1);
+}
+
+.emoji-tab.active img.emoji,
+.emoji-tab:hover img.emoji {
+  -webkit-filter: none;
+}

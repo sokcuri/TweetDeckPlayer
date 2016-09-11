@@ -1,6 +1,8 @@
 const {remote, clipboard, ipcRenderer} = require('electron');
 const {Menu, MenuItem, dialog} = remote;
+const fs = require('fs');
 const twitter = require('twitter-text');
+const twemoji = require('twemoji');
 
 const Util = require('./util');
 
@@ -13,6 +15,7 @@ const Unlinkis = require('./preload_scripts/unlinkis');
 const CBPaste = require('./preload_scripts/clipboard-paste');
 const TwtLib = require('./preload_scripts/twtlib');
 const AutoSaveFav = require('./preload_scripts/autosave-favorites');
+const EmojiPad = require('./preload_scripts/emojipad');
 
 // 로딩 프로그레스 바 모듈 로드
 require('./pace.min.js');
@@ -219,6 +222,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // mention/url highlight
     window.TD_mustaches['compose/compose_inline_reply.mustache'] = window.TD_mustaches['compose/compose_inline_reply.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text');
     window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text');
+
+    // create emojipad entry point
+    window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<div class="js-send-button-container', '<div class="btn btn-on-blue padding-v--9 emojipad--entry-point"><img class="emoji" src="https://twemoji.maxcdn.com/2/72x72/1f600.png" style="pointer-events:none;"></div> <div class="js-send-button-container').replace('<textarea class="js-compose-text', '<textarea id="docked-textarea" class="js-compose-text');
   }
 
   // detect to non-unicode char, purpose to inject to char before mark tag
@@ -548,6 +554,21 @@ document.addEventListener('DOMContentLoaded', () => {
           const cl = document.body.classList;
           cl.remove('hearty');
           cl.add('starry');
+        }
+
+        var emojiPadCSS = document.createElement('link');
+        var dockBtn = document.getElementsByClassName('emojipad--entry-point')[0]
+        document.body.appendChild(EmojiPad.element);
+        dockBtn.onclick = e => EmojiPad.show(e.clientX, e.clientY);
+        document.body.addEventListener('click', e => {
+          if (e.target != dockBtn && EmojiPad.isOpen) EmojiPad.hide();
+        }, false);
+        EmojiPad.onEmojiClick = chr => {
+          var txt = document.getElementById('docked-textarea');
+          txt.value += chr;
+          var evt = document.createEvent("HTMLEvents");
+          evt.initEvent("change", false, true);
+          txt.dispatchEvent(evt);
         }
       }
     }, 1000);

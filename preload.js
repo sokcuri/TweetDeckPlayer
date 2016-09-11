@@ -285,42 +285,15 @@ document.addEventListener('DOMContentLoaded', () => {
       len += twitter.getTweetLength(text.substr(prev_pos, start - prev_pos));
 
       var size = start - prev_pos;
-      if (len > 140)
-      {
-        html_text += text.substr(prev_pos, start - prev_pos - (len - 140));
-        prev_pos = start - (len - 140);
-        len = 140;
-        break;
-      }
-      else if (len + twitter.getTweetLength(text.substr(start, end)) > 140)
-      {
-        html_text += text.substr(prev_pos, start - prev_pos);
-        prev_pos = start;
-        len = 140;
-        break;
-      }
-      else
-      {
-        len += twitter.getTweetLength(text.substr(start, end));
-        html_text += text.substr(prev_pos, start - prev_pos);
-        html_text += part;
-        prev_pos = end + start;
-      }
+
+      len += twitter.getTweetLength(text.substr(start, end));
+      html_text += text.substr(prev_pos, start - prev_pos);
+      html_text += part;
+      prev_pos = end + start;
     }
 
     var jc_cnt = parseInt($('.js-character-count')[0].value);
-    for (var i = prev_pos; i < text.length; i++)
-    {
-      if (jc_cnt < 0 && len >= 140) break;
-      html_text += text[i];
-      len++;
-      prev_pos++;
-    }
-    if (len >= 140)
-    {
-      html_text += '<mark class="zero_char">' + getFillCh(text[prev_pos - 1]) + '</mark>';
-      html_text += '<mark class="mark_exceed">' + text.substr(prev_pos) + '</mark>';
-    }
+    html_text += text.substr(prev_pos);
     
     // heart highlight
     var result = '';

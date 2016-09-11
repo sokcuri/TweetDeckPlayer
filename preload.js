@@ -428,15 +428,13 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (!e.rep && e.which == 13 && config.enterKeyTweet == 'on')
     {
       el = document.activeElement;
-      if (el && (el.tagName.toLowerCase() === 'input' && el.type === 'text') ||
-         (el.tagName.toLowerCase() === 'textarea'))
+      if (el && el.classList.contains('js-compose-text') && e.shiftKey != true &&
+         ((el.tagName.toLowerCase() === 'input' && el.type === 'text') ||
+         (el.tagName.toLowerCase() === 'textarea')))
       {
-        if (e.shiftKey != true)
-        {
-          e.preventDefault();
-          e.stopPropagation();
-          $(document.activeElement).trigger(jQuery.Event('keypress', {which: e.which, ctrlKey: true, rep: true}));
-        }
+        e.preventDefault();
+        e.stopPropagation();
+        $(document.activeElement).trigger(jQuery.Event('keypress', {which: e.which, keyCode: e.which, ctrlKey: true, rep: true}));
       }
     }
   });

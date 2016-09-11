@@ -307,6 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
         prev_pos = end + start;
       }
     }
+
     var jc_cnt = parseInt($('.js-character-count')[0].value);
     for (var i = prev_pos; i < text.length; i++)
     {
@@ -320,6 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
       html_text += '<mark class="zero_char">' + getFillCh(text[prev_pos - 1]) + '</mark>';
       html_text += '<mark class="mark_exceed">' + text.substr(prev_pos) + '</mark>';
     }
+    
     // heart highlight
     var result = '';
     for (var i = 0; i < html_text.length; i++)
@@ -422,6 +424,21 @@ document.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
       $(document.activeElement).trigger(jQuery.Event('keypress', {which: e.which}));
     }
+    // 엔터키로 트윗하기
+    else if (!e.rep && e.which == 13 && config.enterKeyTweet == 'on')
+    {
+      el = document.activeElement;
+      if (el && (el.tagName.toLowerCase() === 'input' && el.type === 'text') ||
+         (el.tagName.toLowerCase() === 'textarea'))
+      {
+        if (e.shiftKey != true)
+        {
+          e.preventDefault();
+          e.stopPropagation();
+          $(document.activeElement).trigger(jQuery.Event('keypress', {which: e.which, ctrlKey: true, rep: true}));
+        }
+      }
+    }
   });
 
   $(document).on('mouseover', '.tweet-timestamp', e => {
@@ -512,11 +529,11 @@ document.addEventListener('DOMContentLoaded', () => {
     t
   }
   TD.services.TwitterStatus.prototype.animateRetweet = function(e) {
-        var t = "anim anim-slower anim-bounce-in";
-        window.requestAnimationFrame(function() {
-            e.find('a[rel="retweet"]').toggleClass(t, this.isRetweeted)
-        }
-        .bind(this))
+    var t = "anim anim-slower anim-bounce-in";
+    window.requestAnimationFrame(function() {
+      e.find('a[rel="retweet"]').toggleClass(t, this.isRetweeted)
+    }
+    .bind(this))
   }
   TD.services.TwitterClient.prototype.retweet = function(e, t, i) {
     var s = this;

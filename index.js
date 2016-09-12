@@ -327,13 +327,11 @@ ipcMain.on('nogpu-relaunch', () => {
 
 // 트윗덱 플레이어 실행 프로시저
 var run = chk_win => {
-  const ses = session.fromPartition('persist:main');
 
   var preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
   preference.icon = path.join(__dirname, 'tweetdeck.ico');
   preference.webPreferences = {
     nodeIntegration: false,
-    partition: ses,
     preload: path.join(__dirname, 'preload.js'),
   };
   win = new BrowserWindow(preference);

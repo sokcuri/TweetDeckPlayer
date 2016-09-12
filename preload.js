@@ -224,12 +224,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // detect to non-unicode char, purpose to inject to char before mark tag
   function getFillCh (c) {
     if (RegExp('^[a-zA-Z0-9]$').test(c))
-      return '.';
+      return getFillPtn('.');
     if (c == '-')
-      return ' ';
+      return getFillPtn(' ');
     if (RegExp('^[\x20-\x7F]$').test(c))
-      return '.';
-    return ' ';
+      return getFillPtn('.');
+    return getFillPtn(' ');
+  }
+  function getFillPtn (c) {
+    var cl = (c == '.' ? "zero_char_dot" : "zero_char");
+    return '<mark class="' + cl + '">' + c + '</mark>';
   }
   function applyHighlights (text) {
     text = text
@@ -252,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (typeof entities[i].screenName != 'undefined' && entities[i].screenName.length > 2)
       {
         if (start != 0)
-          part = '<mark class="zero_char">' + getFillCh(text[start - 1]) + '</mark>';
+          part = getFillCh(text[start - 1]);
         part += text.substr(start, end).replace('@' + entities[i].screenName, '<mark class="mark_mention">$&</mark>');
       }
 
@@ -260,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (typeof entities[i].hashtag != 'undefined')
       {
         if (start != 0)
-          part = '<mark class="zero_char">' + getFillCh(text[start - 1]) + '</mark>';
+          part = getFillCh(text[start - 1]);
         part += text.substr(start, end).replace('#' + entities[i].hashtag, '<mark class="mark_hashtag">$&</mark>');
       }
 
@@ -275,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
           entities[i].url = entities[i].url.substr(1);
         }
         if (start != 0)
-          part = '<mark class="zero_char">' + getFillCh(text[start - 1]) + '</mark>';
+          part = getFillCh(text[start - 1]);
         part += text.substr(start, end).replace(entities[i].url, '<mark class="mark_url">$&</mark>');
       }
       else

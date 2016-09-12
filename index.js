@@ -416,7 +416,12 @@ var run = chk_win => {
         background-color: #FF5A5A;
       }
       .zero_char {
-        letter-spacing: -0.31em;
+        letter-spacing: -0.28em;
+        background-color: transparent;
+        -webkit-text-fill-color: transparent;
+      }
+      .zero_char_dot {
+        letter-spacing: -0.3em;
         background-color: transparent;
         -webkit-text-fill-color: transparent;
       }

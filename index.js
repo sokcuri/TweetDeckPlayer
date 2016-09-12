@@ -360,6 +360,8 @@ var run = chk_win => {
     win.webContents.insertCSS(paceCSS);
     let extraCSS = fs.readFileSync(path.join(__dirname, 'css/extra.css'), 'utf8');
     win.webContents.insertCSS(extraCSS);
+    let emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
+    win.webContents.insertCSS(emojipadCSS);
     win.webContents.insertCSS(`
       .backdrop {
         position: absolute;

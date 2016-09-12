@@ -544,6 +544,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!TD || !TD.ready) {
         TDP.onPageLoad();
       } else {
+        ipcRenderer.send('page-ready-tdp', this);
         TD.controller.progressIndicator.addMessage(TD.i(VERSION));
         setTimeout(() => {
           TD.settings.setUseStream(TD.settings.getUseStream());

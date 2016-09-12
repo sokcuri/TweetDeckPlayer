@@ -327,7 +327,6 @@ ipcMain.on('nogpu-relaunch', () => {
 
 // 트윗덱 플레이어 실행 프로시저
 var run = chk_win => {
-
   var preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
   preference.icon = path.join(__dirname, 'tweetdeck.ico');
   preference.webPreferences = {
@@ -358,6 +357,9 @@ var run = chk_win => {
     win.webContents.insertCSS(paceCSS);
     let extraCSS = fs.readFileSync(path.join(__dirname, 'css/extra.css'), 'utf8');
     win.webContents.insertCSS(extraCSS);
+  });
+
+  ipcMain.on('page-ready-tdp', (event, arg) => {
     let emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
     win.webContents.insertCSS(emojipadCSS);
     win.webContents.insertCSS(`
@@ -464,7 +466,7 @@ var run = chk_win => {
       }
     });
   });
-
+  
   win.on('close', () => {
     Config.load();
     Config.data.bounds = win.getBounds();

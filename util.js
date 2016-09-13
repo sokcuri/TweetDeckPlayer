@@ -48,7 +48,13 @@ module.exports = {
   // 일반적인 환경 : __dirname/data/
   // MacOS 패키징 : __dirname/<package-name> (ex. /TweetDeckPlayer.app -> /TweetDeckPlayer)
   getUserDataPath () {
-    var d = __dirname.lastIndexOf('.app/Contents/Resources/app');
-    return (d != -1 ? __dirname.substr(0, d) + '/' : __dirname + '/data/');
+    var a = __dirname.substr(0, __dirname.lastIndexOf('/'));
+    var b = __dirname.substr(0, __dirname.lastIndexOf('\\'));
+    if (__dirname.lastIndexOf('.app/Contents/Resources/app') != -1)
+      return __dirname.substr(0, d) + '/';
+    else if (__dirname.lastIndexOf('.asar') != -1)
+      return (a.length > b.length ? a : b) + '/data/'
+    else
+      return __dirname + '/data/';
   }
 };

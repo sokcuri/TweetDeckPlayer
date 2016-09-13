@@ -2,13 +2,14 @@ const fs = require('fs');
 const request = require('request');
 const path = require('path');
 const Config = require('../config');
+const Util = require('../util');
 
 const config = Config.load();
 
 function download (url, filename) {
   let savepath = (config.autoSavePath || '').trim();
   if (!savepath) {
-    savepath = path.join(__dirname, '../Favorited Images');
+    savepath = path.join(Util.getWritableRootPath(), 'Favorited Images');
     try {
       fs.mkdirSync(savepath);
     } catch (error) {

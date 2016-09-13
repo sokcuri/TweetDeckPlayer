@@ -58,5 +58,21 @@ module.exports = {
       return (a.length > b.length ? a : b);
     else
       return __dirname + '/data/';
+  },
+  getWritableRootPath () {
+    var a = __dirname.substr(0, __dirname.lastIndexOf('/'));
+    var b = __dirname.substr(0, __dirname.lastIndexOf('\\'));
+    var c = __dirname.lastIndexOf('.asar');
+    var d = __dirname.lastIndexOf('.app/Contents/Resources/app');
+    if (d != -1)
+      return __dirname.substr(0, d) + '/';
+    else if (c != -1)
+    {
+      var e = (a.length > b.length ? a : b);
+      e = __dirname.substr(0, e - 1);
+      return e.substr(0, e.lastIndexOf('/'));
+    }
+    else
+      return __dirname + '/';
   }
 };

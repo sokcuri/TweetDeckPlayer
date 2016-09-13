@@ -1,4 +1,4 @@
-const {remote, clipboard, ipcRenderer} = require('electron');
+const {remote, clipboard, ipcRenderer, shell} = require('electron');
 const {Menu, MenuItem, dialog} = remote;
 const fs = require('fs');
 const twitter = require('twitter-text');
@@ -294,7 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
       else
         part = text.substr(start, end);
 
-      // tweet text over 140
       len += twitter.getTweetLength(text.substr(prev_pos, start - prev_pos));
 
       var size = start - prev_pos;
@@ -449,9 +448,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Shift key detect
-  window.shiftDown = false;
   var setShiftCheck = function(event){
-      window.shiftDown = event.shiftKey;
+      remote.getGlobal('sharObj').shiftDown = event.shiftKey;
   };
 
   document.addEventListener('keydown', setShiftCheck);

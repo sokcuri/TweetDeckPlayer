@@ -43,6 +43,11 @@ ipcMain.on('request-theme', event => {
   );
 });
 
+
+// global
+global.sharObj = {};
+global.sharObj.shiftDown = false;
+
 // 프로그램 시작시 설정파일을 로드
 Config.load();
 
@@ -282,6 +287,20 @@ var sub_copy_link = webContents => ({
   },
 });
 
+// popup
+var sub_copy_page_url = webContents => ({
+  label: 'Copy Page URL',
+  click () {
+    webContents.send('command', 'copypageurl');
+  },
+});
+var sub_open_page_external = webContents => ({
+  label: 'Open Page in Browser',
+  click () {
+    webContents.send('command', 'openpageexternal');
+  },
+});
+
 app.on('ready', () => {
     // 리눅스 일부 환경에서 검은색으로 화면이 뜨는 문제 해결을 위한 코드
     // chrome://gpu/ 를 확인해 Canvas Hardware acceleration이 사용 불가면 disable-gpu를 달아준다
@@ -476,12 +495,15 @@ var run = chk_win => {
 
   win.webContents.on('new-window', (e, url) => {
     e.preventDefault();
-    if (Config.data.openURLInInternalBrowser) {
+    if (global.sharObj.shiftDown)
+      shell.openExternal(url);
+    else if (Config.data.openURLInInternalBrowser) {
       let popup = new BrowserWindow({
         parent: win,
         webPreferences: {
           webSecurity: true,
           nodeIntegration: false,
+          preload: path.join(__dirname, 'preload_popup.js'),
         },
       });
       popup.webContents.on('new-window', (e, url) => {
@@ -497,7 +519,7 @@ var run = chk_win => {
 };
 
 // 컨텍스트 메뉴
-ipcMain.on('context-menu', (event, menu, isRange, Addr) => {
+ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
   var template = [];
   var separator = { type: 'separator' };
   switch (menu) {
@@ -580,6 +602,14 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr) => {
       template.push(sub_reload(event.sender));
       break;
   }
+
+  if (isPopup)
+  {
+      template.push(separator);
+      template.push(sub_copy_page_url(event.sender));
+      template.push(sub_open_page_external(event.sender));
+  }
+
   var contextMenu = Menu.buildFromTemplate(template);
   contextMenu.popup(win);
   return;

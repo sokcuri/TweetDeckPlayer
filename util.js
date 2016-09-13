@@ -53,9 +53,13 @@ module.exports = {
     var c = __dirname.lastIndexOf('.asar');
     var d = __dirname.lastIndexOf('.app/Contents/Resources/app');
     if (d != -1)
-      return __dirname.substr(0, d) + '/';
+      return __dirname.substr(0, d) + '/data/';
     else if (c != -1)
-      return (a.length > b.length ? a : b);
+    {
+      var e = (a.length > b.length ? a : b);
+      e = __dirname.substr(0, e - 1);
+      return e.substr(0, e.lastIndexOf('/'));
+    }
     else
       return __dirname + '/data/';
   },

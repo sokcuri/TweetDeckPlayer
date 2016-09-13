@@ -458,7 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Fast Retweet
   TD.services.TwitterStatus.prototype.retweet_direct = function(e) {
-    if (config.enableFastRetweet && !shiftDown)
+    if (config.enableFastRetweet && !remote.getGlobal('sharObj').shiftDown)
     {
       var t, i, s, n;
       var r = this.isRetweeted;

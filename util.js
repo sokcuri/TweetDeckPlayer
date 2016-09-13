@@ -50,9 +50,11 @@ module.exports = {
   getUserDataPath () {
     var a = __dirname.substr(0, __dirname.lastIndexOf('/'));
     var b = __dirname.substr(0, __dirname.lastIndexOf('\\'));
-    if (__dirname.lastIndexOf('.app/Contents/Resources/app') != -1)
+    var c = __dirname.lastIndexOf('.asar');
+    var d = __dirname.lastIndexOf('.app/Contents/Resources/app');
+    if (d != -1)
       return __dirname.substr(0, d) + '/';
-    else if (__dirname.lastIndexOf('.asar') != -1)
+    else if (c != -1)
       return (a.length > b.length ? a : b);
     else
       return __dirname + '/data/';

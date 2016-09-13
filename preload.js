@@ -1,3 +1,4 @@
+
 const {remote, clipboard, ipcRenderer, shell} = require('electron');
 const {Menu, MenuItem, dialog} = remote;
 const fs = require('fs');
@@ -227,6 +228,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<div class="js-send-button-container', '<div class="btn btn-on-blue padding-v--9 emojipad--entry-point"><img class="emoji" src="https://twemoji.maxcdn.com/2/72x72/1f600.png" style="pointer-events:none;"></div> <div class="js-send-button-container').replace('<textarea class="js-compose-text', '<textarea id="docked-textarea" class="js-compose-text');
   }
 
+  if (document.title === 'TweetDeck') {
+    document.title = 'TweetDeck Player';
+  } else {
+    document.title = `TweetDeck Player - ${document.title}`;
+  }
+  
   // detect to non-unicode char, purpose to inject to char before mark tag
   function getFillCh (c) {
     if (RegExp('^[a-zA-Z0-9]$').test(c))
@@ -393,12 +400,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   $(document).on({'input': handleInput, 'change': handleChange});
-
-  if (document.title === 'TweetDeck') {
-    document.title = 'TweetDeck Player';
-  } else {
-    document.title = `TweetDeck Player - ${document.title}`;
-  }
 
   // 맥용 한글 기본 입력기 이슈 해결
   $(document).on('keydown', e => {

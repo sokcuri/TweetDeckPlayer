@@ -355,6 +355,7 @@ var run = chk_win => {
   win = new BrowserWindow(preference);
   win.loadURL('https://tweetdeck.twitter.com');
 
+
   // 체크를 위한 윈도우가 존재하는 경우 닫기
   if (chk_win) {
     chk_win.close();
@@ -503,7 +504,7 @@ var run = chk_win => {
         webPreferences: {
           webSecurity: true,
           nodeIntegration: false,
-          preload: path.join(__dirname, 'preload_popup.js'),
+//          preload: path.join(__dirname, 'preload_popup.js'),
         },
       });
       popup.webContents.on('new-window', (e, url) => {

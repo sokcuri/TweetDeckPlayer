@@ -7,8 +7,8 @@ module.exports = (function(win, doc, undefined) {
   "use strict";
   const fs = require('fs');
   const twemoji = require('twemoji');
-
-  var data = JSON.parse(fs.readFileSync('emoji.json'), 'utf8');
+  const path = require('path');
+  var data = JSON.parse(fs.readFileSync(path.join(__dirname, '/../emoji.json')), 'utf8');
   var rootElement = doc.createElement('div');
   rootElement.className = 'emojipad';
   rootElement.innerHTML = '<header class="emoji-category"></header><div class="emoji-container"></div><div class="emoji-tabs"></div>';

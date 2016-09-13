@@ -243,7 +243,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function applyHighlights (text) {
     text = text
-      .replace(/\n$/g, '\n\n');
+      .replace(/\n$/g, '\n\n')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
 
     var entities = twitter.extractEntitiesWithIndices(text);
     var part;
@@ -318,7 +321,6 @@ document.addEventListener('DOMContentLoaded', () => {
       else
         result += html_text[i];
     }
-
     return result;
   }
 

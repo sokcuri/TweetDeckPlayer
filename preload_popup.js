@@ -5,6 +5,7 @@ const Util = require('./util');
 
 const Config = require('./config');
 const VERSION = require('./version');
+const Unlinkis = require('./preload_scripts/unlinkis');
 
 // 로딩 프로그레스 바 모듈 로드
 require('./pace.min.js');
@@ -116,11 +117,6 @@ window.addEventListener('contextmenu', e => {
   ipcRenderer.send('context-menu', target, is_range, Addr, true);
 }, false);
 
-document.addEventListener('DOMContentLoaded', WordFilter);
-document.addEventListener('DOMContentLoaded', CBPaste);
-document.addEventListener('DOMContentLoaded', TwtLib);
-document.addEventListener('DOMContentLoaded', AutoSaveFav);
-
 if (config.enableUnlinkis) {
   document.addEventListener('DOMContentLoaded', Unlinkis);
 }
@@ -149,6 +145,7 @@ document.addEventListener('dragstart', evt => {
     }
     var detail = `image/${ext}:${filename}:${image}`;
     evt.dataTransfer.setData('DownloadURL', detail);
+    console.log(detail);
   }
 
 }, false);

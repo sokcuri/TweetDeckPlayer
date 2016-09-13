@@ -366,7 +366,6 @@ document.addEventListener('DOMContentLoaded', () => {
     prev_focus = document.querySelector(':focus');
   }
 
-
   function handleInput (evt)
   {
     if (evt.target.classList.contains('js-compose-text'))
@@ -539,12 +538,12 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // TweetDeck Ready Check
   var TDP = {};
+  if (TD) ipcRenderer.send('page-ready-tdp', this);
   TDP.onPageLoad = () => {
     setTimeout(() => {
       if (!TD || !TD.ready) {
         TDP.onPageLoad();
       } else {
-        ipcRenderer.send('page-ready-tdp', this);
         TD.controller.progressIndicator.addMessage(TD.i(VERSION));
         setTimeout(() => {
           TD.settings.setUseStream(TD.settings.getUseStream());

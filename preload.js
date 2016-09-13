@@ -563,7 +563,17 @@ document.addEventListener('DOMContentLoaded', () => {
         var emojiPadCSS = document.createElement('link');
         var dockBtn = document.getElementsByClassName('emojipad--entry-point')[0]
         document.body.appendChild(EmojiPad.element);
-        dockBtn.onclick = e => EmojiPad.show(e.clientX, e.clientY);
+        dockBtn.onclick = e => {
+          EmojiPad.show(e.clientX, e.clientY);
+
+          var el = EmojiPad.element;
+          var rect = el.getClientRects()[0];
+
+          if (window.innerWidth - rect.left - 10 < rect.width)
+            el.style.left = `${window.innerWidth - rect.width - 10}px`;
+          if (window.innerHeight - rect.top - 10 < rect.height)
+            el.style.top = `${window.innerHeight - rect.height - 10}px`;
+        }
         document.body.addEventListener('click', e => {
           if (e.target != dockBtn && EmojiPad.isOpen) EmojiPad.hide();
         }, false);

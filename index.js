@@ -501,7 +501,6 @@ var run = chk_win => {
       shell.openExternal(url);
     else if (Config.data.openURLInInternalBrowser) {
       var preference = (Config.data && Config.data.popup_bounds) ? Config.data.popup_bounds : {};
-      preference.parent = win;
       preference.icon = path.join(__dirname, 'tweetdeck.ico');
       preference.webPreferences = {
         nodeIntegration: false,
@@ -523,7 +522,6 @@ var run = chk_win => {
       shell.openExternal(url);
     }
   });
-
 };
 
 // 컨텍스트 메뉴

@@ -359,38 +359,43 @@ app.on('ready', () => {
 
   // 렌더러 프로세스에서 run 명령을 받으면 실행
   ipcMain.on('run', event => run(chk_win));
-});
 
-// disable-gpu 항목으로 재시작이 필요할 때
-ipcMain.on('nogpu-relaunch', () => {
-  app.releaseSingleInstance();
-  existInst = null;
-  var x = `${process.execPath} ${process.argv[1]} --disable-gpu --relaunch`;
-  child_process.exec(x);
-  setTimeout(() => app.quit(), 100);
-});
-
-// 트윗덱 플레이어 실행 프로시저
-var run = chk_win => {
-  var preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
-  preference.icon = path.join(__dirname, 'tweetdeck.ico');
-  preference.autoHideMenuBar = true;
-  preference.webPreferences = {
-    nodeIntegration: false,
-    preload: path.join(__dirname, 'preload.js'),
-  };
-  win = new BrowserWindow(preference);
-  win.loadURL('https://tweetdeck.twitter.com');
-
-  win.setAlwaysOnTop(Config.data.defaultTopmost && true || false);
-
-  // 체크를 위한 윈도우가 존재하는 경우 닫기
-  if (chk_win) {
-    chk_win.close();
-  }
-
-  // application menu
+  // MacOS Application menu
+  if (process.platform === 'darwin') {
   const template = [
+    {
+      label: app.getName(),
+      submenu: [
+        {
+          role: 'about'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Setting...',
+          click () { openSetting(win) }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'hide'
+        },
+        {
+          role: 'hideothers'
+        },
+        {
+          role: 'unhide'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'quit'
+        }
+      ]
+    },
     {
       label: 'Edit',
       submenu: [
@@ -463,18 +468,38 @@ var run = chk_win => {
         {
           label: 'Always on top',
           type: 'checkbox',
-          checked: win.isAlwaysOnTop(),
+          checked: Config.data.defaultTopmost,
           click () {
-            var flag = !win.isAlwaysOnTop();
-            win.setAlwaysOnTop(flag);
-            if (popup) popup.setAlwaysOnTop(flag);
+            if (win) {
+              var flag = !win.isAlwaysOnTop();
+              win.setAlwaysOnTop(flag);
+              if (popup) popup.setAlwaysOnTop(flag);
+            }
           },
         },
         {
+          type: 'separator'
+        },
+        {
+          label: 'Close',
+          accelerator: 'CmdOrCtrl+W',
+          role: 'close'
+        },
+        {
+          label: 'Minimize',
+          accelerator: 'CmdOrCtrl+M',
           role: 'minimize'
         },
         {
-          role: 'close'
+          label: 'Zoom',
+          role: 'zoom'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Bring All to Front',
+          role: 'front'
         }
       ]
     },
@@ -488,81 +513,149 @@ var run = chk_win => {
       ]
     }
   ]
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
+  }
+});
 
-  if (process.platform === 'darwin') {
-    const name = require('electron').remote.app.getName()
-    template.unshift({
-      label: name,
-      submenu: [
-        {
-          role: 'about'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          role: 'services',
-          submenu: []
-        },
-        {
-          type: 'separator'
-        },
-        {
-          role: 'hide'
-        },
-        {
-          role: 'hideothers'
-        },
-        {
-          role: 'unhide'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          role: 'quit'
-        }
-      ]
-    })
-    // Window menu.
-    template[3].submenu = [
+// disable-gpu 항목으로 재시작이 필요할 때
+ipcMain.on('nogpu-relaunch', () => {
+  app.releaseSingleInstance();
+  existInst = null;
+  var x = `${process.execPath} ${process.argv[1]} --disable-gpu --relaunch`;
+  child_process.exec(x);
+  setTimeout(() => app.quit(), 100);
+});
+
+// 트윗덱 플레이어 실행 프로시저
+var run = chk_win => {
+  var preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
+  preference.icon = path.join(__dirname, 'tweetdeck.ico');
+  preference.autoHideMenuBar = true;
+  preference.webPreferences = {
+    nodeIntegration: false,
+    preload: path.join(__dirname, 'preload.js'),
+  };
+  win = new BrowserWindow(preference);
+  win.loadURL('https://tweetdeck.twitter.com');
+
+  win.setAlwaysOnTop(Config.data.defaultTopmost && true || false);
+
+  // 체크를 위한 윈도우가 존재하는 경우 닫기
+  if (chk_win) {
+    chk_win.close();
+  }
+
+  // application menu
+  const template = [{
+    label: 'File',
+    submenu: [
       {
-        label: 'Close',
-        accelerator: 'CmdOrCtrl+W',
-        role: 'close'
+        label: 'Setting...',
+        click () { openSetting(win) }
       },
       {
-        label: 'Minimize',
-        accelerator: 'CmdOrCtrl+M',
-        role: 'minimize'
+        role: 'quit'
+      }
+    ]
+  },
+  {
+    label: 'Edit',
+    submenu: [
+      {
+        role: 'undo'
       },
       {
-        label: 'Zoom',
-        role: 'zoom'
+        role: 'redo'
       },
       {
         type: 'separator'
       },
       {
-        label: 'Bring All to Front',
-        role: 'front'
+        role: 'cut'
+      },
+      {
+        role: 'copy'
+      },
+      {
+        role: 'paste'
+      },
+      {
+        role: 'selectall'
+      },
+      {
+        role: 'delete'
       }
     ]
-  }
-  else if (process.platform === 'win32') {
-    template.unshift({
-      label: 'File',
-      submenu: [
-        {
-          label: 'Setting...',
-          click () { openSetting(win) }
-        },
-        {
-          role: 'quit'
+  },
+  {
+    label: 'View',
+    submenu: [
+      {
+        label: 'Reload',
+        accelerator: 'CmdOrCtrl+R',
+        click (item, focusedWindow) {
+          if (focusedWindow) focusedWindow.reload()
         }
-      ]
-    })
-  }
+      },
+      {
+        role: 'togglefullscreen'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        role: 'resetzoom'
+      },
+      {
+        role: 'zoomin'
+      },
+      {
+        role: 'zoomout'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Toggle Developer Tools',
+        accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+        click (item, focusedWindow) {
+          if (focusedWindow) focusedWindow.webContents.toggleDevTools()
+        }
+      }
+    ]
+  },
+  {
+    role: 'window',
+    submenu: [
+      {
+        label: 'Always on top',
+        type: 'checkbox',
+        checked: win.isAlwaysOnTop(),
+        click () {
+          var flag = !win.isAlwaysOnTop();
+          win.setAlwaysOnTop(flag);
+          if (popup) popup.setAlwaysOnTop(flag);
+        },
+      },
+      {
+        role: 'minimize'
+      },
+      {
+        role: 'close'
+      }
+    ]
+  },
+  {
+    role: 'help',
+    submenu: [
+      {
+        label: 'About TweetDeck Player...',
+        click () { require('electron').shell.openExternal('https://github.com/sokcuri/TweetDeckPlayer') }
+      }]
+    }
+  ]
+
   const menu = Menu.buildFromTemplate(template)
   win.setMenu(menu);
 
@@ -656,6 +749,10 @@ var run = chk_win => {
         color: transparent;
         background-color: transparent;
         -webkit-text-fill-color: #e2e8ed;
+      }
+      .list-account .emoji {
+        width: 1em;
+        height: 1em;
       }
       `);
     win.webContents.send('apply-config');
@@ -869,67 +966,3 @@ ipcMain.on('twtlib-open', (event, arg) => {
 ipcMain.on('twtlib-send-text', (event, arg) => {
   win.webContents.send('twtlib-add-text', arg);
 });
-
-// MacOS Application menu
-if (process.platform === 'darwin') {
-  const template = [
-    {
-      label: 'Edit',
-      submenu: [
-        {
-          role: 'undo'
-        },
-        {
-          role: 'redo'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          role: 'cut'
-        },
-        {
-          role: 'copy'
-        },
-        {
-          role: 'paste'
-        },
-        {
-          role: 'selectall'
-        },
-        {
-          role: 'delete'
-        }
-      ]
-    },
-    {
-      role: 'window',
-      submenu: [
-        {
-          label: 'Close',
-          accelerator: 'CmdOrCtrl+W',
-          role: 'close'
-        },
-        {
-          label: 'Minimize',
-          accelerator: 'CmdOrCtrl+M',
-          role: 'minimize'
-        },
-        {
-          label: 'Zoom',
-          role: 'zoom'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: 'Bring All to Front',
-          role: 'front'
-        }
-      ]
-    }
-  ]
-
-  const menu = Menu.buildFromTemplate(template)
-  Menu.setApplicationMenu(menu);
-}

@@ -5,8 +5,6 @@ const fs = require('fs');
 const twitter = require('twitter-text');
 const twemoji = require('twemoji');
 
-const Util = require('./util');
-
 const Config = require('./config');
 const VERSION = require('./version');
 
@@ -17,6 +15,7 @@ const CBPaste = require('./preload_scripts/clipboard-paste');
 const TwtLib = require('./preload_scripts/twtlib');
 const AutoSaveFav = require('./preload_scripts/autosave-favorites');
 const EmojiPad = require('./preload_scripts/emojipad');
+const EmojiName = require('./preload_scripts/emojiname');
 
 // 로딩 프로그레스 바 모듈 로드
 require('./pace.min.js');
@@ -175,6 +174,10 @@ document.addEventListener('DOMContentLoaded', AutoSaveFav);
 
 if (config.enableUnlinkis) {
   document.addEventListener('DOMContentLoaded', Unlinkis);
+}
+
+if (config.applyEmojiName) {
+  document.addEventListener('DOMContentLoaded', EmojiName);
 }
 
 // 트윗에 첨부된 이미지를 드래그해서 저장할 수 있도록 함

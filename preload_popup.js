@@ -157,12 +157,6 @@ document.addEventListener('dragstart', evt => {
 }, false);
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (document.title === 'TweetDeck') {
-    document.title = 'TweetDeck Player';
-  } else {
-    document.title = `TweetDeck Player - ${document.title}`;
-  }
-
   // 맥용 한글 기본 입력기 이슈 해결
   $(document).on('keydown', e => {
     if (document.activeElement === document.body && e.key >= 'ㄱ' && e.key <= 'ㅣ') {

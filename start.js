@@ -12,14 +12,14 @@ const asarDownFile = Util.getUserDataPath() + 'main.asar.download';
 const asarHashFile = Util.getUserDataPath() + 'main.asar.hash';
 
 // bypass main.asar
-const forceIndex = true;
+const forceIndex = false;
 
 function getHash(fileName)
 {
   try
   {
     var shasum = crypto.createHash('sha1');
-    var s = originalFs.readFileSync(fileName);
+    var s = originalFs.readFileSync(fileName, 'binary');
     return shasum.update(s).digest('hex');
   }
   catch (e)
@@ -42,7 +42,7 @@ function run()
 
   async.series([
     function(callback){
-      request(updateURL,
+      request(updateURL + '?' + new Date().getTime(),
       function (error, response, body) {
         try
         {
@@ -59,6 +59,9 @@ function run()
           (getHash(asarFile) != hash_key &&
             getHash(asarDownFile) != hash_key))
         {
+          console.log('asarHash: ' + getHash(asarFile));
+          console.log('asarDownHash: ' + getHash(asarDownFile));
+          console.log('hash_key: ' + hash_key);
           callback(null);
         }
       }
@@ -66,12 +69,11 @@ function run()
     function(callback){
       request({
         encoding: null,
-        url: item.asar}
+        url: item.asar + '?' + new Date().getTime()}
         , function (error, response, body) {
         if (!error && response.statusCode == 200) {
           var s = originalFs.createWriteStream(asarDownFile);
           s.write(body);
-          s.end();
           s.end();
           var s2 = originalFs.createWriteStream(asarHashFile);
           s2.write(item["asar-hash"].toLowerCase());
@@ -91,6 +93,11 @@ function run()
       if (getHash(asarFile) == hash_key)
       {
         console.log('hash key equal. passed');
+        try
+        {
+          originalFs.unlinkSync(asarDownFile);
+        }
+        catch(e) {}
         callback(null);
       }
       else if (getHash(asarDownFile) == -1)

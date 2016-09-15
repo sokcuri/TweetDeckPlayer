@@ -28,104 +28,117 @@ function getHash(fileName)
   }
 }
 
-var hash_key = "";
-var json;
-var url;
+function run()
+{
+  var hash_key = "";
+  var json;
+  var url;
 
-try {
-  hash_key = fs.readFileSync(asarHashFile);
-} catch (e) {
-  hash_key = "";
-}
-
-async.series([
-  function(callback){
-    request(updateURL,
-    function (error, response, body) {
-      try
-      {
-        json = JSON.parse(body);
-        callback(null);
-      }
-      catch (e) {}
-    });
-  },
-  function(callback){
-    for(item of json)
-    {
-      if (REVISION >= item.revision &&
-         (getHash(asarFile) != hash_key &&
-          getHash(asarDownFile) != hash_key))
-      {
-        callback(null);
-      }
-    }
-  },
-  function(callback){
-    request({
-      encoding: null,
-      url: item.asar}
-      , function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var s = originalFs.createWriteStream(asarDownFile);
-        s.write(body);
-        s.end();
-        s.end();
-        var s2 = originalFs.createWriteStream(asarHashFile);
-        s2.write(item["asar-hash"].toLowerCase());
-        s2.end();
-        console.log("Downloaded main.asar");
-      }
-      else {
-        console.log(error);
-      }
-    });
+  try {
+    hash_key = fs.readFileSync(asarHashFile);
+  } catch (e) {
+    hash_key = "";
   }
-]);
 
-async.series([
-  function(callback)
-  {
-    if (getHash(asarFile) == hash_key)
-    {
-      console.log('hash key equal. passed');
-      callback(null);
-    }
-    else if (getHash(asarDownFile) == -1)
-    {
-      callback(null);
-    }
-    else if (getHash(asarDownFile) == hash_key)
-    {
-      console.log('rename start');
-      originalFs.rename(asarDownFile, asarFile, err => {
-      if (!err) console.log('renamed complete');
-      try
+  async.series([
+    function(callback){
+      request(updateURL,
+      function (error, response, body) {
+        try
+        {
+          json = JSON.parse(body);
+          callback(null);
+        }
+        catch (e) {}
+      });
+    },
+    function(callback){
+      for(item of json)
       {
-        originalFs.unlinkSync(asarDownFile);
+        if (REVISION >= item.revision &&
+          (getHash(asarFile) != hash_key &&
+            getHash(asarDownFile) != hash_key))
+        {
+          callback(null);
+        }
       }
-      catch(e) {}
-      callback(null);
+    },
+    function(callback){
+      request({
+        encoding: null,
+        url: item.asar}
+        , function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          var s = originalFs.createWriteStream(asarDownFile);
+          s.write(body);
+          s.end();
+          s.end();
+          var s2 = originalFs.createWriteStream(asarHashFile);
+          s2.write(item["asar-hash"].toLowerCase());
+          s2.end();
+          console.log("Downloaded main.asar");
+        }
+        else {
+          console.log(error);
+        }
       });
     }
-    else
+  ]);
+
+  async.series([
+    function(callback)
     {
-      console.log("Hash Mismatch");
-      console.log("down: " + getHash(asarDownFile));
-      console.log("hash: " + hash_key);
-      callback(null);
+      if (getHash(asarFile) == hash_key)
+      {
+        console.log('hash key equal. passed');
+        callback(null);
+      }
+      else if (getHash(asarDownFile) == -1)
+      {
+        callback(null);
+      }
+      else if (getHash(asarDownFile) == hash_key)
+      {
+        console.log('rename start');
+        originalFs.rename(asarDownFile, asarFile, err => {
+        if (!err) console.log('renamed complete');
+        try
+        {
+          originalFs.unlinkSync(asarDownFile);
+        }
+        catch(e) {}
+        callback(null);
+        });
+      }
+      else
+      {
+        console.log("Hash Mismatch");
+        console.log("down: " + getHash(asarDownFile));
+        console.log("hash: " + hash_key);
+        callback(null);
+      }
+    },
+    function(callback)
+    {
+      reqIndex();
     }
-  },
-  function(callback)
-  {
-    try {
+  ]);
+}
+
+function reqIndex()
+{
+  try {
     if (forceIndex) throw 0;
     require(Util.getUserDataPath() + 'main.asar/index.js');
     console.log("Running to main.asar.");
-    }
-    catch (e) {
-      require('./index.js');
-      console.log("Running to index.js.");
-    } 
   }
-]);
+  catch (e) {
+    require('./index.js');
+    console.log("Running to index.js.");
+  } 
+}
+
+if (forceIndex)
+  reqIndex();
+else
+  run();

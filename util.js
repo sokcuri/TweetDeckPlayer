@@ -56,9 +56,10 @@ module.exports = {
       return __dirname.substr(0, d) + '/data/';
     else if (c != -1)
     {
-      var e = (a.length > b.length ? a : b);
-      e = __dirname.substr(0, e - 1);
-      return e.substr(0, e.lastIndexOf('/'));
+      if (a.length > b.length)
+        return a.substr(0, a.lastIndexOf('/')) + '/data/';
+      else
+        return b.substr(0, b.lastIndexOf('\\')) + '\\data\\';
     }
     else
       return __dirname + '/data/';
@@ -72,9 +73,10 @@ module.exports = {
       return __dirname.substr(0, d) + '/';
     else if (c != -1)
     {
-      var e = (a.length > b.length ? a : b);
-      e = __dirname.substr(0, e - 1);
-      return e.substr(0, e.lastIndexOf('/'));
+      if (a.length > b.length)
+        return a.substr(0, a.lastIndexOf('/'));
+      else
+        return b.substr(0, b.lastIndexOf('\\'));
     }
     else
       return __dirname + '/';

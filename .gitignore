@@ -63,3 +63,9 @@ Favorited\ Images/
 
 # Data Files
 data/
+
+# Src Files
+src/
+
+# asar files
+*.asar

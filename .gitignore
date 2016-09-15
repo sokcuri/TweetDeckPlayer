@@ -61,6 +61,9 @@ init.json
 # Favorited Images
 Favorited\ Images/
 
+# Visual Studio Code Association Files
+.vscode/
+
 # Data Files
 data/
 

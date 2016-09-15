@@ -355,6 +355,7 @@ var run = chk_win => {
   win = new BrowserWindow(preference);
   win.loadURL('https://tweetdeck.twitter.com');
 
+  win.setAlwaysOnTop(Config.data.defaultTopmost && true || false);
 
   // 체크를 위한 윈도우가 존재하는 경우 닫기
   if (chk_win) {

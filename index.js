@@ -361,41 +361,7 @@ app.on('ready', () => {
   ipcMain.on('run', event => run(chk_win));
 
   // MacOS Application menu
-  if (process.platform === 'darwin') {
   const template = [
-    {
-      label: app.getName(),
-      submenu: [
-        {
-          role: 'about'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: 'Setting...',
-          click () { openSetting(win) }
-        },
-        {
-          type: 'separator'
-        },
-        {
-          role: 'hide'
-        },
-        {
-          role: 'hideothers'
-        },
-        {
-          role: 'unhide'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          role: 'quit'
-        }
-      ]
-    },
     {
       label: 'Edit',
       submenu: [
@@ -462,6 +428,44 @@ app.on('ready', () => {
         }
       ]
     },
+  ]
+
+  if (process.platform === 'darwin') {
+    template.unshift({
+      label: app.getName(),
+      submenu: [
+        {
+          role: 'about'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Setting...',
+          click () { openSetting(win) }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'hide'
+        },
+        {
+          role: 'hideothers'
+        },
+        {
+          role: 'unhide'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'quit'
+        }
+      ]
+    });
+    
+  template[3] =
     {
       role: 'window',
       submenu: [
@@ -503,6 +507,8 @@ app.on('ready', () => {
         }
       ]
     },
+    
+  template[4] = 
     {
       role: 'help',
       submenu: [
@@ -512,10 +518,22 @@ app.on('ready', () => {
         }
       ]
     }
-  ]
+  }
+  else
+  {
+    template.unshift({
+      label: 'File',
+      submenu: [
+        {
+          label: 'Close',
+          role: 'close'
+        },
+      ]
+    })
+  }
+
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
-  }
 });
 
 // disable-gpu 항목으로 재시작이 필요할 때

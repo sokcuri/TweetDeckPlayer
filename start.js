@@ -42,8 +42,12 @@ async.series([
   function(callback){
     request(updateURL,
     function (error, response, body) {
-      json = JSON.parse(body);
-      callback(null);
+      try
+      {
+        json = JSON.parse(body);
+        callback(null);
+      }
+      catch (e) {}
     });
   },
   function(callback){

@@ -12,7 +12,7 @@ app.setPath('userData', Util.getUserDataPath());
 // 설정
 const Config = require('./config');
 
-let win, settingsWin, twtlibWin;
+let win, popup, settingsWin, twtlibWin;
 
 function getSamePos(x, y)
 {
@@ -490,6 +490,7 @@ var run = chk_win => {
   win.on('close', () => {
     Config.load();
     Config.data.bounds = win.getBounds();
+    if (popup) Config.data.popup_bounds = popup.getBounds(); 
     Config.save();
     win = null;
   });
@@ -499,13 +500,19 @@ var run = chk_win => {
     if (global.sharObj.shiftDown)
       shell.openExternal(url);
     else if (Config.data.openURLInInternalBrowser) {
-      let popup = new BrowserWindow({
-        parent: win,
-        webPreferences: {
-          webSecurity: true,
-          nodeIntegration: false,
-//          preload: path.join(__dirname, 'preload_popup.js'),
-        },
+      var preference = (Config.data && Config.data.popup_bounds) ? Config.data.popup_bounds : {};
+      preference.parent = win;
+      preference.icon = path.join(__dirname, 'tweetdeck.ico');
+      preference.webPreferences = {
+        nodeIntegration: false,
+        webSecurity: true
+      }
+      popup = new BrowserWindow(preference);
+      popup.on('close', () => {
+        Config.load();
+        Config.data.popup_bounds = popup.getBounds();
+        Config.save();
+        popup = null;
       });
       popup.webContents.on('new-window', (e, url) => {
         e.preventDefault();

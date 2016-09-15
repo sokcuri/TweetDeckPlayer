@@ -6,10 +6,13 @@ const originalFs = require('original-fs')
 const async = require('async');
 
 const REVISION = 2000;
-const updateURL = "https://raw.githubusercontent.com/sokcuri/TweetDeckPlayer-dist/master/update.json";
+const updateURL = "https://github.com/sokcuri/TweetDeckPlayer-dist/raw/master/update.json";
 const asarFile = Util.getUserDataPath() + 'main.asar';
 const asarDownFile = Util.getUserDataPath() + 'main.asar.download';
 const asarHashFile = Util.getUserDataPath() + 'main.asar.hash';
+
+// bypass main.asar
+const forceIndex = true;
 
 function getHash(fileName)
 {
@@ -112,6 +115,7 @@ async.series([
   function(callback)
   {
     try {
+    if (forceIndex) throw 0;
     require(Util.getUserDataPath() + 'main.asar/index.js');
     console.log("Running to main.asar.");
     }

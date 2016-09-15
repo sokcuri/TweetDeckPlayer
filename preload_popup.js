@@ -62,6 +62,12 @@ ipcRenderer.on('command', (event, cmd) => {
     case 'reload':
       document.location.reload();
       break;
+    case 'back':
+      window.history.back();
+      break;
+    case 'forward':
+      window.history.forward();
+      break;
     case 'copypageurl':
       if (window.location.href) clipboard.writeText(window.location.href);
       break;
@@ -113,7 +119,7 @@ window.addEventListener('contextmenu', e => {
     target = 'main';
   }
 
-    // 컨텍스트 메뉴를 띄우라고 메인 스레드에 요청
+  // 컨텍스트 메뉴를 띄우라고 메인 스레드에 요청
   ipcRenderer.send('context-menu', target, is_range, Addr, true);
 }, false);
 

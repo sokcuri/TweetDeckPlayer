@@ -70,6 +70,34 @@ app.on('gpu-process-crashed', () => {
 
 });
 
+// setting window
+var openSetting = (window) => {
+    if (settingsWin) {
+      settingsWin.focus();
+      return;
+    }
+    var width = 500;
+    var height = 620;
+    var b = win.getBounds();
+    var x = Math.floor(b.x + (b.width - width) / 2);
+    var y = Math.floor(b.y + (b.height - height) / 2);
+    settingsWin = new BrowserWindow({
+      width, height, x, y,
+      parent: win,
+      icon: path.join(__dirname, 'tweetdeck.ico'),
+      modal: false,
+      show: true,
+      autoHideMenuBar: true,
+      webPreferences: {
+        nodeIntegration: true,
+      },
+    });
+    settingsWin.on('close', () => {
+      settingsWin = null;
+    });
+    settingsWin.loadURL('file:///' + path.join(__dirname, 'setting.html'));
+};
+
 //
 // edit
 //
@@ -103,13 +131,31 @@ var sub_selectall = webContents => ({
     webContents.send('command', 'selectall');
   },
 });
+
+//
+// page control
+//
+
+var sub_back_page = webContents => ({
+  label: 'Back',
+  click () {
+    webContents.send('command', 'back');
+  },
+  enabled: webContents.canGoBack()
+});
+var sub_forward_page = webContents => ({
+  label: 'Forward',
+  click () {
+    webContents.send('command', 'forward');
+  },
+  enabled: webContents.canGoForward()
+});
 var sub_reload = webContents => ({
   label: 'Reload',
   click () {
     webContents.send('command', 'reload');
   },
 });
-
 //
 // setting
 //
@@ -118,36 +164,16 @@ var sub_alwaystop = window => ({
   type: 'checkbox',
   checked: window.isAlwaysOnTop(),
   click () {
-    window.setAlwaysOnTop(!window.isAlwaysOnTop());
+    var flag = !window.isAlwaysOnTop();
+    window.setAlwaysOnTop(flag);
+    if (popup) popup.setAlwaysOnTop(flag);
   },
 });
 
 var sub_setting = window => ({
   label: 'Setting',
   click () {
-    if (settingsWin) {
-      settingsWin.focus();
-      return;
-    }
-    var width = 500;
-    var height = 620;
-    var b = win.getBounds();
-    var x = Math.floor(b.x + (b.width - width) / 2);
-    var y = Math.floor(b.y + (b.height - height) / 2);
-    settingsWin = new BrowserWindow({
-      width, height, x, y,
-      parent: win,
-      modal: false,
-      show: true,
-      autoHideMenuBar: true,
-      webPreferences: {
-        nodeIntegration: true,
-      },
-    });
-    settingsWin.on('close', () => {
-      settingsWin = null;
-    });
-    settingsWin.loadURL('file:///' + path.join(__dirname, 'setting.html'));
+    openSetting();
   },
 });
 
@@ -331,28 +357,6 @@ app.on('ready', () => {
     run();
   }
 
-  // Create the Application's main menu
-  var template = [{
-      label: "Application",
-      submenu: [
-          { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
-          { type: "separator" },
-          { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
-      ]}, {
-      label: "Edit",
-      submenu: [
-          { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-          { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-          { type: "separator" },
-          { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
-          { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
-          { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-          { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
-      ]}
-  ];
-
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
-  
   // 렌더러 프로세스에서 run 명령을 받으면 실행
   ipcMain.on('run', event => run(chk_win));
 });
@@ -370,6 +374,7 @@ ipcMain.on('nogpu-relaunch', () => {
 var run = chk_win => {
   var preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
   preference.icon = path.join(__dirname, 'tweetdeck.ico');
+  preference.autoHideMenuBar = true;
   preference.webPreferences = {
     nodeIntegration: false,
     preload: path.join(__dirname, 'preload.js'),
@@ -383,6 +388,183 @@ var run = chk_win => {
   if (chk_win) {
     chk_win.close();
   }
+
+  // application menu
+  const template = [
+    {
+      label: 'Edit',
+      submenu: [
+        {
+          role: 'undo'
+        },
+        {
+          role: 'redo'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'cut'
+        },
+        {
+          role: 'copy'
+        },
+        {
+          role: 'paste'
+        },
+        {
+          role: 'selectall'
+        },
+        {
+          role: 'delete'
+        }
+      ]
+    },
+    {
+      label: 'View',
+      submenu: [
+        {
+          label: 'Reload',
+          accelerator: 'CmdOrCtrl+R',
+          click (item, focusedWindow) {
+            if (focusedWindow) focusedWindow.reload()
+          }
+        },
+        {
+          role: 'togglefullscreen'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'resetzoom'
+        },
+        {
+          role: 'zoomin'
+        },
+        {
+          role: 'zoomout'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Toggle Developer Tools',
+          accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+          click (item, focusedWindow) {
+            if (focusedWindow) focusedWindow.webContents.toggleDevTools()
+          }
+        }
+      ]
+    },
+    {
+      role: 'window',
+      submenu: [
+        {
+          label: 'Always on top',
+          type: 'checkbox',
+          checked: win.isAlwaysOnTop(),
+          click () {
+            var flag = !win.isAlwaysOnTop();
+            win.setAlwaysOnTop(flag);
+            if (popup) popup.setAlwaysOnTop(flag);
+          },
+        },
+        {
+          role: 'minimize'
+        },
+        {
+          role: 'close'
+        }
+      ]
+    },
+    {
+      role: 'help',
+      submenu: [
+        {
+          label: 'About TweetDeck Player...',
+          click () { require('electron').shell.openExternal('https://github.com/sokcuri/TweetDeckPlayer') }
+        }
+      ]
+    }
+  ]
+
+  if (process.platform === 'darwin') {
+    const name = require('electron').remote.app.getName()
+    template.unshift({
+      label: name,
+      submenu: [
+        {
+          role: 'about'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'services',
+          submenu: []
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'hide'
+        },
+        {
+          role: 'hideothers'
+        },
+        {
+          role: 'unhide'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'quit'
+        }
+      ]
+    })
+    // Window menu.
+    template[3].submenu = [
+      {
+        label: 'Close',
+        accelerator: 'CmdOrCtrl+W',
+        role: 'close'
+      },
+      {
+        label: 'Minimize',
+        accelerator: 'CmdOrCtrl+M',
+        role: 'minimize'
+      },
+      {
+        label: 'Zoom',
+        role: 'zoom'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Bring All to Front',
+        role: 'front'
+      }
+    ]
+  }
+  else if (process.platform === 'win32') {
+    template.unshift({
+      label: 'File',
+      submenu: [
+        {
+          label: 'Setting...',
+          click () { openSetting(win) }
+        },
+        {
+          role: 'quit'
+        }
+      ]
+    })
+  }
+  const menu = Menu.buildFromTemplate(template)
+  win.setMenu(menu);
 
   // devtool 열기
   //win.webContents.openDevTools()
@@ -525,9 +707,13 @@ var run = chk_win => {
     else if (Config.data.openURLInInternalBrowser) {
       var preference = (Config.data && Config.data.popup_bounds) ? Config.data.popup_bounds : {};
       preference.icon = path.join(__dirname, 'tweetdeck.ico');
+      preference.modal = false;
+      preference.show = true;
+      preference.autoHideMenuBar = true;
       preference.webPreferences = {
         nodeIntegration: false,
-        webSecurity: true
+        webSecurity: true,
+        preload: path.join(__dirname, 'preload_popup.js'),
       }
       popup = new BrowserWindow(preference);
       popup.on('close', () => {
@@ -541,6 +727,7 @@ var run = chk_win => {
         shell.openExternal(url);
       });
       popup.loadURL(url);
+      popup.setAlwaysOnTop(win.isAlwaysOnTop());
     } else {
       shell.openExternal(url);
     }
@@ -551,13 +738,22 @@ var run = chk_win => {
 ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
   var template = [];
   var separator = { type: 'separator' };
+
   switch (menu) {
     case 'main':
       if (isRange) {
         template.push(sub_copy(event.sender));
         template.push(separator);
       }
-      template.push(sub_reload(event.sender));
+      else if (isPopup)
+      {
+        template.push(sub_back_page(event.sender));
+        template.push(sub_forward_page(event.sender));
+        template.push(sub_reload(event.sender));
+      }
+      if (!isPopup) {
+        template.push(sub_reload(event.sender));
+      }
       break;
 
     case 'text':
@@ -568,8 +764,6 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       template.push({ label: 'Delete', enabled: false });
       template.push(separator);
       template.push(sub_selectall(event.sender));
-      template.push(separator);
-      template.push(sub_reload(event.sender));
       break;
 
     case 'text_sel':
@@ -580,8 +774,6 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       template.push(sub_delete(event.sender));
       template.push(separator);
       template.push(sub_selectall(event.sender));
-      template.push(separator);
-      template.push(sub_reload(event.sender));
       break;
 
     case 'setting':
@@ -627,7 +819,6 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       template.push(sub_copy_img(event.sender));
       template.push(sub_open_img(event.sender));
       template.push(sub_search_img_google(event.sender));
-      template.push(separator);
       template.push(sub_reload(event.sender));
       break;
   }
@@ -678,3 +869,67 @@ ipcMain.on('twtlib-open', (event, arg) => {
 ipcMain.on('twtlib-send-text', (event, arg) => {
   win.webContents.send('twtlib-add-text', arg);
 });
+
+// MacOS Application menu
+if (process.platform === 'darwin') {
+  const template = [
+    {
+      label: 'Edit',
+      submenu: [
+        {
+          role: 'undo'
+        },
+        {
+          role: 'redo'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'cut'
+        },
+        {
+          role: 'copy'
+        },
+        {
+          role: 'paste'
+        },
+        {
+          role: 'selectall'
+        },
+        {
+          role: 'delete'
+        }
+      ]
+    },
+    {
+      role: 'window',
+      submenu: [
+        {
+          label: 'Close',
+          accelerator: 'CmdOrCtrl+W',
+          role: 'close'
+        },
+        {
+          label: 'Minimize',
+          accelerator: 'CmdOrCtrl+M',
+          role: 'minimize'
+        },
+        {
+          label: 'Zoom',
+          role: 'zoom'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Bring All to Front',
+          role: 'front'
+        }
+      ]
+    }
+  ]
+
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu);
+}

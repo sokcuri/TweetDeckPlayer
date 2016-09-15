@@ -134,7 +134,11 @@ function run()
 {
   try {
     if (forceIndex) throw 0;
-    require(Util.getUserDataPath() + 'main.asar/index.js');
+    var dataPath = Util.getUserDataPath();
+    var fullPath = (dataPath[dataPath-1] == '/' ?
+      dataPath + 'main.asar/index.js' :
+      dataPath + 'main.asar\\index.js');
+    require(fullPath);
     console.log("Running to main.asar.");
   }
   catch (e) {

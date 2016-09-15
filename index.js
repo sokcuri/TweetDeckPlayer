@@ -774,20 +774,12 @@ var run = chk_win => {
       }
       `);
     win.webContents.send('apply-config');
-    if (Config.data.customFonts) {
-      
-      /*
-      win.webContents.insertCSS(`
-        * {
-          font-family: ${Config.data.customFonts} !important;
-        }
-      `);*/
-    }
+    
     // 유저 스크립트 로딩
-    fs.readdir('./scripts', (error, files) => {
+    fs.readdir(path.join(Util.getWritableRootPath(), 'scripts'), (error, files) => {
       if (error) {
         if (error.code === 'ENOENT') {
-          fs.mkdir('./scripts', () => {});
+          fs.mkdir(path.join(Util.getWritableRootPath(), 'scripts'), () => {});
         } else {
           console.error('Fail to read scripts directory!');
         }
@@ -795,7 +787,7 @@ var run = chk_win => {
       }
       let jsFiles = files.filter(f => f.endsWith('.js'));
       for (let file of jsFiles) {
-        let filepath = path.join('./scripts', file);
+        let filepath = path.join(path.join(Util.getWritableRootPath(), 'scripts'), file);
         fs.readFile(filepath, 'utf8', (error, script) => {
           if (error) {
             console.error('Fail to read userscript "%s"!', filepath);

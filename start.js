@@ -1,8 +1,7 @@
 const Util = require('./util');
 const request = require('request');
 const crypto = require('crypto');
-const fs = require('fs');
-const originalFs = require('original-fs')
+const fs = require('original-fs')
 const async = require('async');
 
 const REVISION = 2000;
@@ -12,14 +11,13 @@ const asarDownFile = Util.getUserDataPath() + 'main.asar.download';
 const asarHashFile = Util.getUserDataPath() + 'main.asar.hash';
 
 // bypass main.asar
-const forceIndex = false;
+const forceIndex = true;
 
 function getHash(fileName)
 {
-  try
-  {
+  try {
     var shasum = crypto.createHash('sha1');
-    var s = originalFs.readFileSync(fileName, 'binary');
+    var s = fs.readFileSync(fileName, 'binary');
     return shasum.update(s).digest('hex');
   }
   catch (e)
@@ -28,111 +26,111 @@ function getHash(fileName)
   }
 }
 
-function run()
+function readFileContext(fileName)
 {
-  var hash_key = "";
-  var json;
-  var url;
-
+  var context;
   try {
-    hash_key = fs.readFileSync(asarHashFile);
+    context = fs.readFileSync(asarHashFile);
   } catch (e) {
-    hash_key = "";
+    context = "";
   }
+  return context;
+}
 
-  async.series([
-    function(callback){
-      request(updateURL + '?' + new Date().getTime(),
-      function (error, response, body) {
-        try
-        {
-          json = JSON.parse(body);
-          callback(null);
-        }
-        catch (e) {}
-      });
-    },
-    function(callback){
-      for(item of json)
-      {
-        if (REVISION >= item.revision &&
-          (getHash(asarFile) != hash_key &&
-            getHash(asarDownFile) != hash_key))
-        {
-          console.log('asarHash: ' + getHash(asarFile));
-          console.log('asarDownHash: ' + getHash(asarDownFile));
-          console.log('hash_key: ' + hash_key);
-          callback(null);
-        }
+function deleteFile(fileName)
+{
+  try {
+    fs.unlinkSync(fileName);
+  }
+  catch(e) {}
+}
+
+function writeFile(fileName, context)
+{
+  try {
+    var s = fs.createWriteStream(fileName);
+    s.write(context);
+    s.end();
+  }
+  catch(e) { }
+}
+
+function downAsarFile(url)
+{
+  request({
+    encoding: null,
+    url: url + '?' + new Date().getTime()}
+    , function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        writeFile(asarDownFile, body);
+        writeFile(asarHashFile, item["asar-hash"].toLowerCase());
+        console.log("Downloaded main.asar");
+      } else {
+        console.log(error);
       }
-    },
-    function(callback){
-      request({
-        encoding: null,
-        url: item.asar + '?' + new Date().getTime()}
-        , function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-          var s = originalFs.createWriteStream(asarDownFile);
-          s.write(body);
-          s.end();
-          var s2 = originalFs.createWriteStream(asarHashFile);
-          s2.write(item["asar-hash"].toLowerCase());
-          s2.end();
-          console.log("Downloaded main.asar");
-        }
-        else {
-          console.log(error);
-        }
-      });
-    }
-  ]);
+  });
+}
 
+function getUpdateInfo()
+{
+  var json;
   async.series([
-    function(callback)
+  function(callback) {
+    request(updateURL + '?' + new Date().getTime(),
+    function (error, response, body) {
+      try {
+        json = JSON.parse(body);
+        console.log('getUpdateInfo success');
+        callback(null);
+      }
+      catch (e) {}
+    });
+  },
+  function(callback) {
+    for(item of json)
     {
-      if (getHash(asarFile) == hash_key)
+      if (REVISION >= item.revision &&
+         (getHash(asarFile) != item["asar-hash"] &&
+          getHash(asarDownFile) != item["asar-hash"]))
       {
-        console.log('hash key equal. passed');
-        try
-        {
-          originalFs.unlinkSync(asarDownFile);
-        }
-        catch(e) {}
+        console.log('asarHash: ' + getHash(asarFile));
+        console.log('asarDownHash: ' + getHash(asarDownFile));
+        console.log('asar-hash: ' + item["asar-hash"]);
         callback(null);
       }
-      else if (getHash(asarDownFile) == -1)
+    }
+  },
+  function(callback) {
+    downAsarFile(item.asar);
+  }]);
+}
+
+function execUpdate()
+{
+  var hash_key = readFileContext(asarHashFile);
+  async.series([
+    function(callback) {
+      if (getHash(asarDownFile) != -1 && getHash(asarDownFile) == hash_key)
       {
-        callback(null);
-      }
-      else if (getHash(asarDownFile) == hash_key)
-      {
-        console.log('rename start');
-        originalFs.rename(asarDownFile, asarFile, err => {
-        if (!err) console.log('renamed complete');
-        try
-        {
-          originalFs.unlinkSync(asarDownFile);
-        }
-        catch(e) {}
-        callback(null);
+        fs.rename(asarDownFile, asarFile, err => {
+          console.log('update success');
+          deleteFile(asarDownFile);
+          callback(null);
         });
       }
       else
       {
-        console.log("Hash Mismatch");
-        console.log("down: " + getHash(asarDownFile));
-        console.log("hash: " + hash_key);
+        deleteFile(asarDownFile);
         callback(null);
       }
     },
-    function(callback)
-    {
-      reqIndex();
+    function(callback) {
+      run();
     }
   ]);
 }
 
-function reqIndex()
+function run()
 {
   try {
     if (forceIndex) throw 0;
@@ -146,6 +144,9 @@ function reqIndex()
 }
 
 if (forceIndex)
-  reqIndex();
-else
   run();
+else
+{
+  getUpdateInfo();
+  execUpdate();
+}

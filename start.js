@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const fs = require('original-fs')
 const async = require('async');
 
-const REVISION = 2000;
+const REVISION = 2001;
 const updateURL = "https://github.com/sokcuri/TweetDeckPlayer-dist/raw/master/update.json";
 const asarFile = Util.getUserDataPath() + 'main.asar';
 const asarDownFile = Util.getUserDataPath() + 'main.asar.download';

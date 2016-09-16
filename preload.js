@@ -7,6 +7,7 @@ const twemoji = require('twemoji');
 
 const Config = require('./config');
 const VERSION = require('./version');
+const Util = require('./util');
 
 const PlayerMonkey = require('./preload_scripts/playermonkey');
 const WordFilter = require('./preload_scripts/wordfilter');

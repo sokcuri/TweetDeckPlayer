@@ -7,6 +7,7 @@ const Util = require('../util');
 const config = Config.load();
 
 function download (url, filename) {
+  console.info(`download start: ${url}`);
   let savepath = (config.autoSavePath || '').trim();
   if (!savepath) {
     savepath = path.join(Util.getWritableRootPath(), 'Favorited Images');
@@ -39,11 +40,16 @@ function generateFilename (imgurl) {
 // if use .tweet, this function fail on detail-view
 function heartClickEventHandler (event) {
   if (!config.enableAutoSaveFav) return;
-  const target = $(event.target);
+  favoriteAutoSave($(event.target));
+}
+
+function favoriteAutoSave (target) {
   //if (!target.matches('a.tweet-action[rel="favorite"]')) return;
-  const tweet = target.closest('.js-tweet');
+  const tweet = $(target.closest('.js-tweet')[0]);
   // Already favorited. quit function
-  if (tweet.hasClass('is-favorite')) return;
+  // if (tweet.hasClass('is-favorite')) return;
+
+  console.log(tweet);
   // in detail view
   let images = tweet.find('img.media-img');
   if (images.length > 0) {
@@ -73,8 +79,13 @@ function heartClickEventHandler (event) {
   }
 }
 
-function onready () {
+function tossElement(e) {
+  if (typeof e !== 'undefined')
+    favoriteAutoSave($(`[data-key="${e}"]`))
+}
+
+function onready (e) {
   $(document.body).on('click', '.js-tweet a[rel="favorite"]', heartClickEventHandler);
 }
 
-module.exports = onready;
+module.exports = tossElement;

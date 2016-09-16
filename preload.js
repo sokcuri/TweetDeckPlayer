@@ -171,7 +171,6 @@ window.addEventListener('contextmenu', e => {
 document.addEventListener('DOMContentLoaded', WordFilter);
 document.addEventListener('DOMContentLoaded', CBPaste);
 document.addEventListener('DOMContentLoaded', TwtLib);
-document.addEventListener('DOMContentLoaded', AutoSaveFav);
 
 if (config.enableUnlinkis) {
   document.addEventListener('DOMContentLoaded', Unlinkis);
@@ -460,6 +459,25 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keyup', setShiftCheck);
   document.addEventListener('mousedown', setShiftCheck);
   document.addEventListener('mouseup', setShiftCheck);
+
+  // Favorite to Image Save 
+  var processFavorite = TD.services.TwitterClient.prototype.favorite.toString().substr(17);
+  processFavorite = processFavorite.substr(0, processFavorite.length - 1);
+  /*var processMiscTweet_ptn = `(c||a&&(!s||n||l))&&(h||m||this.publishChirpsInternal("publish","home",[e]))`;
+  var processMiscTweet_rep = `(c||(a||config.disableCheckFriendship=="on")&&((!s||config.disableFilteringMentionUser=="on")||n||l))&&(h||(m&&!config.showRetweetFollowingUser=="on")||this.publishChirpsInternal("publish","home",[e]))`;
+
+  if (processMiscTweet.search(processMiscTweet_ptn) == -1)
+    console.warn('procMiscTweet pattern not found');
+  else
+  {
+    processMiscTweet = processMiscTweet.replace(processMiscTweet_ptn, processMiscTweet_rep);
+    TD.services.TwitterClient.prototype.processMiscTweet = Function('e,t,i', processMiscTweet);
+  }*/
+  console.log(processFavorite);
+  window.AutoSaveFav = AutoSaveFav;
+  processFavorite = 'AutoSaveFav(e);' + processFavorite;
+  TD.services.TwitterClient.prototype.favorite = Function('e,t,i', processFavorite);
+  console.log(AutoSaveFav);
 
   // Fast Retweet
   TD.services.TwitterStatus.prototype.retweet_direct = function(e) {

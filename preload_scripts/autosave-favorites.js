@@ -25,14 +25,14 @@ function download (url, filename) {
   }
 }
 
-function generateFilename (imgurl) {
+function generateFilename (imgurl, index) {
   let splitted = imgurl.split('.');
   let ext = splitted[splitted.length - 1];
   ext = ext.replace(/:\w+/, '');
   const now = new Date();
   let [date, time, zone] = now.toISOString().split(/T|\./);
   time = time.replace(/:/g, '');
-  let result = `${date} ${time}.${ext}`;
+  let result = `${date} ${time} (${index}).${ext}`;
   return result;
 }
 
@@ -53,19 +53,21 @@ function favoriteAutoSave (target) {
   // in detail view
   let images = tweet.find('img.media-img');
   if (images.length > 0) {
+    let index = 1;
     images.each((i, elem) => {
       let imageURL = elem.src.replace(':small', ':orig');
-      let filename = generateFilename(imageURL);
+      let filename = generateFilename(imageURL, index++);
       download(imageURL, filename);
     });
   } else {
     // in timeline
     images = tweet.find('a.js-media-image-link');
+    let index = 1;
     images.each((i, elem) => {
       let match = elem.style.backgroundImage.match(/url\("(.+)"\)/);
       if (!match) return;
       let imageURL = match[1].replace(':small', ':orig');
-      let filename = generateFilename(imageURL);
+      let filename = generateFilename(imageURL, index++);
       download(imageURL, filename);
     });
   }

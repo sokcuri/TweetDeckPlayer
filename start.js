@@ -135,7 +135,7 @@ function run()
   try {
     if (forceIndex) throw 0;
     var dataPath = Util.getUserDataPath();
-    var fullPath = (dataPath[dataPath-1] == '/' ?
+    var fullPath = (dataPath[dataPath.length-1] == '/' ?
       dataPath + 'main.asar/index.js' :
       dataPath + 'main.asar\\index.js');
     require(fullPath);

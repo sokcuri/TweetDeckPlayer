@@ -1,5 +1,5 @@
 {
-  "name": "tweetdeckplayer",
+  "name": "TweetDeckPlayer",
   "version": "2.0.0",
   "main": "start.js",
   "dependencies": {

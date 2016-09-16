@@ -4,6 +4,7 @@ const twemoji = require('twemoji');
 
 function EmojiApply () {
   function tweet_handler (elem) {
+      if (!config.applyEmojiName) return;
       var target;
       target = $(elem).find('.fullname');
       if (!target) target = $(elem).find('.js-action-url').find('.fullname');

@@ -36,13 +36,13 @@
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="enableWordFilter"><label for="enableWordFilter"><div></div></label>
-                  Enable word filter
+                  Enable Word Filter
                 </label>
               </div>
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="hideFilteredTweet"><label for="hideFilteredTweet"><div></div></label>
-                  Completely hide tweet
+                  Completely Hide Filtered Tweet
                 </label>
               </div>
               <div class="settings-item">
@@ -50,9 +50,9 @@
               </div>
               <div class="settings-item description">
                 Enter one word per line. Word that wrapped with slash will be parsed as RegExp. (ex. /spam/)
-                <br>* <b>Require reload to apply.</b>
+                <br>* <b>Requires reload to apply.</b>
               </div>
-              <div class="settings-item"><b>Rules</b></div>
+              <div class="settings-item"><b>Built-in TweetDeck Filtering Rules</b></div>
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="disableCheckFriendship"><label for="disableCheckFriendship"><div></div></label>
@@ -62,13 +62,13 @@
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="showRetweetFollowingUser"><label for="showRetweetFollowingUser"><div></div></label>
-                  Show retweet of following user 
+                  Show retweet of following user
                 </label>
               </div>
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="disableFilteringMentionUser"><label for="disableFilteringMentionUser"><div></div></label>
-                  Disable filtering mention to non-following user 
+                  Disable Filtering Mentions to Non-following User
                 </label>
               </div>
               <div class="settings-item"><b>Tweaks</b></div>
@@ -80,11 +80,12 @@
               </div>
               <div class="settings-item description for-checkbox">
                 If turned on, ln.is(or linkis.com) URL will be converted to original URL.
+                <br>* <b>Requires reload to apply.</b>
               </div>
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="useStarForFavorite"><label for="useStarForFavorite"><div></div></label>
-                  Show stars on favorited tweets (instead of hearts)
+                  Show Stars on Favorited Tweets (instead of hearts)
                 </label>
               </div>
               <div class="settings-item">
@@ -103,17 +104,26 @@
                   Enable Fast Retweet
                 </label>
               </div>
+              <div class="settings-item description for-checkbox">
+                Hold down the Shift key to open the retweet/quote dialog.
+              </div>
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="enterKeyTweet"><label for="enterKeyTweet"><div></div></label>
-                  Enter key to Tweet
+                  Press Enter Key to Tweet
                 </label>
+              </div>
+              <div class="settings-item description for-checkbox">
+                Press Shift+Enter to insert a line break.
               </div>
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="applyEmojiName"><label for="applyEmojiName"><div></div></label>
-                  Apply Emoji name
+                  Show Color Emoji in User Names
                 </label>
+              </div>
+              <div class="settings-item description for-checkbox">
+                * <b>Requires reload to apply.</b>
               </div>
             </div>
             <header><span>Experimental</span></header>
@@ -127,7 +137,7 @@
               </div>
               <div class="settings-item"><b>Path to save</b></div>
               <div class="settings-item"><input type="text" id="autoSavePath"></div>
-              <div class="settings-item description">Default path is 'Favorited Images' under TweetDeck Player's directory</div>
+              <div class="settings-item description">Default path is 'Favorited Images' under TweetDeck Player's directory.</div>
             </div>
           </section>
         </form>

@@ -8,6 +8,9 @@ const config = Config.load();
 
 function download (url, filename) {
   console.info(`download start: ${url}`);
+  if (config.autoSaveFavUrlName) {
+    filename = Util.getFileName(url);
+  }
   let savepath = (config.autoSavePath || '').trim();
   if (!savepath) {
     savepath = path.join(Util.getWritableRootPath(), 'Favorited Images');
@@ -30,7 +33,7 @@ function generateFilename (imgurl, index) {
   let ext = splitted[splitted.length - 1];
   ext = ext.replace(/:\w+/, '');
   const now = new Date();
-  let [date, time, zone] = now.toISOString().split(/T|\./);
+  let [date, time, zone] = now.toISOString().split(/T|\.Z/);
   time = time.replace(/:/g, '');
   let result = `${date} ${time} (${index}).${ext}`;
   return result;
@@ -49,13 +52,12 @@ function favoriteAutoSave (target) {
   // Already favorited. quit function
   // if (tweet.hasClass('is-favorite')) return;
 
-  console.log(tweet);
   // in detail view
   let images = tweet.find('img.media-img');
   if (images.length > 0) {
     let index = 1;
     images.each((i, elem) => {
-      let imageURL = elem.src.replace(':small', ':orig');
+      let imageURL = Util.getOrigPath(elem.src);
       let filename = generateFilename(imageURL, index++);
       download(imageURL, filename);
     });
@@ -66,7 +68,7 @@ function favoriteAutoSave (target) {
     images.each((i, elem) => {
       let match = elem.style.backgroundImage.match(/url\("(.+)"\)/);
       if (!match) return;
-      let imageURL = match[1].replace(':small', ':orig');
+      let imageURL = Util.getOrigPath(match[1]);
       let filename = generateFilename(imageURL, index++);
       download(imageURL, filename);
     });

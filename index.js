@@ -825,7 +825,8 @@ var run = chk_win => {
       popup = new BrowserWindow(preference);
       popup.on('close', () => {
         Config.load();
-        Config.data.popup_bounds = popup.getBounds();
+        if (popup)
+          Config.data.popup_bounds = popup.getBounds();
         Config.save();
         popup = null;
       });

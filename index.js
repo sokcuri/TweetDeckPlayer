@@ -32,15 +32,21 @@ ipcMain.on('save-config', (event, config) => {
 });
 
 ipcMain.on('apply-config', (event, config) => {
-  win.webContents.send('apply-config');
+  try
+  {
+    win.webContents.send('apply-config');
+  } catch(e) { }
 });
 
 ipcMain.on('request-theme', event => {
-  win.webContents.executeJavaScript(
-    '(()=>{var x=document.querySelector("meta[http-equiv=Default-Style]");return x&&x.content||"light";})()',
-    false,
-    theme => { event.returnValue = theme; }
-  );
+  try
+  {
+    win.webContents.executeJavaScript(
+      '(()=>{var x=document.querySelector("meta[http-equiv=Default-Style]");return x&&x.content||"light";})()',
+      false,
+      theme => { event.returnValue = theme; }
+    );
+  } catch(e) { }
 });
 
 

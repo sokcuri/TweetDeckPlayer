@@ -25,38 +25,42 @@ require('./pace.min.js');
 var config = Config.load();
 
 ipcRenderer.on('apply-config', event => {
-  var { detectFont, supportedFonts } = require('detect-font');
-  config = Config.load();
-  window.config = config;
+  try
+  {
+    var { detectFont, supportedFonts } = require('detect-font');
+    config = Config.load();
+    window.config = config;
 
-  if (Config.data.customFonts) {
-    var node = document.createElement('div');
-    node.id = 'fontDetect';
-    node.style = `font-family: ${config.customFonts} !important`;
-    document.body.insertBefore(node, document.body.firstChild);
+    if (Config.data.customFonts) {
+      var node = document.createElement('div');
+      node.id = 'fontDetect';
+      node.style = `font-family: ${config.customFonts} !important`;
+      document.body.insertBefore(node, document.body.firstChild);
 
-    var df = detectFont(node);
-    document.getElementById('fontDetect').remove();
-    if (df !== config.customFonts) {
-      console.warn(`Not Supported Font : ${config.customFonts}`);
+      var df = detectFont(node);
+      document.getElementById('fontDetect').remove();
+      if (df !== config.customFonts) {
+        console.warn(`Not Supported Font : ${config.customFonts}`);
+        document.body.style = '';
+      }
+      else
+      {
+        document.body.style = `font-family: ${config.customFonts} !important`;
+      }
+    } else {
       document.body.style = '';
     }
-    else
-    {
-      document.body.style = `font-family: ${config.customFonts} !important`;
-    }
-  } else {
-    document.body.style = '';
-  }
 
-  const cl = document.body.classList;
-  if (config.useStarForFavorite) {
-    cl.remove('hearty');
-    cl.add('starry');
-  } else {
-    cl.remove('starry');
-    cl.add('hearty');
+    const cl = document.body.classList;
+    if (config.useStarForFavorite) {
+      cl.remove('hearty');
+      cl.add('starry');
+    } else {
+      cl.remove('starry');
+      cl.add('hearty');
+    }
   }
+  catch(e) { console.warn(e); }
 });
 
 // 우클릭시 임시 저장하는 이미지 주소와 링크 주소를 담는 변수
@@ -447,6 +451,17 @@ document.addEventListener('DOMContentLoaded', () => {
     processMiscTweet = processMiscTweet.replace(processMiscTweet_ptn, processMiscTweet_rep);
     TD.services.TwitterClient.prototype.processMiscTweet = Function('e', processMiscTweet);
   }
+
+  // Minimize Scroll Animation for Tweet Selection
+  Math.min = (a, b) => {
+    if (config.minimizeScrollAnimForTweetSel)
+    {
+      var obj = {};
+      Error.captureStackTrace(obj, this);
+      if (obj.stack.search('at d.calculateScrollDuration') != -1) return 1;
+    }
+    return (a < b ? a : b)
+  };
 
   // Shift key detect
   var setShiftCheck = function(event){

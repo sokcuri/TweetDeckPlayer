@@ -6,21 +6,15 @@ function EmojiApply () {
   function tweet_handler (elem) {
       if (!config.applyEmojiName) return;
       var target;
-      target = $(elem).find('.fullname');
-      if (!target) target = $(elem).find('.js-action-url').find('.fullname');
-      target2 = $(elem).find('.account-link')
+      target = [$(elem).find('.fullname'),
+                $(elem).find('.js-action-url').find('.fullname'),
+                $(elem).find('.account-link'),
+                $(elem).find('.nbfc').find('a')];
 
-      if (!target.hasClass('emojiapply') && target.length)
+      for (t of target)
       {
-          target.addClass('emojiapply');
-          if (!$(target[0]).find('img.emoji').length)
-            target[0].innerHTML = twemoji.parse(target[0].innerHTML);
-      }
-      if (!target2.hasClass('emojiapply') && target2.length)
-      {
-          target2.addClass('emojiapply');
-          if (!$(target2[0]).find('img.emoji').length)
-            target2[0].innerHTML = twemoji.parse(target2[0].innerHTML);
+        if (t.length && !$(t[0]).find('img.emoji').length)
+          t[0].innerHTML = twemoji.parse(t[0].innerHTML);
       }
   }
 

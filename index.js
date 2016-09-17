@@ -938,6 +938,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       template.push(sub_copy_img(event.sender));
       template.push(sub_open_img(event.sender));
       template.push(sub_search_img_google(event.sender));
+      template.push(separator);
       template.push(sub_reload(event.sender));
       break;
   }

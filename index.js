@@ -487,7 +487,9 @@ app.on('ready', () => {
         {
           label: 'Close',
           accelerator: 'CmdOrCtrl+W',
-          role: 'close'
+          click(item, focusedWindow) {
+            if (focusedWindow) focusedWindow.close()
+          }
         },
         {
           label: 'Minimize',
@@ -526,7 +528,9 @@ app.on('ready', () => {
       submenu: [
         {
           label: 'Close',
-          role: 'close'
+          click(item, focusedWindow) {
+            if (focusedWindow) focusedWindow.close()
+          }
         },
       ]
     })

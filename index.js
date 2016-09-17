@@ -848,6 +848,7 @@ var run = chk_win => {
 
 // 컨텍스트 메뉴
 ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
+  
   var template = [];
   var separator = { type: 'separator' };
 
@@ -943,7 +944,8 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
   }
 
   var contextMenu = Menu.buildFromTemplate(template);
-  contextMenu.popup(win);
+  if (!isPopup) contextMenu.popup(win);
+  else if (popup) contextMenu.popup(popup);
   return;
 });
 

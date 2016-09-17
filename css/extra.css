@@ -4,3 +4,17 @@
   font-size: smaller;
   opacity: .8;
 }
+
+/*
+ * 트윗덱 별표 관심글
+ * 참고: https://github.com/eramdam/BetterTweetDeck/commit/364632d7f6cad654d29a0cd0293f93ee32ee59d5
+ */
+
+.starry .icon-favorite:before {
+  content: "\f007";
+}
+
+.starry .icon-favorite-color,
+.starry .is-favorite .icon-favorite-toggle {
+  color: #fab41e;
+}

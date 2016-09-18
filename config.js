@@ -21,6 +21,14 @@ module.exports = {
     }
     Object.assign(config, userConfig);
 
+    // default value
+    if (!config.twColorMention)
+      config.twColorMention = '#cb4f5f';
+    if (!config.twColorHashtag)
+      config.twColorHashtag = '#2b7bb9'; 
+    if (!config.twColorURL)
+      config.twColorURL = '#a84dba';
+
     this.data = config;
     return config;
   },

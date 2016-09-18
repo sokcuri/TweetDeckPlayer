@@ -51,6 +51,9 @@ ipcRenderer.on('apply-config', event => {
       document.body.style = '';
     }
 
+    // Mention/Hashtag/URL Color
+    document.body.querySelector('.js-app.application').style = `--mention-color: ${Config.data.twColorMention};--hashtag-color: ${Config.data.twColorHashtag};--url-color: ${Config.data.twColorURL}`;
+
     const cl = document.body.classList;
     if (config.useStarForFavorite) {
       cl.remove('hearty');

@@ -781,17 +781,17 @@ var run = chk_win => {
         #border-radius: 3px;
         color: transparent;
         background-color: transparent;
-        -webkit-text-fill-color: #cb4f5f;
+        -webkit-text-fill-color: var(--mention-color);
       }
       .mark_hashtag {
         color: transparent;
         background-color: transparent;
-        -webkit-text-fill-color: #2b7bb9;
+        -webkit-text-fill-color: var(--hashtag-color);
       }
       .mark_url {
         color: transparent;
         background-color: transparent;
-        -webkit-text-fill-color: #a84dba;
+        -webkit-text-fill-color: var(--url-color);
       }
       .mark_heart {
         color: transparent;

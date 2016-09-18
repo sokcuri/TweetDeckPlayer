@@ -12,7 +12,7 @@ app.setPath('userData', Util.getUserDataPath());
 // 설정
 const Config = require('./config');
 
-let win, popup, settingsWin, twtlibWin;
+let win, popup, settingsWin, twtlibWin, accessibilityWin;
 
 function getSamePos(x, y)
 {
@@ -555,8 +555,44 @@ ipcMain.on('nogpu-relaunch', () => {
   setTimeout(() => app.quit(), 100);
 });
 
+// accessibility mode issue (CPU 100% with touch device)
+// https://github.com/sokcuri/TweetDeckPlayer/issues/29
+// accessibility mode 일때 chrome://accessibility의 global setting을 off시킨다
+// accessibility mode 여부는 app.isAccessibilitySupportEnabled()로 확인
+var hotfix_accessibility_mode = () => {
+  if (app.isAccessibilitySupportEnabled())
+  {
+    if (accessibilityWin) accessibilityWin.close();
+    accessibilityWin = new BrowserWindow({
+      show: false,
+      width: 0,
+      height: 0,
+      webPreferences: {
+        preload: path.join(__dirname, 'pre_check.js'),
+      }
+    });
+    accessibilityWin.loadURL('chrome://accessibility');
+    accessibilityWin.webContents.on('did-finish-load', () => {
+      if (app.isAccessibilitySupportEnabled())
+      {
+        accessibilityWin.webContents.executeJavaScript(
+          `if (document.querySelector('#toggle_global').text == 'on')
+          document.querySelector('#toggle_global').click();`);
+        setTimeout(() => {
+          accessibilityWin.close();
+          accessibilityWin = null;
+          setTimeout(hotfix_accessibility_mode, 1000);
+        }, 1000);
+      }
+    });
+  }
+  else setTimeout(hotfix_accessibility_mode, 1000);
+};
+
 // 트윗덱 플레이어 실행 프로시저
 var run = chk_win => {
+  hotfix_accessibility_mode();
+
   var preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
   preference.icon = path.join(__dirname, 'tweetdeck.ico');
   preference.autoHideMenuBar = true;
@@ -572,6 +608,7 @@ var run = chk_win => {
   // 체크를 위한 윈도우가 존재하는 경우 닫기
   if (chk_win) {
     chk_win.close();
+    chk_win = null;
   }
 
   // application menu

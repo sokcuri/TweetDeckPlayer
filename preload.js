@@ -473,10 +473,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('mousedown', setShiftCheck);
   document.addEventListener('mouseup', setShiftCheck);
 
-  // Favorite to Image Save 
-  var processFavorite = TD.services.TwitterClient.prototype.favorite.toString().substr(17);
-  processFavorite = processFavorite.substr(0, processFavorite.length - 1);
-  /*var processMiscTweet_ptn = `(c||a&&(!s||n||l))&&(h||m||this.publishChirpsInternal("publish","home",[e]))`;
+  // Built-in TweetDeck Filtering Rules
+  var processMiscTweet_ptn = `(c||a&&(!s||n||l))&&(h||m||this.publishChirpsInternal("publish","home",[e]))`;
   var processMiscTweet_rep = `(c||(a||config.disableCheckFriendship=="on")&&((!s||config.disableFilteringMentionUser=="on")||n||l))&&(h||(m&&!config.showRetweetFollowingUser=="on")||this.publishChirpsInternal("publish","home",[e]))`;
 
   if (processMiscTweet.search(processMiscTweet_ptn) == -1)
@@ -485,13 +483,16 @@ document.addEventListener('DOMContentLoaded', () => {
   {
     processMiscTweet = processMiscTweet.replace(processMiscTweet_ptn, processMiscTweet_rep);
     TD.services.TwitterClient.prototype.processMiscTweet = Function('e,t,i', processMiscTweet);
-  }*/
-  console.log(processFavorite);
+  }
+
+  // Favorite to Image Save 
+  var processFavorite = TD.services.TwitterClient.prototype.favorite.toString().substr(17);
+  processFavorite = processFavorite.substr(0, processFavorite.length - 1);
+
   window.AutoSaveFav = AutoSaveFav;
   processFavorite = 'AutoSaveFav(e);' + processFavorite;
   TD.services.TwitterClient.prototype.favorite = Function('e,t,i', processFavorite);
-  console.log(AutoSaveFav);
-
+  
   // Fast Retweet
   TD.services.TwitterStatus.prototype.retweet_direct = function(e) {
     if (config.enableFastRetweet && !remote.getGlobal('sharObj').shiftDown)

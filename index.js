@@ -588,6 +588,8 @@ var hotfix_accessibility_mode = () => {
   }
   else setTimeout(hotfix_accessibility_mode, 1000);
 };
+// 시현님 기여어
+// Special Thanks for @uto_correction, @Gar_ella
 
 // 트윗덱 플레이어 실행 프로시저
 var run = chk_win => {

@@ -9,7 +9,7 @@ function EmojiApply () {
       target = [$(elem).find('.fullname'),
                 $(elem).find('.js-action-url').find('.fullname'),
                 $(elem).find('.account-link'),
-                $(elem).find('.nbfc').find('a'),
+                $(elem).find('.nbfc'),
                 $(elem).find('.social-proof-names'),
                 $(elem).find('.title-content')];
 

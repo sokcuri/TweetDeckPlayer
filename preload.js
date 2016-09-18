@@ -33,7 +33,7 @@ ipcRenderer.on('apply-config', event => {
 
     if (Config.data.customFonts) {
       var node = document.createElement('div');
-      var fonts = config.customFonts.split(',').map(x => `'${x.trim()}'`);
+      var fonts = config.customFonts.split(',').map(x => x.trim()).filter(x => x != '').map(x => `'${x}'`);
       node.id = 'fontDetect';
       node.style = `font-family: ${fonts.join(',')} !important`;
       document.body.insertBefore(node, document.body.firstChild);

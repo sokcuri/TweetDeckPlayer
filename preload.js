@@ -47,6 +47,8 @@ ipcRenderer.on('apply-config', event => {
       if (notSupported.length != 0)
         console.warn(`Not Supported Font(s): ${notSupported.join(', ')}`);
       document.body.style = `font-family: ${sf.join(',')} !important`;
+      
+      node.remove();
     } else {
       document.body.style = '';
     }

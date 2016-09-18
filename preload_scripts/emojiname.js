@@ -10,7 +10,8 @@ function EmojiApply () {
                 $(elem).find('.js-action-url').find('.fullname'),
                 $(elem).find('.account-link'),
                 $(elem).find('.nbfc').find('a'),
-                $(elem).find('.social-proof-names')];
+                $(elem).find('.social-proof-names'),
+                $(elem).find('.title-content')];
 
       for (t of target)
       {

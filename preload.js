@@ -252,10 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return '&#8203;'
     return '';
   }
-  function getFillPtn (c) {
-    var cl = (c == '.' ? "zero_char_dot" : "zero_char");
-    return '<mark class="' + cl + '">' + c + '</mark>';
-  }
   function applyHighlights (text) {
     var entities = twitter.extractEntitiesWithIndices(text);
     var indices = [];
@@ -266,9 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var result = "";
     for (var i = 0; i < text.length; i++)
     {
-      if (text[i] == '\n')
-        result += '\n\n';
-      else if (text[i] == '&')
+      if (text[i] == '&')
         result += '&amp;';
       else if (text[i] == '<')
         result += '&lt;';

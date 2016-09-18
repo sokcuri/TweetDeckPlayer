@@ -802,16 +802,6 @@ var run = chk_win => {
         border-radius: 3px;
         background-color: #FF5A5A;
       }
-      .zero_char {
-        letter-spacing: -0.28em;
-        background-color: transparent;
-        -webkit-text-fill-color: transparent;
-      }
-      .zero_char_dot {
-        letter-spacing: -0.3em;
-        background-color: transparent;
-        -webkit-text-fill-color: transparent;
-      }
       .placeholder {
         color: transparent;
         background-color: transparent;
@@ -849,11 +839,15 @@ var run = chk_win => {
   });
   
   win.on('close', () => {
-    Config.load();
-    Config.data.bounds = win.getBounds();
-    if (popup) Config.data.popup_bounds = popup.getBounds(); 
-    Config.save();
-    win = null;
+    try
+    {
+      Config.load();
+      Config.data.bounds = win.getBounds();
+      if (popup) Config.data.popup_bounds = popup.getBounds(); 
+      Config.save();
+      win = null;
+    }
+    catch(e) { };
   });
 
   win.webContents.on('new-window', (e, url) => {

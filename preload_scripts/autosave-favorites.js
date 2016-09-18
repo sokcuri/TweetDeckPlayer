@@ -3,6 +3,7 @@ const request = require('request');
 const path = require('path');
 const Config = require('../config');
 const Util = require('../util');
+const {remote} = require('electron');
 
 const config = Config.load();
 
@@ -42,7 +43,7 @@ function generateFilename (imgurl, index) {
 // should add to .js-tweet element
 // if use .tweet, this function fail on detail-view
 function heartClickEventHandler (event) {
-  if (!config.enableAutoSaveFav) return;
+  if (!config.enableAutoSaveFav || remote.getGlobal('sharObj').shiftDown) return;
   favoriteAutoSave($(event.target));
 }
 

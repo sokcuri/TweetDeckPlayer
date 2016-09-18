@@ -1,4 +1,3 @@
-
 const {remote, clipboard, ipcRenderer, shell} = require('electron');
 const {Menu, MenuItem, dialog} = remote;
 const fs = require('fs');
@@ -18,8 +17,9 @@ const AutoSaveFav = require('./preload_scripts/autosave-favorites');
 const EmojiPad = require('./preload_scripts/emojipad');
 const EmojiName = require('./preload_scripts/emojiname');
 
+// 퍼포먼스 문제로 비활성화
 // 로딩 프로그레스 바 모듈 로드
-require('./pace.min.js');
+//require('./pace.min.js');
 
 // 설정 파일 읽기
 var config = Config.load();
@@ -118,7 +118,7 @@ ipcRenderer.on('command', (event, cmd) => {
       clipboard.writeText(href);
       break;
     case 'reload':
-      document.location.reload();
+      remote.getCurrentWindow().reload();
       break;
   }
 });
@@ -244,96 +244,81 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // detect to non-unicode char, purpose to inject to char before mark tag
   function getFillCh (c) {
-    if (RegExp('^[a-zA-Z0-9]$').test(c))
-      return getFillPtn('.');
+    if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9')
+      return '&#8203;'
     if (c == '-')
-      return getFillPtn(' ');
-    if (RegExp('^[\x20-\x7F]$').test(c))
-      return getFillPtn('.');
-    return getFillPtn(' ');
+      return '';
+    if (c >= 0x20 && c <= 0x7F)
+      return '&#8203;'
+    return '';
   }
   function getFillPtn (c) {
     var cl = (c == '.' ? "zero_char_dot" : "zero_char");
     return '<mark class="' + cl + '">' + c + '</mark>';
   }
   function applyHighlights (text) {
-    text = text
-      .replace(/\n$/g, '\n\n')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-
     var entities = twitter.extractEntitiesWithIndices(text);
-    var part;
-    var html_text = '';
-    var prev_pos = 0;
-    var start, end;
-    var len = 0;
-    for (var i = 0; i < entities.length; i++)
+    var indices = [];
+    for (item of entities)
+      indices.push(item.indices[0]);
+
+    var n = 0;
+    var result = "";
+    for (var i = 0; i < text.length; i++)
     {
-      start = entities[i].indices[0];
-      end = entities[i].indices[1] - start;
-      padd = 0;
-      part = '';
-
-      // mentions
-      if (typeof entities[i].screenName != 'undefined' && entities[i].screenName.length > 2)
-      {
-        if (start != 0)
-          part = getFillCh(text[start - 1]);
-        part += text.substr(start, end).replace('@' + entities[i].screenName, '<mark class="mark_mention">$&</mark>');
-      }
-
-      // hashtag
-      else if (typeof entities[i].hashtag != 'undefined')
-      {
-        if (start != 0)
-          part = getFillCh(text[start - 1]);
-        part += text.substr(start, end).replace('#' + entities[i].hashtag, '<mark class="mark_hashtag">$&</mark>');
-      }
-
-      // url
-      else if (typeof entities[i].url != 'undefined')
-      {
-        if (start != 0 && text[start] == '-')
-        {
-          part = '';
-          start++;
-          end--;
-          entities[i].url = entities[i].url.substr(1);
-        }
-        if (start != 0)
-          part = getFillCh(text[start - 1]);
-        part += text.substr(start, end).replace(entities[i].url, '<mark class="mark_url">$&</mark>');
-      }
-      else
-        part = text.substr(start, end);
-
-      len += twitter.getTweetLength(text.substr(prev_pos, start - prev_pos));
-
-      var size = start - prev_pos;
-
-      len += twitter.getTweetLength(text.substr(start, end));
-      html_text += text.substr(prev_pos, start - prev_pos);
-      html_text += part;
-      prev_pos = end + start;
-    }
-
-    var jc_cnt = parseInt($('.js-character-count')[0].value);
-    html_text += text.substr(prev_pos);
-    
-    // heart highlight
-    var result = '';
-    for (var i = 0; i < html_text.length; i++)
-    {
-      if (html_text[i] == '♥')
+      if (text[i] == '\n')
+        result += '\n\n';
+      else if (text[i] == '&')
+        result += '&amp;';
+      else if (text[i] == '<')
+        result += '&lt;';
+      else if (text[i] == '>')
+        result += '&gt';
+      else if (text[i] == '♥')
       {
         if (i != 0)
-          result += '<mark class="zero_char">' + getFillCh(text[start - 1]) + '</mark>';
-        result += '<mark class="mark_heart">' + html_text[i] + '</mark>';
+          getFillCh(text[i - 1])
+        result += '<mark class="mark_heart">♥</mark>';
+      }
+      else if (i == indices[n]) {
+        if (typeof entities[n].screenName != 'undefined' && entities[n].screenName.length > 2)
+        {
+          if (i != 0)
+            result += getFillCh(text[i - 1]);
+          result += text.substr(entities[n].indices[0], entities[n].indices[1]-entities[n].indices[0]).replace('@' + entities[n].screenName, '<mark class="mark_mention">$&</mark>');
+          i += entities[n].indices[1] - entities[n].indices[0] - 1;
+          n++;
+        }
+
+        // hashtag
+        else if (typeof entities[n].hashtag != 'undefined')
+        {
+          if (i != 0)
+            result += getFillCh(text[i - 1]);
+          result += text.substr(entities[n].indices[0], entities[n].indices[1]-entities[n].indices[0]).replace('#' + entities[n].hashtag, '<mark class="mark_hashtag">$&</mark>');
+          i += entities[n].indices[1] - entities[n].indices[0] - 1;
+          n++;
+        }
+
+        // url
+        else if (typeof entities[n].url != 'undefined')
+        {
+          if (i != 0)
+            result += getFillCh(text[i - 1]);
+          result += text.substr(entities[n].indices[0], entities[n].indices[1]-entities[n].indices[0]).replace(entities[n].url, '<mark class="mark_url">$&</mark>');
+          i += entities[n].indices[1] - entities[n].indices[0] - 1;
+          n++;
+        }
+        else
+        {
+          result += text[i];
+          n++;
+        }
       }
       else
-        result += html_text[i];
+      {
+        result += text[i];
+      }
     }
     return result;
   }
@@ -468,7 +453,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Shift key detect
   var setShiftCheck = function(event){
-      remote.getGlobal('sharObj').shiftDown = event.shiftKey;
+      if (remote.getGlobal('sharObj').shiftDown != event.shiftKey)
+        remote.getGlobal('sharObj').shiftDown = event.shiftKey;
   };
 
   document.addEventListener('keydown', setShiftCheck);
@@ -589,11 +575,12 @@ document.addEventListener('DOMContentLoaded', () => {
           TD.settings.setUseStream(TD.settings.getUseStream());
           patchContentEditable();
         }, 3000);
+        /*
         if (Pace) {
           setTimeout(() => {
             PlayerMonkey.GM_addStyle('.pace-progress { display: none }');
           }, 2000);
-        }
+        }*/
         if (config.useStarForFavorite) {
           const cl = document.body.classList;
           cl.remove('hearty');

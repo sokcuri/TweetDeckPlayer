@@ -33,20 +33,20 @@ ipcRenderer.on('apply-config', event => {
 
     if (Config.data.customFonts) {
       var node = document.createElement('div');
+      var fonts = config.customFonts.split(',').map(x => x.trim()).filter(x => x != '').map(x => `'${x}'`);
       node.id = 'fontDetect';
-      node.style = `font-family: ${config.customFonts} !important`;
+      node.style = `font-family: ${fonts.join(',')} !important`;
       document.body.insertBefore(node, document.body.firstChild);
 
-      var df = detectFont(node);
-      document.getElementById('fontDetect').remove();
-      if (df !== config.customFonts) {
-        console.warn(`Not Supported Font : ${config.customFonts}`);
-        document.body.style = '';
-      }
-      else
-      {
-        document.body.style = `font-family: ${config.customFonts} !important`;
-      }
+      var sf = supportedFonts(node).map(x => `'${x.replace('"', '').trim()}'`);
+      var notSupported = (() => {
+        var tmpSet = new Set(sf);
+        return fonts.filter(x => !tmpSet.has(x));
+      })();
+
+      if (notSupported.length != 0)
+        console.warn(`Not Supported Font(s): ${notSupported.join(', ')}`);
+      document.body.style = `font-family: ${sf.join(',')} !important`;
     } else {
       document.body.style = '';
     }

@@ -55,3 +55,37 @@
 .settings-root.dark .settings-item.description {
   opacity: .5;
 }
+
+.settings-root.dark .noUi-horizontal {
+  height: 12px;
+}
+.settings-root.dark .noUi-handle {
+  background: #55acee linear-gradient(transparent, rgba(0, 0, 0, 0.1));
+}
+.settings-root.dark .noUi-horizontal .noUi-handle {
+  width: 20px;
+  height: 20px;
+  left: -10px;
+  top: -5px;
+}
+.settings-root.dark .noUi-target {
+  border-radius: 4px;
+  border: 1px solid #606060;
+  box-shadow: none;
+  margin: 8px;
+}
+.settings-root.dark .noUi-background {
+  background: none;
+}
+.settings-root.dark .noUi-handle:after, .noUi-handle:before {
+  background: none;
+}
+.settings-root.dark .noUi-handle {
+  box-shadow: none;
+  border: 1px solid #606060;
+}
+.settings-root.dark .noUi-active {
+  box-shadow: none;
+  background: #72afde;
+  transition: all 0.1s linear;
+}

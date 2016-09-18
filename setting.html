@@ -3,8 +3,10 @@
   <head>
     <meta charset="utf-8">
     <title>Settings</title>
+    <link href="css/nouislider.min.css" rel="stylesheet">
     <link href="css/settings.css" rel="stylesheet">
     <link href="css/settings.dark.css" rel="stylesheet">
+    <script src="nouislider.min.js"></script>
   </head>
   <body>
     <div class="settings-root" id="wrapper">
@@ -122,6 +124,42 @@
                   Show Color Emoji in User Names
                 </label>
               </div>
+              <div class="settings-item"><b>Column Customize</b></div>
+              <div class="settings-item"><div id="slider-format"></div></div>
+              <div class="settings-item"><input type="text" id="input-format"></div>
+			
+            <script>
+            var sliderFormat = document.getElementById('slider-format');
+
+            noUiSlider.create(sliderFormat, {
+              start: [ 20 ],
+              step: 1,
+              range: {
+                'min': [ 20 ],
+                'max': [ 80 ]
+              },
+              format: {
+                to: function ( value ) {
+                return value + ',-';
+                },
+                from: function ( value ) {
+                return value.replace(',-', '');
+                }
+              }
+            });
+            </script>			
+            <script>
+            var inputFormat = document.getElementById('input-format');
+
+            sliderFormat.noUiSlider.on('update', function( values, handle ) {
+              inputFormat.value = values[handle];
+            });
+
+            inputFormat.addEventListener('change', function(){
+              sliderFormat.noUiSlider.set(this.value);
+            });
+            </script>
+
             </div>
             <header><span>Performance</span></header>
             <div class="contents">

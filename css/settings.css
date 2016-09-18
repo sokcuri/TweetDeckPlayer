@@ -236,3 +236,37 @@ section .multicolumn > div {
 .settings-item.description.for-checkbox {
   padding-left: 46px;
 }
+
+.noUi-horizontal {
+  height: 12px;
+}
+.noUi-handle {
+  background: #55acee linear-gradient(transparent, rgba(0, 0, 0, 0.1));
+}
+.noUi-horizontal .noUi-handle {
+  width: 20px;
+  height: 20px;
+  left: -10px;
+  top: -5px;
+}
+.noUi-target {
+  border-radius: 4px;
+  border: 1px solid #808080;
+  box-shadow: none;
+  margin: 8px;
+}
+.noUi-background {
+  background: none;
+}
+.noUi-handle:after, .noUi-handle:before {
+  background: none;
+}
+.noUi-handle {
+  box-shadow: none;
+  border: 1px solid #808080;
+}
+.noUi-active {
+  box-shadow: none;
+  background: #72afde;
+  transition: all 0.1s linear;
+}

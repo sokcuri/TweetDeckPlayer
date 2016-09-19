@@ -48,6 +48,56 @@
                   </tr>
                 </table>
               </div>
+              <div class="settings-item sub-header">Custom Column Width</div>
+              <div class="settings-item">
+                <label>
+                  <input type="checkbox" id="applyCustomizeSlider"><label for="applyCustomizeSlider"><div></div></label>
+                  Enabled
+                </label>
+              </div>
+              <div class="settings-item"><div id="customizeColumnSlider"></div></div>
+              <div class="settings-item"><input type="text" id="customizeColumnSize"></div>
+
+              <script>
+              var sliderFormat = document.getElementById('customizeColumnSlider');
+
+              noUiSlider.create(sliderFormat, {
+                start: [ require('./config').load().customizeColumnSize ],
+                step: 1,
+                range: {
+                  'min': [ 250 ],
+                  'max': [ 600 ]
+                },
+                format: {
+                  to: function ( value ) {
+                  return Math.floor(value);
+                  },
+                  from: function ( value ) {
+                    console.log(value);
+                  return value;
+                  }
+                }
+              });
+              </script>
+              <script>
+              var tTime;
+              var inputFormat = document.getElementById('customizeColumnSize');
+
+              sliderFormat.noUiSlider.on('update', function( values, handle ) {
+                inputFormat.value = values[handle];
+                if (!tTime || tTime + 100 < new Date().getTime())
+                {
+                  var event = new Event('change');
+                  var settingForm = document.getElementById('settingform');
+                  settingForm.dispatchEvent(event);
+                  tTime = new Date().getTime();
+                }
+              });
+
+              inputFormat.addEventListener('change', function(){
+                sliderFormat.noUiSlider.set(this.value);
+              });
+              </script>
             </div>
             <header><span>Timeline</span></header>
             <div class="contents">
@@ -141,57 +191,6 @@
                   Show Color Emoji in User Names
                 </label>
               </div>
-              <div class="settings-item sub-header">Custom Column Width</div>
-              <div class="settings-item">
-                <label>
-                  <input type="checkbox" id="applyCustomizeSlider"><label for="applyCustomizeSlider"><div></div></label>
-                  Use Custom Column Width
-                </label>
-              </div>
-              <div class="settings-item"><div id="customizeColumnSlider"></div></div>
-              <div class="settings-item"><input type="text" id="customizeColumnSize"></div>
-			
-            <script>
-            var sliderFormat = document.getElementById('customizeColumnSlider');
-
-            noUiSlider.create(sliderFormat, {
-              start: [ require('./config').load().customizeColumnSize ],
-              step: 1,
-              range: {
-                'min': [ 250 ],
-                'max': [ 600 ]
-              },
-              format: {
-                to: function ( value ) {
-                return Math.floor(value);
-                },
-                from: function ( value ) {
-                  console.log(value);
-                return value;
-                }
-              }
-            });
-            </script>			
-            <script>
-            var tTime;
-            var inputFormat = document.getElementById('customizeColumnSize');
-
-            sliderFormat.noUiSlider.on('update', function( values, handle ) {
-              inputFormat.value = values[handle];
-              if (!tTime || tTime + 100 < new Date().getTime())
-              {
-                var event = new Event('change');
-                var settingForm = document.getElementById('settingform');
-                settingForm.dispatchEvent(event);
-                tTime = new Date().getTime();
-              }
-            });
-
-            inputFormat.addEventListener('change', function(){
-              sliderFormat.noUiSlider.set(this.value);
-            });
-            </script>
-
             </div>
             <header><span>Performance</span></header>
             <div class="contents">

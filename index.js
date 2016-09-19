@@ -821,6 +821,16 @@ var run = chk_win => {
         width: var(--column-size) !important;
         margin-right: 6px;
       }
+      .zero_char {
+         letter-spacing: -0.28em;
+         background-color: transparent;
+         -webkit-text-fill-color: transparent;
+      }
+      .zero_char_dot {
+         letter-spacing: -0.3em;
+         background-color: transparent;
+         -webkit-text-fill-color: transparent;
+      }
       `);
     win.webContents.send('apply-config');
     

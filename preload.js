@@ -268,16 +268,20 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     document.title = `TweetDeck Player - ${document.title}`;
   }
-  
-  // detect to non-unicode char, purpose to inject to char before mark tag
+  // word-wrap purpose
   function getFillCh (c) {
+    if (typeof c !== "string") return '';
+    c = c[0];
     if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9')
-      return '&#8203;'
+      return getFillPtn('.');
     if (c == '-')
-      return '';
+      return getFillPtn(' ');
     if (c >= 0x20 && c <= 0x7F)
-      return '&#8203;'
-    return '';
+      return getFillPtn('.');
+    return getFillPtn(' ');
+  }
+  function getFillPtn (c) {
+    return '<mark class="' + (c == '.' ? "zero_char_dot" : "zero_char") + '">' + c + '</mark>';
   }
   function applyHighlights (text) {
     var entities = twitter.extractEntitiesWithIndices(text);
@@ -299,15 +303,13 @@ document.addEventListener('DOMContentLoaded', () => {
         result += '\n&nbsp;';
       else if (text[i] == '♥')
       {
-        if (i != 0)
-          getFillCh(text[i - 1])
+        result += getFillCh(text[i - 1])
         result += '<mark class="mark_heart">♥</mark>';
       }
       else if (i == indices[n]) {
         if (typeof entities[n].screenName != 'undefined' && entities[n].screenName.length > 2)
         {
-          if (i != 0)
-            result += getFillCh(text[i - 1]);
+          result += getFillCh(text[i - 1]);
           result += text.substr(entities[n].indices[0], entities[n].indices[1]-entities[n].indices[0]).replace('@' + entities[n].screenName, '<mark class="mark_mention">$&</mark>');
           i += entities[n].indices[1] - entities[n].indices[0] - 1;
           n++;
@@ -316,8 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // hashtag
         else if (typeof entities[n].hashtag != 'undefined')
         {
-          if (i != 0)
-            result += getFillCh(text[i - 1]);
+          result += getFillCh(text[i - 1]);
           result += text.substr(entities[n].indices[0], entities[n].indices[1]-entities[n].indices[0]).replace('#' + entities[n].hashtag, '<mark class="mark_hashtag">$&</mark>');
           i += entities[n].indices[1] - entities[n].indices[0] - 1;
           n++;
@@ -326,8 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // url
         else if (typeof entities[n].url != 'undefined')
         {
-          if (i != 0)
-            result += getFillCh(text[i - 1]);
+          result += getFillCh(text[i - 1]);
           result += text.substr(entities[n].indices[0], entities[n].indices[1]-entities[n].indices[0]).replace(entities[n].url, '<mark class="mark_url">$&</mark>');
           i += entities[n].indices[1] - entities[n].indices[0] - 1;
           n++;

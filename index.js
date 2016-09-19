@@ -50,9 +50,11 @@ ipcMain.on('request-theme', event => {
 });
 
 
-// global
-global.sharObj = {};
-global.sharObj.shiftDown = false;
+// global keyState
+global.keyState = {};
+global.keyState.shift = false;
+global.keyState.ctrl = false;
+global.keyState.alt = false;
 
 // 프로그램 시작시 설정파일을 로드
 Config.load();
@@ -856,7 +858,7 @@ var run = chk_win => {
 
   win.webContents.on('new-window', (e, url) => {
     e.preventDefault();
-    if (global.sharObj.shiftDown)
+    if (global.keyState.shift)
       shell.openExternal(url);
     else if (Config.data.openURLInInternalBrowser) {
       var preference = (Config.data && Config.data.popup_bounds) ? Config.data.popup_bounds : {};

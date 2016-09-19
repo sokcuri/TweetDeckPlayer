@@ -31,6 +31,12 @@ const EmojiName = require('./preload_scripts/emojiname');
 // 설정 파일 읽기
 var config = Config.load();
 
+var keyState = {
+  shift: false,
+  alt: false,
+  ctrl: false
+}
+
 ipcRenderer.on('apply-config', event => {
   var style = "";
   try
@@ -463,16 +469,33 @@ document.addEventListener('DOMContentLoaded', () => {
     return (a < b ? a : b)
   };
 
-  // Shift key detect
-  var setShiftCheck = function(event){
-      if (remote.getGlobal('sharObj').shiftDown != event.shiftKey)
-        remote.getGlobal('sharObj').shiftDown = event.shiftKey;
+  // Shift/alt/ctrl key detect
+  var setKeyCheck = function(event){
+    if (keyState.ctrl != event.ctrlKey)
+    {
+      console.info('ctrl: ' + event.ctrlKey)
+      remote.getGlobal('keyState').ctrl = event.ctrlKey;
+      keyState.ctrl = event.ctrlKey;
+    }
+    if (keyState.alt != event.altKey)
+    {
+      console.info('alt: ' + event.altKey)
+      remote.getGlobal('keyState').alt = event.altKey;
+      keyState.alt = event.altKey;
+    }
+
+    if (keyState.shift != event.shiftKey)
+    {
+      console.info('shift: ' + event.shiftKey)
+      remote.getGlobal('keyState').shift = event.shiftKey;
+      keyState.shift = event.shiftKey;
+    }
   };
 
-  document.addEventListener('keydown', setShiftCheck);
-  document.addEventListener('keyup', setShiftCheck);
-  document.addEventListener('mousedown', setShiftCheck);
-  document.addEventListener('mouseup', setShiftCheck);
+  document.addEventListener('keydown', setKeyCheck);
+  document.addEventListener('keyup', setKeyCheck);
+  document.addEventListener('mousedown', setKeyCheck);
+  document.addEventListener('mouseup', setKeyCheck);
 
   // Built-in TweetDeck Filtering Rules
   var processMiscTweet_ptn = `(c||a&&(!s||n||l))&&(h||m||this.publishChirpsInternal("publish","home",[e]))`;
@@ -496,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Fast Retweet
   TD.services.TwitterStatus.prototype.retweet_direct = function(e) {
-    if (config.enableFastRetweet && !remote.getGlobal('sharObj').shiftDown)
+    if (config.enableFastRetweet && !keyState.shift)
     {
       var t, i, s, n;
       var r = this.isRetweeted;

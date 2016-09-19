@@ -172,15 +172,4 @@ document.addEventListener('DOMContentLoaded', () => {
       $(document.activeElement).trigger(jQuery.Event('keypress', {which: e.which}));
     }
   });
-
-  // Shift key detect
-  window.shiftDown = false;
-  var setShiftCheck = function(event){
-      window.shiftDown = event.shiftKey;
-  };
-
-  document.addEventListener('keydown', setShiftCheck);
-  document.addEventListener('keyup', setShiftCheck);
-  document.addEventListener('mousedown', setShiftCheck);
-  document.addEventListener('mouseup', setShiftCheck);
 });

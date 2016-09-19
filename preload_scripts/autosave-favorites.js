@@ -40,13 +40,6 @@ function generateFilename (imgurl, index) {
   return result;
 }
 
-// should add to .js-tweet element
-// if use .tweet, this function fail on detail-view
-function heartClickEventHandler (event) {
-  if (!config.enableAutoSaveFav || remote.getGlobal('sharObj').shiftDown) return;
-  favoriteAutoSave($(event.target));
-}
-
 function favoriteAutoSave (target) {
   //if (!target.matches('a.tweet-action[rel="favorite"]')) return;
   const tweet = $(target.closest('.js-tweet')[0]);
@@ -85,12 +78,9 @@ function favoriteAutoSave (target) {
 }
 
 function tossElement(e) {
+  if (!config.enableAutoSaveFav || remote.getGlobal('keyState').alt) return;
   if (typeof e !== 'undefined')
     favoriteAutoSave($(`[data-key="${e}"]`))
-}
-
-function onready (e) {
-  $(document.body).on('click', '.js-tweet a[rel="favorite"]', heartClickEventHandler);
 }
 
 module.exports = tossElement;

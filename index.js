@@ -748,6 +748,9 @@ var run = chk_win => {
   });
 
   ipcMain.on('page-ready-tdp', (event, arg) => {
+    // destroyed contents when loading
+    try
+    {
     let emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
     win.webContents.insertCSS(emojipadCSS);
     win.webContents.insertCSS(`
@@ -843,6 +846,7 @@ var run = chk_win => {
         });
       }
     });
+    } catch(e) { }
   });
   
   win.on('close', () => {

@@ -40,7 +40,7 @@ function generateFilename (imgurl, index) {
   const now = new Date();
   let [date, time, zone] = now.toISOString().split(/T|Z/);
   time = time.replace(/:/g, '');
-  let result = `${date} ${time} (${index}).${ext}`;
+  let result = `${date} ${time}.${ext}`;
   return result;
 }
 

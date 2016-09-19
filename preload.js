@@ -473,20 +473,17 @@ document.addEventListener('DOMContentLoaded', () => {
   var setKeyCheck = function(event){
     if (keyState.ctrl != event.ctrlKey)
     {
-      console.info('ctrl: ' + event.ctrlKey)
       remote.getGlobal('keyState').ctrl = event.ctrlKey;
       keyState.ctrl = event.ctrlKey;
     }
     if (keyState.alt != event.altKey)
     {
-      console.info('alt: ' + event.altKey)
       remote.getGlobal('keyState').alt = event.altKey;
       keyState.alt = event.altKey;
     }
 
     if (keyState.shift != event.shiftKey)
     {
-      console.info('shift: ' + event.shiftKey)
       remote.getGlobal('keyState').shift = event.shiftKey;
       keyState.shift = event.shiftKey;
     }

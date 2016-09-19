@@ -19,7 +19,11 @@ function download (url, filename) {
   try {
     fs.mkdirSync(savepath);
   } catch (error) {
-    if (error.code !== 'EEXIST') throw error;
+    if (error.code !== 'EEXIST')
+    {
+      TD.controller.progressIndicator.addMessage(`Failed - Save Image : Cannot make folder`);
+      return;
+    }
   }
   let filepath = path.join(savepath, filename);
   try {

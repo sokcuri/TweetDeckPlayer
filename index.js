@@ -709,9 +709,6 @@ var run = chk_win => {
       },
       {
         role: 'minimize'
-      },
-      {
-        role: 'close'
       }
     ]
   },

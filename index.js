@@ -811,6 +811,10 @@ var run = chk_win => {
         width: 1em;
         height: 1em;
       }
+      .customize-columns .column {
+        width: var(--column-size) !important;
+        margin-right: 6px;
+      }
       `);
     win.webContents.send('apply-config');
     

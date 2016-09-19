@@ -28,6 +28,8 @@ module.exports = {
       config.twColorHashtag = '#2b7bb9'; 
     if (!config.twColorURL)
       config.twColorURL = '#a84dba';
+    if (!config.customizeColumnSize)
+      config.customizeColumnSize = '310';
 
     this.data = config;
     return config;

@@ -15,17 +15,17 @@ function download (url, filename) {
   let savepath = (config.autoSavePath || '').trim();
   if (!savepath) {
     savepath = path.join(Util.getWritableRootPath(), 'Favorited Images');
-    try {
-      fs.mkdirSync(savepath);
-    } catch (error) {
-      if (error.code !== 'EEXIST') throw error;
-    }
+  }
+  try {
+    fs.mkdirSync(savepath);
+  } catch (error) {
+    if (error.code !== 'EEXIST') throw error;
   }
   let filepath = path.join(savepath, filename);
   try {
     request(url).pipe(fs.createWriteStream(filepath));
   } catch (e) {
-    window.alert(`파일을 "${filepath}"에 다운로드할 수 없습니다.`, 'Error');
+    TD.controller.progressIndicator.addMessage(`Failed - Save Image : Cannot save image to ${filepath}`);
   }
 }
 
@@ -34,7 +34,7 @@ function generateFilename (imgurl, index) {
   let ext = splitted[splitted.length - 1];
   ext = ext.replace(/:\w+/, '');
   const now = new Date();
-  let [date, time, zone] = now.toISOString().split(/T|\.Z/);
+  let [date, time, zone] = now.toISOString().split(/T|Z/);
   time = time.replace(/:/g, '');
   let result = `${date} ${time} (${index}).${ext}`;
   return result;

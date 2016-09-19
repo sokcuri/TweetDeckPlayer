@@ -429,10 +429,10 @@ document.addEventListener('DOMContentLoaded', () => {
       $(document.activeElement).trigger(jQuery.Event('keypress', {which: e.which}));
     }
     // 엔터키로 트윗하기
-    else if (!e.rep && e.which == 13 && config.enterKeyTweet == 'on')
+    else if (!e.rep && e.which == 13)
     {
       el = document.activeElement;
-      if (el && el.classList.contains('js-compose-text') && e.shiftKey != true &&
+      if (e.ctrlKey || config.enterKeyTweet == 'on' && el && el.classList.contains('js-compose-text') && e.shiftKey != true &&
          ((el.tagName.toLowerCase() === 'input' && el.type === 'text') ||
          (el.tagName.toLowerCase() === 'textarea')))
       {

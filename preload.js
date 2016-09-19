@@ -261,6 +261,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // create emojipad entry point
     window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<div class="js-send-button-container', '<div class="btn btn-on-blue padding-v--9 emojipad--entry-point"><img class="emoji" src="https://twemoji.maxcdn.com/2/72x72/1f600.png" style="pointer-events:none;"></div> <div class="js-send-button-container').replace('<textarea class="js-compose-text', '<textarea id="docked-textarea" class="js-compose-text');
+
+    // inject tdp settings menu
+    window.TD_mustaches['menus/topbar_menu.mustache'] = window.TD_mustaches['menus/topbar_menu.mustache'].replace('Settings{{/i}}</a> </li>', 'Settings{{/i}}</a> </li> <li class="is-selectable"><a href="#" data-action="tdpSettings">{{_i}}TweetDeck Player Settings{{/i}}</a></li>');
   }
 
   if (document.title === 'TweetDeck') {
@@ -625,6 +628,7 @@ document.addEventListener('DOMContentLoaded', () => {
           cl.add('starry');
         }
 
+        // Enable emojipad
         var emojiPadCSS = document.createElement('link');
         var dockBtn = document.getElementsByClassName('emojipad--entry-point')[0]
         document.body.appendChild(EmojiPad.element);
@@ -648,6 +652,18 @@ document.addEventListener('DOMContentLoaded', () => {
           var evt = document.createEvent("HTMLEvents");
           evt.initEvent("change", false, true);
           txt.dispatchEvent(evt);
+        }
+
+        // Integrate TDP settings
+        {
+          var f = TD.controller.stats.navbarSettingsClick.bind({});
+          TD.controller.stats.navbarSettingsClick = () => {
+            var btn = document.querySelector('a[data-action=tdpSettings]');
+            btn.addEventListener('click', e => {
+              ipcRenderer.send('open-settings');
+            }, false);
+            f();
+          };
         }
       }
     }, 1000);

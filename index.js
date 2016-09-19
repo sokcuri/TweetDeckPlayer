@@ -49,6 +49,10 @@ ipcMain.on('request-theme', event => {
   } catch(e) { }
 });
 
+ipcMain.on('open-settings', event => {
+  openSetting(win);
+})
+
 
 // global keyState
 global.keyState = {};

@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text');
 
     // create emojipad entry point
-    window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<div class="js-send-button-container', '<div class="btn btn-on-blue padding-v--9 emojipad--entry-point"><img class="emoji" src="https://twemoji.maxcdn.com/2/72x72/1f600.png" style="pointer-events:none;"></div> <div class="js-send-button-container').replace('<textarea class="js-compose-text', '<textarea id="docked-textarea" class="js-compose-text');
+    window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<div class="js-send-button-container', '<div class="btn btn-on-blue padding-v--9 emojipad--entry-point"><img class="emoji" src="https://twemoji.maxcdn.com/2/72x72/1f600.png" style="pointer-events:none;"></div> <div class="js-send-button-container').replace('<textarea class="js-compose-text', '<textarea id="docked-textarea" class="keep-all js-compose-text');
 
     // inject tdp settings menu
     window.TD_mustaches['menus/topbar_menu.mustache'] = window.TD_mustaches['menus/topbar_menu.mustache'].replace('Settings{{/i}}</a> </li>', 'Settings{{/i}}</a> </li> <li class="is-selectable"><a href="#" data-action="tdpSettings">{{_i}}TweetDeck Player Settings{{/i}}</a></li>');
@@ -270,21 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.title = 'TweetDeck Player';
   } else {
     document.title = `TweetDeck Player - ${document.title}`;
-  }
-  // word-wrap purpose
-  function getFillCh (c) {
-    if (typeof c !== "string") return '';
-    c = c[0];
-    if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9')
-      return getFillPtn('.');
-    if (c == '-')
-      return getFillPtn(' ');
-    if (c >= 0x20 && c <= 0x7F)
-      return getFillPtn('.');
-    return getFillPtn(' ');
-  }
-  function getFillPtn (c) {
-    return '<mark class="' + (c == '.' ? "zero_char_dot" : "zero_char") + '">' + c + '</mark>';
   }
   function applyHighlights (text) {
     var entities = twitter.extractEntitiesWithIndices(text);
@@ -306,13 +291,11 @@ document.addEventListener('DOMContentLoaded', () => {
         result += '\n&nbsp;';
       else if (text[i] == '♥')
       {
-        result += getFillCh(text[i - 1])
         result += '<mark class="mark_heart">♥</mark>';
       }
       else if (i == indices[n]) {
         if (typeof entities[n].screenName != 'undefined' && entities[n].screenName.length > 2)
         {
-          result += getFillCh(text[i - 1]);
           result += text.substr(entities[n].indices[0], entities[n].indices[1]-entities[n].indices[0]).replace('@' + entities[n].screenName, '<mark class="mark_mention">$&</mark>');
           i += entities[n].indices[1] - entities[n].indices[0] - 1;
           n++;
@@ -321,7 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // hashtag
         else if (typeof entities[n].hashtag != 'undefined')
         {
-          result += getFillCh(text[i - 1]);
           result += text.substr(entities[n].indices[0], entities[n].indices[1]-entities[n].indices[0]).replace('#' + entities[n].hashtag, '<mark class="mark_hashtag">$&</mark>');
           i += entities[n].indices[1] - entities[n].indices[0] - 1;
           n++;
@@ -330,7 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // url
         else if (typeof entities[n].url != 'undefined')
         {
-          result += getFillCh(text[i - 1]);
           result += text.substr(entities[n].indices[0], entities[n].indices[1]-entities[n].indices[0]).replace(entities[n].url, '<mark class="mark_url">$&</mark>');
           i += entities[n].indices[1] - entities[n].indices[0] - 1;
           n++;

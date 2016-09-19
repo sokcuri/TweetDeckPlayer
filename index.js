@@ -774,6 +774,7 @@ var run = chk_win => {
       .highlights {
         white-space: pre-wrap;
         word-wrap: break-word;
+        word-break: keep-all;
         color: transparent;
         -webkit-text-fill-color: black;
         padding: 10px;
@@ -825,15 +826,8 @@ var run = chk_win => {
         width: var(--column-size) !important;
         margin-right: 6px;
       }
-      .zero_char {
-         letter-spacing: -0.28em;
-         background-color: transparent;
-         -webkit-text-fill-color: transparent;
-      }
-      .zero_char_dot {
-         letter-spacing: -0.3em;
-         background-color: transparent;
-         -webkit-text-fill-color: transparent;
+      .keep-all {
+        word-break: keep-all;
       }
       `);
     win.webContents.send('apply-config');

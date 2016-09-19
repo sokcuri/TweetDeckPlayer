@@ -101,6 +101,15 @@ section .multicolumn > div {
   position: relative;
 }
 
+.settings-item.sub-header {
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+.settings-item:first-child {
+  margin-top: 0;
+}
+
 .settings-item table {
   width: 100%;
 }
@@ -108,6 +117,7 @@ section .multicolumn > div {
 .settings-item table th {
   width: 100px;
   text-align: left;
+  font-weight: normal;
 }
 
 .settings-item table td {
@@ -125,16 +135,17 @@ section .multicolumn > div {
 }
 
 .settings-item table tr > * {
-  padding: 10px 0;
-  border-bottom: 1px solid #ccd6dd;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .settings-item table tr:first-of-type > * {
-  padding-top: 5px;
+  padding-top: 0;
 }
 
 .settings-item table tr:last-of-type > * {
-  padding-bottom: 5px; border-bottom: none;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 /* Custom input appearance */

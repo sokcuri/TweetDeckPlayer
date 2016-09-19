@@ -13,6 +13,14 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+.settings-root.dark .settings-item table tr > * {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-root.dark .settings-item table tr:last-of-type > * {
+  border-bottom: none;
+}
+
 /* Custom input appearance */
 .settings-root.dark .settings-item input[type='checkbox'] + label {
   border: 1px solid #606060;

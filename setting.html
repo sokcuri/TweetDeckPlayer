@@ -18,7 +18,7 @@
           <section>
             <header><span>Display</span></header>
             <div class="contents">
-              <div class="settings-item"><b>Window Options</b></div>
+              <div class="settings-item sub-header">Window Options</div>
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="defaultTopmost"><label for="defaultTopmost"><div></div></label>
@@ -28,13 +28,30 @@
               <div class="settings-item description for-checkbox">
                 If checked, TweetDeck Player window will be set to be always on top on startup.
               </div>
-              <div class="settings-item"><b>Display Font</b></div>
+              <div class="settings-item sub-header">Display Font</div>
               <div class="settings-item"><input type="text" id="customFonts"></div>
               <div class="settings-item description">Leave it blank if you want to use the default font.</div>
+              <div class="settings-item sub-header">Tweet Color Highlight</div>
+              <div class="settings-item">
+                <table>
+                  <tr>
+                    <th>Mentions</th>
+                    <td><input type="color" id="twColorMention"></td>
+                  </tr>
+                  <tr>
+                    <th>Hashtags</th>
+                    <td><input type="color" id="twColorHashtag"></td>
+                  </tr>
+                  <tr>
+                    <th>URLs</th>
+                    <td><input type="color" id="twColorURL"></td>
+                  </tr>
+                </table>
+              </div>
             </div>
             <header><span>Timeline</span></header>
             <div class="contents">
-              <div class="settings-item"><b>Word Filter</b></div>
+              <div class="settings-item sub-header">Word Filter</div>
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="enableWordFilter"><label for="enableWordFilter"><div></div></label>
@@ -54,7 +71,7 @@
                 Enter one word per line. Word that wrapped with slash will be parsed as RegExp. (ex. /spam/)
                 <br>* <b>Requires reload to apply.</b>
               </div>
-              <div class="settings-item"><b>Built-in TweetDeck Filtering Rules</b></div>
+              <div class="settings-item sub-header">Build-in TweetDeck Filtering Rules</div>
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="disableCheckFriendship"><label for="disableCheckFriendship"><div></div></label>
@@ -73,7 +90,7 @@
                   Disable Filtering Mentions to Non-following User
                 </label>
               </div>
-              <div class="settings-item"><b>Tweaks</b></div>
+              <div class="settings-item sub-header">Tweaks</div>
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="enableUnlinkis"><label for="enableUnlinkis"><div></div></label>
@@ -124,11 +141,11 @@
                   Show Color Emoji in User Names
                 </label>
               </div>
-              <div class="settings-item"><b>Column Customize</b></div>
+              <div class="settings-item sub-header">Custom Column Width</div>
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="applyCustomizeSlider"><label for="applyCustomizeSlider"><div></div></label>
-                  Enable Column Customize
+                  Use Custom Column Width
                 </label>
               </div>
               <div class="settings-item"><div id="customizeColumnSlider"></div></div>
@@ -178,7 +195,7 @@
             </div>
             <header><span>Performance</span></header>
             <div class="contents">
-              <div class="settings-item"><b>Animation</b></div>
+              <div class="settings-item sub-header">Animation</div>
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="minimizeScrollAnimForTweetSel"><label for="minimizeScrollAnimForTweetSel"><div></div></label>
@@ -186,30 +203,9 @@
                 </label>
               </div>
             </div>
-            <header><span>Tweet Color Highlight</span></header>
-            <div class="contents" style="column-count: 3;">
-              <div class="settings-item"><b>Mention</b></div>
-              <div class="settings-item">
-                <label>
-                  <input type="color" id="twColorMention">
-                </label>
-              </div>
-              <div class="settings-item"><b>Hash Tag</b></div>
-              <div class="settings-item">
-                <label>
-                  <input type="color" id="twColorHashtag">
-                </label>
-              </div>
-              <div class="settings-item"><b>URL</b></div>
-              <div class="settings-item">
-                <label>
-                  <input type="color" id="twColorURL">
-                </label>
-              </div>
-            </div>
             <header><span>Experimental</span></header>
             <div class="contents">
-              <div class="settings-item"><b>Auto Save</b></div>
+              <div class="settings-item sub-header">Auto Save</div>
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="enableAutoSaveFav"><label for="enableAutoSaveFav"><div></div></label>
@@ -222,7 +218,7 @@
                   Save image file name by url 
                 </label>
               </div>
-              <div class="settings-item"><b>Path to save</b></div>
+              <div class="settings-item sub-header">Path to Save</div>
               <div class="settings-item"><input type="text" id="autoSavePath"></div>
               <div class="settings-item description">Default path is 'Favorited Images' under TweetDeck Player's directory.</div>
             </div>

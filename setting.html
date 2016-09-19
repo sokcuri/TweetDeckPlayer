@@ -125,34 +125,49 @@
                 </label>
               </div>
               <div class="settings-item"><b>Column Customize</b></div>
-              <div class="settings-item"><div id="slider-format"></div></div>
-              <div class="settings-item"><input type="text" id="input-format"></div>
+              <div class="settings-item">
+                <label>
+                  <input type="checkbox" id="applyCustomizeSlider"><label for="applyCustomizeSlider"><div></div></label>
+                  Enable Column Customize
+                </label>
+              </div>
+              <div class="settings-item"><div id="customizeColumnSlider"></div></div>
+              <div class="settings-item"><input type="text" id="customizeColumnSize"></div>
 			
             <script>
-            var sliderFormat = document.getElementById('slider-format');
+            var sliderFormat = document.getElementById('customizeColumnSlider');
 
             noUiSlider.create(sliderFormat, {
-              start: [ 20 ],
+              start: [ require('./config').load().customizeColumnSize ],
               step: 1,
               range: {
-                'min': [ 20 ],
-                'max': [ 80 ]
+                'min': [ 250 ],
+                'max': [ 600 ]
               },
               format: {
                 to: function ( value ) {
-                return value + ',-';
+                return Math.floor(value);
                 },
                 from: function ( value ) {
-                return value.replace(',-', '');
+                  console.log(value);
+                return value;
                 }
               }
             });
             </script>			
             <script>
-            var inputFormat = document.getElementById('input-format');
+            var tTime;
+            var inputFormat = document.getElementById('customizeColumnSize');
 
             sliderFormat.noUiSlider.on('update', function( values, handle ) {
               inputFormat.value = values[handle];
+              if (!tTime || tTime + 100 < new Date().getTime())
+              {
+                var event = new Event('change');
+                var settingForm = document.getElementById('settingform');
+                settingForm.dispatchEvent(event);
+                tTime = new Date().getTime();
+              }
             });
 
             inputFormat.addEventListener('change', function(){

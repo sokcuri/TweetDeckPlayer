@@ -1,5 +1,12 @@
 const {shell, remote, clipboard, ipcRenderer} = require('electron');
-const {Menu, MenuItem, dialog} = remote;
+// Guard against missing remote function properties
+// https://github.com/electron/electron/pull/7209
+try
+{
+  const {Menu, MenuItem, dialog} = remote;
+} catch(e) {
+  console.warn('remote error : ' + e)
+};
 const fs = require('fs');
 const Util = require('./util');
 

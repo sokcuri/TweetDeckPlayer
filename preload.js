@@ -1,5 +1,12 @@
 const {remote, clipboard, ipcRenderer, shell} = require('electron');
-const {Menu, MenuItem, dialog} = remote;
+// Guard against missing remote function properties
+// https://github.com/electron/electron/pull/7209
+try
+{
+  const {Menu, MenuItem, dialog} = remote;
+} catch(e) {
+  console.warn('remote error : ' + e)
+};
 const fs = require('fs');
 const twitter = require('twitter-text');
 const twemoji = require('twemoji');
@@ -25,6 +32,7 @@ const EmojiName = require('./preload_scripts/emojiname');
 var config = Config.load();
 
 ipcRenderer.on('apply-config', event => {
+  var style = "";
   try
   {
     var { detectFont, supportedFonts } = require('detect-font');
@@ -46,11 +54,11 @@ ipcRenderer.on('apply-config', event => {
 
       if (notSupported.length != 0)
         console.warn(`Not Supported Font(s): ${notSupported.join(', ')}`);
-      document.body.style = `font-family: ${sf.join(',')} !important`;
+      style = `font-family: ${sf.join(',')} !important;`;
       
       node.remove();
     } else {
-      document.body.style = '';
+      style = '';
     }
 
     // Mention/Hashtag/URL Color
@@ -64,6 +72,14 @@ ipcRenderer.on('apply-config', event => {
       cl.remove('starry');
       cl.add('hearty');
     }
+    if (config.applyCustomizeSlider && !cl.contains('customize-columns'))
+      cl.add('customize-columns');
+    else if (!config.applyCustomizeSlider && cl.contains('customize-columns'))
+      cl.remove('customize-columns');
+
+    style += `--column-size: ${config.customizeColumnSize}px;`;
+
+    document.body.style = style;
   }
   catch(e) { console.warn(e); }
 });

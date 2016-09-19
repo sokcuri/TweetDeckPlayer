@@ -97,8 +97,11 @@ var Addr = {
 };
 
 // 포인터 이벤트
-ipcRenderer.on('pointer-events', (event, opt) => {
-  document.body.style = `pointer-events: ${opt};`;
+ipcRenderer.on('no-pointer', (event, opt) => {
+  if (opt && !document.body.classList.contain('no-pointer'))
+    document.body.classList.add('no-pointer');
+  else if (!opt && document.body.classList.contain('no-pointer'))
+    document.body.classList.remove('no-pointer');
 });
 
 // 메인 스레드에서 렌더러로 요청하는 커맨드

@@ -214,7 +214,7 @@ var sub_save_img = (webContents, Addr) => ({
     filters.push({name: 'All Files', extensions: ['*']});
 
     // 모든 포인터 이벤트를 잠시 없앤다
-    webContents.send('pointer-events', 'none');
+    webContents.send('no-pointer', true);
 
     // Save Dialog를 띄운다
     var savepath = dialog.showSaveDialog({
@@ -223,7 +223,7 @@ var sub_save_img = (webContents, Addr) => ({
     });
 
     // 포인터 이벤트를 되살린다
-    webContents.send('pointer-events', 'all');
+    webContents.send('no-pointer', false);
 
     // savepath가 없는 경우 리턴
     if (typeof savepath === 'undefined') return;
@@ -294,7 +294,7 @@ var sub_save_link = (webContents, Addr) => ({
       });
 
         // 모든 포인터 이벤트를 잠시 없앤다
-      webContents.send('pointer-events', 'none');
+      webContents.send('no-pointer', true);
 
         // 저장 다이얼로그를 띄운다
       var savepath = dialog.showSaveDialog({
@@ -303,7 +303,7 @@ var sub_save_link = (webContents, Addr) => ({
       });
 
         // 포인터 이벤트를 되살린다
-      webContents.send('pointer-events', 'all');
+      webContents.send('no-pointer', false);
 
       if (typeof savepath === 'undefined') return;
 
@@ -741,6 +741,10 @@ var run = chk_win => {
     //win.webContents.insertCSS(paceCSS);
     let extraCSS = fs.readFileSync(path.join(__dirname, 'css/extra.css'), 'utf8');
     win.webContents.insertCSS(extraCSS);
+    win.webContents.insertCSS(`
+      .no-pointer {
+        pointer-events: none;
+      }`);
   });
 
   ipcMain.on('page-ready-tdp', (event, arg) => {

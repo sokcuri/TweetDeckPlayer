@@ -295,6 +295,8 @@ document.addEventListener('DOMContentLoaded', () => {
         result += '&lt;';
       else if (text[i] == '>')
         result += '&gt';
+      else if (text[i] == '\n' && i + 1 == text.length)
+        result += '\n&nbsp;';
       else if (text[i] == '♥')
       {
         if (i != 0)
@@ -414,6 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   $(document).on({'input': handleInput, 'change': handleChange});
+  $(document).on({'input': handleScroll});
 
   // 맥용 한글 기본 입력기 이슈 해결
   $(document).on('keydown', e => {

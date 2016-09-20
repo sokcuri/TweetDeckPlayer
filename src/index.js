@@ -14,10 +14,9 @@ const Config = require('./config');
 
 let win, popup, settingsWin, twtlibWin, accessibilityWin;
 
-function getSamePos(x, y)
-{
+function getSamePos (x, y) {
   for (var i = 0; i < max(x.length, y.length); i++)
-    if (i == x.length || i == y.length || x[i] != y[i])
+    if (i === x.length || i === y.length || x[i] !== y[i])
       return i;
 }
 
@@ -32,26 +31,26 @@ ipcMain.on('save-config', (event, config) => {
 });
 
 ipcMain.on('apply-config', (event, config) => {
-  try
-  {
+  try {
     win.webContents.send('apply-config');
-  } catch(e) { }
+  } catch (e) { }
 });
 
 ipcMain.on('request-theme', event => {
-  try
-  {
+  try {
     win.webContents.executeJavaScript(
       '(()=>{var x=document.querySelector("meta[http-equiv=Default-Style]");return x&&x.content||"light";})()',
       false,
-      theme => { event.returnValue = theme; }
+      theme => {
+        event.returnValue = theme;
+      }
     );
-  } catch(e) { }
+  } catch (e) { }
 });
 
 ipcMain.on('open-settings', event => {
   openSetting(win);
-})
+});
 
 
 // global keyState
@@ -83,31 +82,31 @@ app.on('gpu-process-crashed', () => {
 });
 
 // setting window
-var openSetting = (window) => {
-    if (settingsWin) {
-      settingsWin.focus();
-      return;
-    }
-    var width = 500;
-    var height = 620;
-    var b = win.getBounds();
-    var x = Math.floor(b.x + (b.width - width) / 2);
-    var y = Math.floor(b.y + (b.height - height) / 2);
-    settingsWin = new BrowserWindow({
-      width, height, x, y,
-      parent: win,
-      icon: path.join(__dirname, 'tweetdeck.ico'),
-      modal: false,
-      show: true,
-      autoHideMenuBar: true,
-      webPreferences: {
-        nodeIntegration: true,
-      },
-    });
-    settingsWin.on('close', () => {
-      settingsWin = null;
-    });
-    settingsWin.loadURL('file:///' + path.join(__dirname, 'setting.html'));
+var openSetting = window => {
+  if (settingsWin) {
+    settingsWin.focus();
+    return;
+  }
+  var width = 500;
+  var height = 620;
+  var b = win.getBounds();
+  var x = Math.floor(b.x + (b.width - width) / 2);
+  var y = Math.floor(b.y + (b.height - height) / 2);
+  settingsWin = new BrowserWindow({
+    width, height, x, y,
+    parent: win,
+    icon: path.join(__dirname, 'tweetdeck.ico'),
+    modal: false,
+    show: true,
+    autoHideMenuBar: true,
+    webPreferences: {
+      nodeIntegration: true,
+    },
+  });
+  settingsWin.on('close', () => {
+    settingsWin = null;
+  });
+  settingsWin.loadURL('file:///' + path.join(__dirname, 'setting.html'));
 };
 
 //
@@ -153,14 +152,14 @@ var sub_back_page = webContents => ({
   click () {
     webContents.send('command', 'back');
   },
-  enabled: webContents.canGoBack()
+  enabled: webContents.canGoBack(),
 });
 var sub_forward_page = webContents => ({
   label: 'Forward',
   click () {
     webContents.send('command', 'forward');
   },
-  enabled: webContents.canGoForward()
+  enabled: webContents.canGoForward(),
 });
 var sub_reload = webContents => ({
   label: 'Reload',
@@ -378,30 +377,30 @@ app.on('ready', () => {
       label: 'Edit',
       submenu: [
         {
-          role: 'undo'
+          role: 'undo',
         },
         {
-          role: 'redo'
+          role: 'redo',
         },
         {
-          type: 'separator'
+          type: 'separator',
         },
         {
-          role: 'cut'
+          role: 'cut',
         },
         {
-          role: 'copy'
+          role: 'copy',
         },
         {
-          role: 'paste'
+          role: 'paste',
         },
         {
-          role: 'selectall'
+          role: 'selectall',
         },
         {
-          role: 'delete'
-        }
-      ]
+          role: 'delete',
+        },
+      ],
     },
     {
       label: 'View',
@@ -410,75 +409,76 @@ app.on('ready', () => {
           label: 'Reload',
           accelerator: 'CmdOrCtrl+R',
           click (item, focusedWindow) {
-            if (focusedWindow) focusedWindow.reload()
-          }
+            if (focusedWindow) focusedWindow.reload();
+          },
         },
         {
-          role: 'togglefullscreen'
+          role: 'togglefullscreen',
         },
         {
-          type: 'separator'
+          type: 'separator',
         },
         {
-          role: 'resetzoom'
+          role: 'resetzoom',
         },
         {
-          role: 'zoomin'
+          role: 'zoomin',
         },
         {
-          role: 'zoomout'
+          role: 'zoomout',
         },
         {
-          type: 'separator'
+          type: 'separator',
         },
         {
           label: 'Toggle Developer Tools',
           accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
           click (item, focusedWindow) {
-            if (focusedWindow) focusedWindow.webContents.toggleDevTools()
-          }
-        }
-      ]
+            if (focusedWindow) focusedWindow.webContents.toggleDevTools();
+          },
+        },
+      ],
     },
-  ]
+  ];
 
   if (process.platform === 'darwin') {
     template.unshift({
       label: app.getName(),
       submenu: [
         {
-          role: 'about'
+          role: 'about',
         },
         {
-          type: 'separator'
+          type: 'separator',
         },
         {
           label: 'Setting...',
-          click () { openSetting(win) }
+          click () {
+            openSetting(win);
+          },
         },
         {
-          type: 'separator'
+          type: 'separator',
         },
         {
-          role: 'hide'
+          role: 'hide',
         },
         {
-          role: 'hideothers'
+          role: 'hideothers',
         },
         {
-          role: 'unhide'
+          role: 'unhide',
         },
         {
-          type: 'separator'
+          type: 'separator',
         },
         {
-          role: 'quit'
-        }
-      ]
+          role: 'quit',
+        },
+      ],
     });
     
-  template[3] =
-    {
+    template[3] = {
       role: 'window',
       submenu: [
         {
@@ -494,58 +494,57 @@ app.on('ready', () => {
           },
         },
         {
-          type: 'separator'
+          type: 'separator',
         },
         {
           label: 'Close',
           accelerator: 'CmdOrCtrl+W',
-          click(item, focusedWindow) {
-            if (focusedWindow) focusedWindow.close()
-          }
+          click (item, focusedWindow) {
+            if (focusedWindow) focusedWindow.close();
+          },
         },
         {
           label: 'Minimize',
           accelerator: 'CmdOrCtrl+M',
-          role: 'minimize'
+          role: 'minimize',
         },
         {
           label: 'Zoom',
-          role: 'zoom'
+          role: 'zoom',
         },
         {
-          type: 'separator'
+          type: 'separator',
         },
         {
           label: 'Bring All to Front',
-          role: 'front'
-        }
-      ]
+          role: 'front',
+        },
+      ],
     },
     
-  template[4] = 
-    {
+    template[4] = {
       role: 'help',
       submenu: [
         {
           label: 'About TweetDeck Player...',
-          click () { require('electron').shell.openExternal('https://github.com/sokcuri/TweetDeckPlayer') }
-        }
-      ]
-    }
-  }
-  else
-  {
+          click () {
+            require('electron').shell.openExternal('https://github.com/sokcuri/TweetDeckPlayer');
+          },
+        },
+      ],
+    };
+  } else {
     template.unshift({
       label: 'File',
       submenu: [
         {
           label: 'Close',
-          click(item, focusedWindow) {
-            if (focusedWindow) focusedWindow.close()
-          }
+          click (item, focusedWindow) {
+            if (focusedWindow) focusedWindow.close();
+          },
         },
-      ]
-    })
+      ],
+    });
   }
 
   const menu = Menu.buildFromTemplate(template);
@@ -566,8 +565,7 @@ ipcMain.on('nogpu-relaunch', () => {
 // accessibility mode 일때 chrome://accessibility의 global setting을 off시킨다
 // accessibility mode 여부는 app.isAccessibilitySupportEnabled()로 확인
 var hotfix_accessibility_mode = () => {
-  if (app.isAccessibilitySupportEnabled())
-  {
+  if (app.isAccessibilitySupportEnabled()) {
     if (accessibilityWin) accessibilityWin.close();
     accessibilityWin = new BrowserWindow({
       show: false,
@@ -575,12 +573,11 @@ var hotfix_accessibility_mode = () => {
       height: 0,
       webPreferences: {
         preload: path.join(__dirname, 'pre_check.js'),
-      }
+      },
     });
     accessibilityWin.loadURL('chrome://accessibility');
     accessibilityWin.webContents.on('did-finish-load', () => {
-      if (app.isAccessibilitySupportEnabled())
-      {
+      if (app.isAccessibilitySupportEnabled()) {
         accessibilityWin.webContents.executeJavaScript(
           `if (document.querySelector('#toggle_global').text == 'on')
           document.querySelector('#toggle_global').click();`);
@@ -591,8 +588,7 @@ var hotfix_accessibility_mode = () => {
         }, 1000);
       }
     });
-  }
-  else setTimeout(hotfix_accessibility_mode, 1000);
+  } else setTimeout(hotfix_accessibility_mode, 1000);
 };
 // 시현님 기여어
 // Special Thanks for @uto_correction, @Gar_ella
@@ -620,113 +616,119 @@ var run = chk_win => {
   }
 
   // application menu
-  const template = [{
-    label: 'File',
-    submenu: [
-      {
-        label: 'Setting...',
-        click () { openSetting(win) }
-      },
-      {
-        role: 'quit'
-      }
-    ]
-  },
-  {
-    label: 'Edit',
-    submenu: [
-      {
-        role: 'undo'
-      },
-      {
-        role: 'redo'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        role: 'cut'
-      },
-      {
-        role: 'copy'
-      },
-      {
-        role: 'paste'
-      },
-      {
-        role: 'selectall'
-      },
-      {
-        role: 'delete'
-      }
-    ]
-  },
-  {
-    label: 'View',
-    submenu: [
-      {
-        label: 'Reload',
-        accelerator: 'CmdOrCtrl+R',
-        click (item, focusedWindow) {
-          if (focusedWindow) focusedWindow.reload()
-        }
-      },
-      {
-        role: 'togglefullscreen'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        role: 'resetzoom'
-      },
-      {
-        role: 'zoomin'
-      },
-      {
-        role: 'zoomout'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Toggle Developer Tools',
-        accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
-        click (item, focusedWindow) {
-          if (focusedWindow) focusedWindow.webContents.toggleDevTools()
-        }
-      }
-    ]
-  },
-  {
-    role: 'window',
-    submenu: [
-      {
-        label: 'Always on top',
-        type: 'checkbox',
-        checked: win.isAlwaysOnTop(),
-        click () {
-          var flag = !win.isAlwaysOnTop();
-          win.setAlwaysOnTop(flag);
-          if (popup) popup.setAlwaysOnTop(flag);
+  const template = [
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'Setting...',
+          click () {
+            openSetting(win);
+          },
         },
-      },
-      {
-        role: 'minimize'
-      }
-    ]
-  },
-  {
-    role: 'help',
-    submenu: [
-      {
-        label: 'About TweetDeck Player...',
-        click () { require('electron').shell.openExternal('https://github.com/sokcuri/TweetDeckPlayer') }
-      }]
-    }
-  ]
+        {
+          role: 'quit',
+        },
+      ],
+    },
+    {
+      label: 'Edit',
+      submenu: [
+        {
+          role: 'undo',
+        },
+        {
+          role: 'redo',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          role: 'cut',
+        },
+        {
+          role: 'copy',
+        },
+        {
+          role: 'paste',
+        },
+        {
+          role: 'selectall',
+        },
+        {
+          role: 'delete',
+        },
+      ],
+    },
+    {
+      label: 'View',
+      submenu: [
+        {
+          label: 'Reload',
+          accelerator: 'CmdOrCtrl+R',
+          click (item, focusedWindow) {
+            if (focusedWindow) focusedWindow.reload();
+          },
+        },
+        {
+          role: 'togglefullscreen',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          role: 'resetzoom',
+        },
+        {
+          role: 'zoomin',
+        },
+        {
+          role: 'zoomout',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: 'Toggle Developer Tools',
+          accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+          click (item, focusedWindow) {
+            if (focusedWindow) focusedWindow.webContents.toggleDevTools();
+          },
+        },
+      ],
+    },
+    {
+      role: 'window',
+      submenu: [
+        {
+          label: 'Always on top',
+          type: 'checkbox',
+          checked: win.isAlwaysOnTop(),
+          click () {
+            var flag = !win.isAlwaysOnTop();
+            win.setAlwaysOnTop(flag);
+            if (popup) popup.setAlwaysOnTop(flag);
+          },
+        },
+        {
+          role: 'minimize',
+        },
+      ],
+    },
+    {
+      role: 'help',
+      submenu: [
+        {
+          label: 'About TweetDeck Player...',
+          click () {
+            require('electron').shell.openExternal('https://github.com/sokcuri/TweetDeckPlayer');
+          },
+        },
+      ],
+    },
+  ];
 
-  const menu = Menu.buildFromTemplate(template)
+  const menu = Menu.buildFromTemplate(template);
   win.setMenu(menu);
 
   // devtool 열기
@@ -753,120 +755,117 @@ var run = chk_win => {
 
   ipcMain.on('page-ready-tdp', (event, arg) => {
     // destroyed contents when loading
-    try
-    {
-    let emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
-    win.webContents.insertCSS(emojipadCSS);
-    win.webContents.insertCSS(`
-      .backdrop {
-        position: absolute;
-        z-index: 1;
-        background-color: transparent;
-        overflow: auto;
-        pointer-events: none;
-        width: 100%;
-        height: 130px;
-        font-weight: normal;
-        line-height: 18px;
-        transition: transform 1s;
-      }
-      
-      .highlights {
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        word-break: keep-all;
-        color: transparent;
-        -webkit-text-fill-color: black;
-        padding: 10px;
-        line-height: 18px;
-      }
-      .js-compose-text {
-        z-index: 2;
-        position: inherit;
-        background-color: transparent;
-        color: rgb(60, 0, 248);
-        text-shadow: 0px 0px 0px transparent;
-        -webkit-text-fill-color: transparent;
-      }
-      .mark_mention {
-        #border-radius: 3px;
-        color: transparent;
-        background-color: transparent;
-        -webkit-text-fill-color: var(--mention-color);
-      }
-      .mark_hashtag {
-        color: transparent;
-        background-color: transparent;
-        -webkit-text-fill-color: var(--hashtag-color);
-      }
-      .mark_url {
-        color: transparent;
-        background-color: transparent;
-        -webkit-text-fill-color: var(--url-color);
-      }
-      .mark_heart {
-        color: transparent;
-        background-color: transparent;
-        -webkit-text-fill-color: #dd2e44;
-      }
-      .mark_exceed {
-        border-radius: 3px;
-        background-color: #FF5A5A;
-      }
-      .placeholder {
-        color: transparent;
-        background-color: transparent;
-        -webkit-text-fill-color: #e2e8ed;
-      }
-      .list-account .emoji {
-        width: 1em;
-        height: 1em;
-      }
-      .customize-columns .column {
-        width: var(--column-size) !important;
-        margin-right: 6px;
-      }
-      .keep-all {
-        word-break: keep-all;
-      }
-      `);
-    win.webContents.send('apply-config');
-    
-    // 유저 스크립트 로딩
-    fs.readdir(path.join(Util.getWritableRootPath(), 'scripts'), (error, files) => {
-      if (error) {
-        if (error.code === 'ENOENT') {
-          fs.mkdir(path.join(Util.getWritableRootPath(), 'scripts'), () => {});
-        } else {
-          console.error('Fail to read scripts directory!');
+    try {
+      let emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
+      win.webContents.insertCSS(emojipadCSS);
+      win.webContents.insertCSS(`
+        .backdrop {
+          position: absolute;
+          z-index: 1;
+          background-color: transparent;
+          overflow: auto;
+          pointer-events: none;
+          width: 100%;
+          height: 130px;
+          font-weight: normal;
+          line-height: 18px;
+          transition: transform 1s;
         }
-        return;
-      }
-      let jsFiles = files.filter(f => f.endsWith('.js'));
-      for (let file of jsFiles) {
-        let filepath = path.join(path.join(Util.getWritableRootPath(), 'scripts'), file);
-        fs.readFile(filepath, 'utf8', (error, script) => {
-          if (error) {
-            console.error('Fail to read userscript "%s"!', filepath);
+        
+        .highlights {
+          white-space: pre-wrap;
+          word-wrap: break-word;
+          word-break: keep-all;
+          color: transparent;
+          -webkit-text-fill-color: black;
+          padding: 10px;
+          line-height: 18px;
+        }
+        .js-compose-text {
+          z-index: 2;
+          position: inherit;
+          background-color: transparent;
+          color: rgb(60, 0, 248);
+          text-shadow: 0px 0px 0px transparent;
+          -webkit-text-fill-color: transparent;
+        }
+        .mark_mention {
+          #border-radius: 3px;
+          color: transparent;
+          background-color: transparent;
+          -webkit-text-fill-color: var(--mention-color);
+        }
+        .mark_hashtag {
+          color: transparent;
+          background-color: transparent;
+          -webkit-text-fill-color: var(--hashtag-color);
+        }
+        .mark_url {
+          color: transparent;
+          background-color: transparent;
+          -webkit-text-fill-color: var(--url-color);
+        }
+        .mark_heart {
+          color: transparent;
+          background-color: transparent;
+          -webkit-text-fill-color: #dd2e44;
+        }
+        .mark_exceed {
+          border-radius: 3px;
+          background-color: #FF5A5A;
+        }
+        .placeholder {
+          color: transparent;
+          background-color: transparent;
+          -webkit-text-fill-color: #e2e8ed;
+        }
+        .list-account .emoji {
+          width: 1em;
+          height: 1em;
+        }
+        .customize-columns .column {
+          width: var(--column-size) !important;
+          margin-right: 6px;
+        }
+        .keep-all {
+          word-break: keep-all;
+        }
+        `);
+      win.webContents.send('apply-config');
+      
+      // 유저 스크립트 로딩
+      fs.readdir(path.join(Util.getWritableRootPath(), 'scripts'), (error, files) => {
+        if (error) {
+          if (error.code === 'ENOENT') {
+            fs.mkdir(path.join(Util.getWritableRootPath(), 'scripts'), () => {});
           } else {
-            win.webContents.executeJavaScript(script);
+            console.error('Fail to read scripts directory!');
           }
-        });
-      }
-    });
-    } catch(e) { }
+          return;
+        }
+        let jsFiles = files.filter(f => f.endsWith('.js'));
+        for (let file of jsFiles) {
+          let filepath = path.join(path.join(Util.getWritableRootPath(), 'scripts'), file);
+          fs.readFile(filepath, 'utf8', (error, script) => {
+            if (error) {
+              console.error('Fail to read userscript "%s"!', filepath);
+            } else {
+              win.webContents.executeJavaScript(script);
+            }
+          });
+        }
+      });
+    } catch (e) { }
   });
   
   win.on('close', () => {
-    try
-    {
+    try {
       Config.load();
       Config.data.bounds = win.getBounds();
       if (popup) Config.data.popup_bounds = popup.getBounds(); 
       Config.save();
       win = null;
-    }
-    catch(e) { };
+    } catch (e) { };
   });
 
   win.webContents.on('new-window', (e, url) => {
@@ -883,7 +882,7 @@ var run = chk_win => {
         nodeIntegration: false,
         webSecurity: true,
         preload: path.join(__dirname, 'preload_popup.js'),
-      }
+      };
       popup = new BrowserWindow(preference);
       popup.on('close', () => {
         Config.load();
@@ -915,9 +914,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       if (isRange) {
         template.push(sub_copy(event.sender));
         template.push(separator);
-      }
-      else if (isPopup)
-      {
+      } else if (isPopup) {
         template.push(sub_back_page(event.sender));
         template.push(sub_forward_page(event.sender));
         template.push(sub_reload(event.sender));
@@ -995,11 +992,10 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       break;
   }
 
-  if (isPopup)
-  {
-      template.push(separator);
-      template.push(sub_copy_page_url(event.sender));
-      template.push(sub_open_page_external(event.sender));
+  if (isPopup) {
+    template.push(separator);
+    template.push(sub_copy_page_url(event.sender));
+    template.push(sub_open_page_external(event.sender));
   }
 
   var contextMenu = Menu.buildFromTemplate(template);

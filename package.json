@@ -38,6 +38,7 @@
     "url": "http://github.com/sokcuri/TweetDeckPlayer"
   },
   "scripts": {
-    "start": "node_modules/.bin/electron ./src/index.js"
+    "start": "node_modules/.bin/electron ./src/index.js",
+    "build": "node tools/build.js"
   }
 }

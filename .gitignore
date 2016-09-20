@@ -67,5 +67,8 @@ Favorited\ Images/
 # Data Files
 data/
 
+# Build Results
+build/
+
 # asar files
 *.asar

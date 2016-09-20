@@ -1,11 +1,10 @@
 const {shell, remote, clipboard, ipcRenderer} = require('electron');
 // Guard against missing remote function properties
 // https://github.com/electron/electron/pull/7209
-try
-{
+try {
   const {Menu, MenuItem, dialog} = remote;
-} catch(e) {
-  console.warn('remote error : ' + e)
+} catch (e) {
+  console.warn('remote error : ' + e);
 };
 const fs = require('fs');
 const Util = require('./util');
@@ -150,17 +149,16 @@ document.addEventListener('dragstart', evt => {
   if (evt.srcElement.classList.contains('js-media-image-link'))
     imageSrc = evt.srcElement.style.backgroundImage.slice(5, -2);
   // 일반 이미지
-  else if (typeof evt.srcElement.currentSrc != 'undefined' && evt.srcElement.currentSrc != '')
+  else if (typeof evt.srcElement.currentSrc !== 'undefined' && evt.srcElement.currentSrc !== '')
     imageSrc = evt.srcElement.currentSrc;
 
   // 이미지인 경우
-  if (imageSrc)
-  {
+  if (imageSrc) {
     imageOrgSrc = imageSrc;
     var image = Util.getOrigPath(imageSrc);
     var ext = image.substr(image.lastIndexOf('.') + 1);
     var filename = image.substr(image.lastIndexOf('/') + 1);
-    if (filename.lastIndexOf(':') != -1) {
+    if (filename.lastIndexOf(':') !== -1) {
       ext = ext.substr(0, ext.lastIndexOf(':'));
       filename = filename.substr(0, filename.lastIndexOf(':'));
     }
@@ -173,11 +171,11 @@ document.addEventListener('dragstart', evt => {
 
 document.addEventListener('DOMContentLoaded', () => {
   // 맥용 한글 기본 입력기 이슈 해결
-  $(document).on('keydown', e => {
+  window.$(document).on('keydown', e => {
     if (document.activeElement === document.body && e.key >= 'ㄱ' && e.key <= 'ㅣ') {
       e.preventDefault();
       e.stopPropagation();
-      $(document.activeElement).trigger(jQuery.Event('keypress', {which: e.which}));
+      window.$(document.activeElement).trigger(window.$.Event('keypress', {which: e.which}));
     }
   });
 });

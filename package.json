@@ -31,7 +31,8 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^1.4.0",
-    "electron-packager": "^8.0.0"
+    "electron-packager": "^8.0.0",
+    "rimraf": "^2.5.4"
   },
   "repository": {
     "type": "git",
@@ -39,6 +40,7 @@
   },
   "scripts": {
     "start": "node_modules/.bin/electron ./src/index.js",
-    "build": "node tools/build.js"
+    "build": "node tools/build.js",
+    "clean": "node tools/clean.js"
   }
 }

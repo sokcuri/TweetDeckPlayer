@@ -77,30 +77,31 @@ function Unlinkis () {
   }
 
   function tweet_handler (elem) {
+    let jq = window.$;
     if (elem.tagName === 'IFRAME' && card_iframe_regex.test(elem.id)) {
-      $(elem).on('load', function (event) {
+      jq(elem).on('load', function (event) {
         var card_hostname = elem.contentWindow.document.querySelector('span.SummaryCard-destination');
         if (card_hostname === null) return;
         if (linkis_card_detect.test(card_hostname.textContent)) {
           var link = elem.contentWindow.document.querySelector('a.js-openLink');
-          convert_and_patch(link.href, $(link), 0);
+          convert_and_patch(link.href, jq(link), 0);
         } else {
-          var twt_link = $(elem).closest('.tweet').find('a.twitter-timeline-link');
+          var twt_link = jq(elem).closest('.tweet').find('a.twitter-timeline-link');
           var xpurl = twt_link.data('expanded-url');
           if (linkis_detect.test(xpurl)) {
             var link = elem.contentWindow.document.querySelector('a.js-openLink');
-            convert_and_patch(link.href, $(link), 0);
+            convert_and_patch(link.href, jq(link), 0);
           }
         }
       });
     } else {
       if (tweetdeck) {
-        var links = $(elem).find('a.url-ext');
+        var links = jq(elem).find('a.url-ext');
       } else {
-        var links = $(elem).find('a.twitter-timeline-link');
+        var links = jq(elem).find('a.twitter-timeline-link');
       }
       for (var i = 0; i < links.length; i++) {
-        var match = $(links[i]).text().match(linkis_detect);
+        var match = jq(links[i]).text().match(linkis_detect);
 
         if (match !== null) {
           var url = links[i].href;
@@ -110,8 +111,8 @@ function Unlinkis () {
           } else if (links[i].hasAttribute('data-full-url')) {
             url = links[i].getAttribute('data-full-url');
           }
-          convert_and_patch(url, $(links[i]), 0);
-          var media_url = $(elem).find('a.PlayableMedia-externalUrl');
+          convert_and_patch(url, jq(links[i]), 0);
+          var media_url = jq(elem).find('a.PlayableMedia-externalUrl');
           if (media_url.length > 0) {
             convert_and_patch(media_url[0].href, media_url, 0);
           }
@@ -121,7 +122,7 @@ function Unlinkis () {
   }
 
   function get_tweets () {
-    $('.tweet').each(function (i, tweet) {
+    window.$('.tweet').each(function (i, tweet) {
       tweet_handler(tweet);
     });
   }

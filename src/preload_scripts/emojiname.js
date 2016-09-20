@@ -4,24 +4,24 @@ const twemoji = require('twemoji');
 
 function EmojiApply () {
   function tweet_handler (elem) {
-      if (!config.applyEmojiName) return;
-      var target;
-      target = [$(elem).find('.fullname'),
-                $(elem).find('.js-action-url').find('.fullname'),
-                $(elem).find('.account-link'),
-                $(elem).find('.nbfc'),
-                $(elem).find('.social-proof-names'),
-                $(elem).find('.title-content')];
+    let jq = window.$;
+    if (!config.applyEmojiName) return;
+    var target;
+    target = [jq(elem).find('.fullname'),
+              jq(elem).find('.js-action-url').find('.fullname'),
+              jq(elem).find('.account-link'),
+              jq(elem).find('.nbfc'),
+              jq(elem).find('.social-proof-names'),
+              jq(elem).find('.title-content')];
 
-      for (t of target)
-      {
-        if (t.length && !$(t[0]).find('img.emoji').length)
-          t[0].innerHTML = twemoji.parse(t[0].innerHTML);
-      }
+    for (let t of target) {
+      if (t.length && !jq(t[0]).find('img.emoji').length)
+        t[0].innerHTML = twemoji.parse(t[0].innerHTML);
+    }
   }
 
   function get_tweets () {
-    $('.tweet').each(function (i, tweet) {
+    window.$('.tweet').each(function (i, tweet) {
       tweet_handler(tweet);
     });
   }

@@ -3,14 +3,15 @@ const electron = require('electron');
 const {ipcRenderer} = electron;
 
 function makeButton (text, clickEventHandler) {
-  let btn = $('<div>')
+  let jq = window.$;
+  let btn = jq('<div>')
     .addClass('needsclick btn btn-on-blue full-width txt-left margin-b--12 padding-v--9');
-  let btnLabel = $('<span>')
+  let btnLabel = jq('<span>')
     .addClass('label padding-ls')
     .text(text)
     .appendTo(btn);
   btn.on('click', clickEventHandler);
-  let btnContainer = $('.js-add-image-button').parent();
+  let btnContainer = jq('.js-add-image-button').parent();
   btn.appendTo(btnContainer);
   return btn;
 }
@@ -21,19 +22,20 @@ function clickHandler (event) {
 }
 
 function main () {
+  let jq = window.$;
   let btn = makeButton('Tweet library™', clickHandler);
   ipcRenderer.on('twtlib-add-text', (event, arg) => {
-    if (!$('.app-content').hasClass('is-open')) {
-      $(document).trigger('uiComposeTweet', { type: 'tweet' });
+    if (!jq('.app-content').hasClass('is-open')) {
+      jq(document).trigger('uiComposeTweet', { type: 'tweet' });
     }
-    let textarea = $('textarea.compose-text')
+    let textarea = jq('textarea.compose-text')
       .val(arg)
       .trigger('change');
   });
 }
 
 function TwtLib () {
-  $(document).on('TD.ready', main);
+  window.$(document).on('TD.ready', main);
 }
 
 module.exports = TwtLib;

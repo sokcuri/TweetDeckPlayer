@@ -37,14 +37,23 @@ const buildOne = (targetOptions) => {
 
 const presets = [
     {
+        platform: 'darwin',
+        arch: 'x64',
+        icon: 'src/tweetdeck.icns'
+    },
+    {
+        platform: 'win32',
+        arch: 'ia32',
+        icon: 'src/tweetdeck.ico'
+    },
+    {
         platform: 'win32',
         arch: 'x64',
         icon: 'src/tweetdeck.ico'
     },
     {
-        platform: 'darwin',
-        arch: 'x64',
-        icon: 'src/tweetdeck.icns'
+        platform: 'linux',
+        arch: 'ia32'
     },
     {
         platform: 'linux',

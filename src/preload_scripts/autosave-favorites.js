@@ -19,9 +19,8 @@ function download (url, filename) {
   try {
     fs.mkdirSync(savepath);
   } catch (error) {
-    if (error.code !== 'EEXIST')
-    {
-      TD.controller.progressIndicator.addMessage(`Failed - Save Image : Cannot make folder`);
+    if (error.code !== 'EEXIST') {
+      window.TD.controller.progressIndicator.addMessage('Failed - Save Image : Cannot make folder');
       return;
     }
   }
@@ -29,7 +28,7 @@ function download (url, filename) {
   try {
     request(url).pipe(fs.createWriteStream(filepath));
   } catch (e) {
-    TD.controller.progressIndicator.addMessage(`Failed - Save Image : Cannot save image to ${filepath}`);
+    window.TD.controller.progressIndicator.addMessage(`Failed - Save Image : Cannot save image to ${filepath}`);
   }
 }
 
@@ -46,7 +45,7 @@ function generateFilename (imgurl, index) {
 
 function favoriteAutoSave (target) {
   //if (!target.matches('a.tweet-action[rel="favorite"]')) return;
-  const tweet = $(target.closest('.js-tweet')[0]);
+  const tweet = window.$(target.closest('.js-tweet')[0]);
   // Already favorited. quit function
   // if (tweet.hasClass('is-favorite')) return;
 
@@ -81,11 +80,10 @@ function favoriteAutoSave (target) {
   }
 }
 
-function tossElement(e) {
-  if (typeof e !== 'undefined')
-  {
+function tossElement (e) {
+  if (typeof e !== 'undefined') {
     if (!config.enableAutoSaveFav || process.platform === 'darwin' ? remote.getGlobal('keyState').alt : remote.getGlobal('keyState').ctrl) return;
-    favoriteAutoSave($(`[data-key="${e}"]`))
+    favoriteAutoSave(window.$(`[data-key="${e}"]`));
   }
 }
 

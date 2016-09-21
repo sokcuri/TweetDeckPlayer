@@ -1,11 +1,10 @@
 const {remote, clipboard, ipcRenderer, shell} = require('electron');
 // Guard against missing remote function properties
 // https://github.com/electron/electron/pull/7209
-try
-{
+try {
   const {Menu, MenuItem, dialog} = remote;
-} catch(e) {
-  console.warn('remote error : ' + e)
+} catch (e) {
+  console.warn('remote error : ' + e);
 };
 const fs = require('fs');
 const twitter = require('twitter-text');
@@ -34,20 +33,19 @@ var config = Config.load();
 var keyState = {
   shift: false,
   alt: false,
-  ctrl: false
-}
+  ctrl: false,
+};
 
 ipcRenderer.on('apply-config', event => {
-  var style = "";
-  try
-  {
+  var style = '';
+  try {
     var { detectFont, supportedFonts } = require('detect-font');
     config = Config.load();
     window.config = config;
 
     if (Config.data.customFonts) {
       var node = document.createElement('div');
-      var fonts = config.customFonts.split(',').map(x => x.trim()).filter(x => x != '').map(x => `'${x}'`);
+      var fonts = config.customFonts.split(',').map(x => x.trim()).filter(x => x !== '').map(x => `'${x}'`);
       node.id = 'fontDetect';
       node.style = `font-family: ${fonts.join(',')} !important`;
       document.body.insertBefore(node, document.body.firstChild);
@@ -58,7 +56,7 @@ ipcRenderer.on('apply-config', event => {
         return fonts.filter(x => !tmpSet.has(x));
       })();
 
-      if (notSupported.length != 0)
+      if (notSupported.length !== 0)
         console.warn(`Not Supported Font(s): ${notSupported.join(', ')}`);
       style = `font-family: ${sf.join(',')} !important;`;
       
@@ -86,8 +84,9 @@ ipcRenderer.on('apply-config', event => {
     style += `--column-size: ${config.customizeColumnSize}px;`;
 
     document.body.style = style;
+  } catch (e) {
+    console.warn(e);
   }
-  catch(e) { console.warn(e); }
 });
 
 // 우클릭시 임시 저장하는 이미지 주소와 링크 주소를 담는 변수
@@ -220,29 +219,30 @@ document.addEventListener('dragstart', evt => {
   if (evt.srcElement.classList.contains('js-media-image-link'))
     imageSrc = evt.srcElement.style.backgroundImage.slice(5, -2);
   // 일반 이미지
-  else if (typeof evt.srcElement.currentSrc != 'undefined' && evt.srcElement.currentSrc != '')
+  else if (typeof evt.srcElement.currentSrc !== 'undefined' && evt.srcElement.currentSrc !== '')
     imageSrc = evt.srcElement.currentSrc;
 
   // 이미지인 경우
-  if (imageSrc)
-  {
+  if (imageSrc) {
     imageOrgSrc = imageSrc;
     var image = Util.getOrigPath(imageSrc);
     var ext = image.substr(image.lastIndexOf('.') + 1);
     var filename = image.substr(image.lastIndexOf('/') + 1);
-    if (filename.lastIndexOf(':') != -1) {
+    if (filename.lastIndexOf(':') !== -1) {
       ext = ext.substr(0, ext.lastIndexOf(':'));
       filename = filename.substr(0, filename.lastIndexOf(':'));
     }
     var detail = `image/${ext}:${filename}:${image}`;
     evt.dataTransfer.setData('DownloadURL', detail);
   }
-
 }, false);
 
 document.addEventListener('DOMContentLoaded', () => {
+  let TD = window.TD;
+  let jq = window.$;
+
   function patchContentEditable () {
-    $('[contenteditable="true"]').css({
+    jq('[contenteditable="true"]').css({
       opacity: 0,
       pointerEvents: 'none',
     });
@@ -274,56 +274,42 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyHighlights (text) {
     var entities = twitter.extractEntitiesWithIndices(text);
     var indices = [];
-    for (item of entities)
+    for (let item of entities)
       indices.push(item.indices[0]);
 
     var n = 0;
-    var result = "";
-    for (var i = 0; i < text.length; i++)
-    {
-      if (text[i] == '&')
+    var result = '';
+    for (var i = 0; i < text.length; i++) {
+      if (text[i] === '&')
         result += '&amp;';
-      else if (text[i] == '<')
+      else if (text[i] === '<')
         result += '&lt;';
-      else if (text[i] == '>')
+      else if (text[i] === '>')
         result += '&gt';
-      else if (text[i] == '\n' && i + 1 == text.length)
+      else if (text[i] === '\n' && i + 1 === text.length)
         result += '\n&nbsp;';
-      else if (text[i] == '♥')
-      {
+      else if (text[i] === '♥')
         result += '<mark class="mark_heart">♥</mark>';
-      }
-      else if (i == indices[n]) {
-        if (typeof entities[n].screenName != 'undefined' && entities[n].screenName.length > 2)
-        {
-          result += text.substr(entities[n].indices[0], entities[n].indices[1]-entities[n].indices[0]).replace('@' + entities[n].screenName, '<mark class="mark_mention">$&</mark>');
+      else if (i === indices[n]) {
+        if (typeof entities[n].screenName !== 'undefined' && entities[n].screenName.length > 2) {
+          result += text.substr(entities[n].indices[0], entities[n].indices[1] - entities[n].indices[0]).replace('@' + entities[n].screenName, '<mark class="mark_mention">$&</mark>');
           i += entities[n].indices[1] - entities[n].indices[0] - 1;
           n++;
-        }
-
-        // hashtag
-        else if (typeof entities[n].hashtag != 'undefined')
-        {
-          result += text.substr(entities[n].indices[0], entities[n].indices[1]-entities[n].indices[0]).replace('#' + entities[n].hashtag, '<mark class="mark_hashtag">$&</mark>');
+        } else if (typeof entities[n].hashtag !== 'undefined') {
+          // hashtag
+          result += text.substr(entities[n].indices[0], entities[n].indices[1] - entities[n].indices[0]).replace('#' + entities[n].hashtag, '<mark class="mark_hashtag">$&</mark>');
           i += entities[n].indices[1] - entities[n].indices[0] - 1;
           n++;
-        }
-
-        // url
-        else if (typeof entities[n].url != 'undefined')
-        {
-          result += text.substr(entities[n].indices[0], entities[n].indices[1]-entities[n].indices[0]).replace(entities[n].url, '<mark class="mark_url">$&</mark>');
+        } else if (typeof entities[n].url !== 'undefined') {
+          // url
+          result += text.substr(entities[n].indices[0], entities[n].indices[1] - entities[n].indices[0]).replace(entities[n].url, '<mark class="mark_url">$&</mark>');
           i += entities[n].indices[1] - entities[n].indices[0] - 1;
           n++;
-        }
-        else
-        {
+        } else {
           result += text[i];
           n++;
         }
-      }
-      else
-      {
+      } else {
         result += text[i];
       }
     }
@@ -332,40 +318,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   var prev_focus;
   // mention/url highlight
-  function handleChange (evt)
-  {
-    if (evt.target.id == 'account-safeguard-checkbox' || evt.target.id == 'inline-account-safeguard-checkbox')
-    {
-      var el = $('.js-compose-text');
-      for (var i = 0; i < el.length; i++)
-      {
-        var text = $(el[i]).val();
+  function handleChange (evt) {
+    if (evt.target.id === 'account-safeguard-checkbox' || evt.target.id === 'inline-account-safeguard-checkbox') {
+      var el = jq('.js-compose-text');
+      for (var i = 0; i < el.length; i++) {
+        var text = jq(el[i]).val();
 
         // 인라인 height 반영
-        if ($(el[i]).parent().children('div')[0].style != el[i].style.cssText)
-          $(el[i]).parent().children('div')[0].style = el[i].style.cssText;
+        if (jq(el[i]).parent().children('div')[0].style !== el[i].style.cssText)
+          jq(el[i]).parent().children('div')[0].style = el[i].style.cssText;
 
         // html 하이라이트 반영
-        $(el[i]).parent().children('div').children('div').html(applyHighlights(text));
+        jq(el[i]).parent().children('div').children('div').html(applyHighlights(text));
 
         // placeholder
-        if (text == '')
-          $(el[i]).parent().children('div').children('div').html('<span class="placeholder">' + el[i].placeholder + '</span>');
+        if (text === '')
+          jq(el[i]).parent().children('div').children('div').html('<span class="placeholder">' + el[i].placeholder + '</span>');
 
         // 마지막 멘션 아이디가 셀렉션 지정되는 버그 회피
         var x = el[i];
 
-        if (typeof x.dataset.initcompl == 'undefined')
-        {
+        if (typeof x.dataset.initcompl === 'undefined') {
           x.dataset.initcompl = true;
-          $(x).on({'scroll': handleScroll});
+          jq(x).on({scroll: handleScroll});
         }
-        if (prev_focus != document.querySelector(':focus'))
-        {
+        if (prev_focus !== document.querySelector(':focus')) {
           setTimeout(() => {
-            var v = $(x).val();
+            var v = jq(x).val();
             if (window.getSelection().toString().length > 3)
-              $(x).focus().val('').val(v);
+              jq(x).focus().val('').val(v);
           }, 100);
         }
       }
@@ -373,58 +354,50 @@ document.addEventListener('DOMContentLoaded', () => {
     prev_focus = document.querySelector(':focus');
   }
 
-  function handleInput (evt)
-  {
-    if (evt.target.classList.contains('js-compose-text'))
-    {
+  function handleInput (evt) {
+    if (evt.target.classList.contains('js-compose-text')) {
       // html 하이라이트 반영
-      var text = $(evt.target).val();
-      $(evt.target).parent().children('div').children('div').html(applyHighlights(text));
+      var text = jq(evt.target).val();
+      jq(evt.target).parent().children('div').children('div').html(applyHighlights(text));
 
       // placeholder
-      if (text == '')
-        $(evt.target).parent().children('div').children('div').html('<span class="placeholder">' + $(evt.target)[0].placeholder + '</span>');
-
+      if (text === '')
+        jq(evt.target).parent().children('div').children('div').html('<span class="placeholder">' + jq(evt.target)[0].placeholder + '</span>');
     }
   }
 
-  function handleScroll (evt)
-  {
-    if (evt.target.classList.contains('js-compose-text'))
-    {
+  function handleScroll (evt) {
+    if (evt.target.classList.contains('js-compose-text')) {
       var scrollTop = evt.target.scrollTop;
-      $(evt.target).parent().children('div').scrollTop(scrollTop);
+      jq(evt.target).parent().children('div').scrollTop(scrollTop);
 
       var scrollLeft = evt.target.scrollLeft;
-      $(evt.target).parent().children('div').scrollLeft(scrollLeft);
+      jq(evt.target).parent().children('div').scrollLeft(scrollLeft);
     }
   }
-  $(document).on({'input': handleInput, 'change': handleChange});
-  $(document).on({'input': handleScroll});
+  jq(document).on({input: handleInput, change: handleChange});
+  jq(document).on({input: handleScroll});
 
   // 맥용 한글 기본 입력기 이슈 해결
-  $(document).on('keydown', e => {
+  jq(document).on('keydown', e => {
     if (document.activeElement === document.body && e.key >= 'ㄱ' && e.key <= 'ㅣ') {
       e.preventDefault();
       e.stopPropagation();
-      $(document.activeElement).trigger(jQuery.Event('keypress', {which: e.which}));
-    }
-    // 엔터키로 트윗하기
-    else if (!e.rep && e.which == 13)
-    {
-      el = document.activeElement;
-      if (e.ctrlKey || config.enterKeyTweet == 'on' && el && el.classList.contains('js-compose-text') && e.shiftKey != true &&
+      jq(document.activeElement).trigger(jq.Event('keypress', {which: e.which}));
+    } else if (!e.rep && e.which === 13) {
+      // 엔터키로 트윗하기
+      var el = document.activeElement;
+      if (e.ctrlKey || config.enterKeyTweet === 'on' && el && el.classList.contains('js-compose-text') && e.shiftKey !== true &&
          ((el.tagName.toLowerCase() === 'input' && el.type === 'text') ||
-         (el.tagName.toLowerCase() === 'textarea')))
-      {
+         (el.tagName.toLowerCase() === 'textarea'))) {
         e.preventDefault();
         e.stopPropagation();
-        $(document.activeElement).trigger(jQuery.Event('keypress', {which: e.which, keyCode: e.which, ctrlKey: true, rep: true}));
+        jq(document.activeElement).trigger(jq.Event('keypress', {which: e.which, keyCode: e.which, ctrlKey: true, rep: true}));
       }
     }
   });
 
-  $(document).on('mouseover', '.tweet-timestamp', e => {
+  jq(document).on('mouseover', '.tweet-timestamp', e => {
     const target = e.currentTarget;
     const time = target.getAttribute('data-time');
     const date = new Date(parseInt(time, 10));
@@ -437,43 +410,37 @@ document.addEventListener('DOMContentLoaded', () => {
   // - 팔로우가 아닌 유저의 멘션을 보기
   var processMiscTweet = TD.services.TwitterClient.prototype.processMiscTweet.toString().substr(13);
   processMiscTweet = processMiscTweet.substr(0, processMiscTweet.length - 1);
-  var processMiscTweet_ptn = `(c||a&&(!s||n||l))&&(h||m||this.publishChirpsInternal("publish","home",[e]))`;
-  var processMiscTweet_rep = `(c||(a||config.disableCheckFriendship=="on")&&((!s||config.disableFilteringMentionUser=="on")||n||l))&&(h||(m&&!config.showRetweetFollowingUser=="on")||this.publishChirpsInternal("publish","home",[e]))`;
+  var processMiscTweet_ptn = '(c||a&&(!s||n||l))&&(h||m||this.publishChirpsInternal("publish","home",[e]))';
+  var processMiscTweet_rep = '(c||(a||config.disableCheckFriendship=="on")&&((!s||config.disableFilteringMentionUser=="on")||n||l))&&(h||(m&&!config.showRetweetFollowingUser=="on")||this.publishChirpsInternal("publish","home",[e]))';
 
-  if (processMiscTweet.search(processMiscTweet_ptn) == -1)
+  if (processMiscTweet.search(processMiscTweet_ptn) === -1)
     console.warn('procMiscTweet pattern not found');
-  else
-  {
+  else {
     processMiscTweet = processMiscTweet.replace(processMiscTweet_ptn, processMiscTweet_rep);
     TD.services.TwitterClient.prototype.processMiscTweet = Function('e', processMiscTweet);
   }
 
   // Minimize Scroll Animation for Tweet Selection
   Math.min = (a, b) => {
-    if (config.minimizeScrollAnimForTweetSel)
-    {
+    if (config.minimizeScrollAnimForTweetSel) {
       var obj = {};
       Error.captureStackTrace(obj, this);
-      if (obj.stack.search('at d.calculateScrollDuration') != -1) return 1;
+      if (obj.stack.search('at d.calculateScrollDuration') !== -1) return 1;
     }
-    return (a < b ? a : b)
+    return (a < b ? a : b);
   };
 
   // Shift/alt/ctrl key detect
-  var setKeyCheck = function(event){
-    if (keyState.ctrl != event.ctrlKey)
-    {
+  var setKeyCheck = function (event) {
+    if (keyState.ctrl !== event.ctrlKey) {
       remote.getGlobal('keyState').ctrl = event.ctrlKey;
       keyState.ctrl = event.ctrlKey;
     }
-    if (keyState.alt != event.altKey)
-    {
+    if (keyState.alt !== event.altKey) {
       remote.getGlobal('keyState').alt = event.altKey;
       keyState.alt = event.altKey;
     }
-
-    if (keyState.shift != event.shiftKey)
-    {
+    if (keyState.shift !== event.shiftKey) {
       remote.getGlobal('keyState').shift = event.shiftKey;
       keyState.shift = event.shiftKey;
     }
@@ -485,13 +452,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('mouseup', setKeyCheck);
 
   // Built-in TweetDeck Filtering Rules
-  var processMiscTweet_ptn = `(c||a&&(!s||n||l))&&(h||m||this.publishChirpsInternal("publish","home",[e]))`;
-  var processMiscTweet_rep = `(c||(a||config.disableCheckFriendship=="on")&&((!s||config.disableFilteringMentionUser=="on")||n||l))&&(h||(m&&!config.showRetweetFollowingUser=="on")||this.publishChirpsInternal("publish","home",[e]))`;
+  var processMiscTweet_ptn = '(c||a&&(!s||n||l))&&(h||m||this.publishChirpsInternal("publish","home",[e]))';
+  var processMiscTweet_rep = '(c||(a||config.disableCheckFriendship=="on")&&((!s||config.disableFilteringMentionUser=="on")||n||l))&&(h||(m&&!config.showRetweetFollowingUser=="on")||this.publishChirpsInternal("publish","home",[e]))';
 
-  if (processMiscTweet.search(processMiscTweet_ptn) == -1)
+  if (processMiscTweet.search(processMiscTweet_ptn) === -1)
     console.warn('procMiscTweet pattern not found');
-  else
-  {
+  else {
     processMiscTweet = processMiscTweet.replace(processMiscTweet_ptn, processMiscTweet_rep);
     TD.services.TwitterClient.prototype.processMiscTweet = Function('e,t,i', processMiscTweet);
   }
@@ -505,82 +471,78 @@ document.addEventListener('DOMContentLoaded', () => {
   TD.services.TwitterClient.prototype.favorite = Function('e,t,i', processFavorite);
   
   // Fast Retweet
-  TD.services.TwitterStatus.prototype.retweet_direct = function(e) {
-    if (config.enableFastRetweet && !keyState.shift)
-    {
+  TD.services.TwitterStatus.prototype.retweet_direct = function (e) {
+    if (config.enableFastRetweet && !keyState.shift) {
       var t, i, s, n;
       var r = this.isRetweeted;
       var o = TD.controller.clients.getClient(this.account.getKey());
       this.setRetweeted(!this.isRetweeted);
       this.animateRetweet(e.element);
-      var n = function(e) {
-      }
-      var s = function(e) {
+      var n = function (e) {
+      };
+      var s = function (e) {
         var t = TD.core.defer.fail();
-        if (403 === e.status || 404 === e.status)
-        {
-          TD.controller.progressIndicator.addMessage((r ? TD.i("Failed: Unretweet -") : TD.i("Failed: Retweet -")) + " " + JSON.parse(e.responseText).errors[0].message)
+        if (403 === e.status || 404 === e.status) {
+          TD.controller.progressIndicator.addMessage((r ? TD.i('Failed: Unretweet -') : TD.i('Failed: Retweet -')) + ' ' + JSON.parse(e.responseText).errors[0].message);
         }
         403 !== e.status && 404 !== e.status || (t = this.refreshRetweet(o)),
-        t.addErrback(function() {
+        t.addErrback(function () {
           this.setRetweeted(r),
-          n(e)
+          n(e);
         }
-        .bind(this))
+        .bind(this));
       }
-      .bind(this)
-      var i = function(e) {
-          e.error && s()
-      }
+      .bind(this);
+      var i = function (e) {
+        e.error && s();
+      };
       r ? (o.unretweet(this.id, i, s),
-      t = ()=>{}) : (o.retweet(this.id, i, s),
+      t = () => {}) : (o.retweet(this.id, i, s),
       t = TD.controller.stats.retweet),
-      t(this.getScribeItemData(), this.account.getUserID())
-    }
-    else
-    {
-      var e = 1 === TD.storage.accountController.getAccountsForService("twitter").length;
+      t(this.getScribeItemData(), this.account.getUserID());
+    } else {
+      var e = 1 === TD.storage.accountController.getAccountsForService('twitter').length;
       this.isRetweeted && e ? (this.setRetweeted(!1),
-      $(document).trigger("uiUndoRetweet", {
-          tweetId: this.getMainTweet().id,
-          from: this.account.getKey()
-      })) : new TD.components.ActionDialog(this)
+      jq(document).trigger('uiUndoRetweet', {
+        tweetId: this.getMainTweet().id,
+        from: this.account.getKey(),
+      })) : new TD.components.ActionDialog(this);
     }
-  }
-  TD.services.TwitterStatus.prototype.refreshRetweet = function(e) {
+  };
+  TD.services.TwitterStatus.prototype.refreshRetweet = function (e) {
     var t = new TD.core.defer.Deferred;
     return e.show(this.id, t.callback.bind(t), t.errback.bind(t)),
-    t.addCallback(function(e) {
-      this.setRetweeted(e.isRetweeted)
+    t.addCallback(function (e) {
+      this.setRetweeted(e.isRetweeted);
     }
     .bind(this)),
-    t
-  }
-  TD.services.TwitterStatus.prototype.animateRetweet = function(e) {
-    var t = "anim anim-slower anim-bounce-in";
-    window.requestAnimationFrame(function() {
-      e.find('a[rel="retweet"]').toggleClass(t, this.isRetweeted)
+    t;
+  };
+  TD.services.TwitterStatus.prototype.animateRetweet = function (e) {
+    var t = 'anim anim-slower anim-bounce-in';
+    window.requestAnimationFrame(function () {
+      e.find('a[rel="retweet"]').toggleClass(t, this.isRetweeted);
     }
-    .bind(this))
-  }
-  TD.services.TwitterClient.prototype.retweet = function(e, t, i) {
+    .bind(this));
+  };
+  TD.services.TwitterClient.prototype.retweet = function (e, t, i) {
     var s = this;
-    var n = function(e) {
-      t(e)
-    }
-    this.makeTwitterCall(this.API_BASE_URL + "statuses/retweet/" + e + ".json", {
-        id: e
-    }, "POST", this.processTweet, n, i)
-  }
-  TD.services.TwitterClient.prototype.unretweet = function(e, t, i) {
-      var s = this;
-      var n = function(e) {
-          t(e)
-      }
-      this.makeTwitterCall(this.API_BASE_URL + "statuses/unretweet/" + e + ".json", {
-          id: e
-      }, "POST", this.processTweet, n, i)
-  }
+    var n = function (e) {
+      t(e);
+    };
+    this.makeTwitterCall(this.API_BASE_URL + 'statuses/retweet/' + e + '.json', {
+      id: e,
+    }, 'POST', this.processTweet, n, i);
+  };
+  TD.services.TwitterClient.prototype.unretweet = function (e, t, i) {
+    var s = this;
+    var n = function (e) {
+      t(e);
+    };
+    this.makeTwitterCall(this.API_BASE_URL + 'statuses/unretweet/' + e + '.json', {
+      id: e,
+    }, 'POST', this.processTweet, n, i);
+  };
   TD.services.TwitterStatus.prototype.retweet_old = TD.services.TwitterStatus.prototype.retweet;
   TD.services.TwitterStatus.prototype.retweet = TD.services.TwitterStatus.prototype.retweet_direct;
   
@@ -611,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Enable emojipad
         var emojiPadCSS = document.createElement('link');
-        var dockBtn = document.getElementsByClassName('emojipad--entry-point')[0]
+        var dockBtn = document.getElementsByClassName('emojipad--entry-point')[0];
         document.body.appendChild(EmojiPad.element);
         dockBtn.onclick = e => {
           EmojiPad.show(e.clientX, e.clientY);
@@ -623,17 +585,17 @@ document.addEventListener('DOMContentLoaded', () => {
             el.style.left = `${window.innerWidth - rect.width - 10}px`;
           if (window.innerHeight - rect.top - 10 < rect.height)
             el.style.top = `${window.innerHeight - rect.height - 10}px`;
-        }
+        };
         document.body.addEventListener('click', e => {
-          if (e.target != dockBtn && EmojiPad.isOpen) EmojiPad.hide();
+          if (e.target !== dockBtn && EmojiPad.isOpen) EmojiPad.hide();
         }, false);
         EmojiPad.onEmojiClick = chr => {
           var txt = document.getElementById('docked-textarea');
           txt.value += chr;
-          var evt = document.createEvent("HTMLEvents");
-          evt.initEvent("change", false, true);
+          var evt = document.createEvent('HTMLEvents');
+          evt.initEvent('change', false, true);
           txt.dispatchEvent(evt);
-        }
+        };
 
         // Integrate TDP settings
         {

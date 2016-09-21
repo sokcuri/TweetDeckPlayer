@@ -1,10 +1,10 @@
-module.exports = (function(win, doc, undefined) {
+module.exports = (function (win, doc, undefined) {
   /*
    * emojipad -- Emoji palette for easy emoji input
    * by Dalgona. <dalgona@hontou.moe> https://github.com/Dalgona
    */
 
-  "use strict";
+  'use strict';
   const fs = require('fs');
   const twemoji = require('twemoji');
   const path = require('path');
@@ -25,20 +25,21 @@ module.exports = (function(win, doc, undefined) {
       rootElement.style.display = 'none';
     },
     onEmojiClick: chr => console.log('Not implemented: ' + chr),
-    get isOpen() {
-      if (rootElement.style.display == 'none') return false;
+    get isOpen () {
+      if (rootElement.style.display === 'none') return false;
       else return true;
-    }
+    },
   };
 
-  for (let d of data)
+  for (let d of data) {
     d.data = d.data.map(x => {
       let chr = x.map(y => twemoji.convert.fromCodePoint(y)).join('');
       return twemoji.parse(chr);
     });
+  }
   buildUI();
 
-  function buildUI() {
+  function buildUI () {
     var container = rootElement.getElementsByClassName('emoji-container')[0];
     var tabContainer = rootElement.getElementsByClassName('emoji-tabs')[0];
 
@@ -71,7 +72,7 @@ module.exports = (function(win, doc, undefined) {
     me.hide();
   }
 
-  function activateTab(index) {
+  function activateTab (index) {
     var header = rootElement.getElementsByClassName('emoji-category')[0];
     var pages = rootElement.getElementsByClassName('emoji-page');
     var tabs = rootElement.getElementsByClassName('emoji-tab');
@@ -84,11 +85,11 @@ module.exports = (function(win, doc, undefined) {
 
     var container = rootElement.getElementsByClassName('emoji-container')[0];
     container.className = 'emoji-container';
-    if (index == 0) container.classList.add('first-tab');
-    else if (index == data.length - 1) container.classList.add('last-tab');
+    if (index === 0) container.classList.add('first-tab');
+    else if (index === data.length - 1) container.classList.add('last-tab');
   }
 
-  function onEmojiClicked(e) {
+  function onEmojiClicked (e) {
     me.onEmojiClick(e.currentTarget.alt);
   }
 

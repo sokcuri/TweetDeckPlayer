@@ -7,13 +7,13 @@ module.exports = {
     var href = _href;
     if (href.search(this.twimg_media) !== -1) {
       var pos = href.substr(href.lastIndexOf('/')).lastIndexOf(':');
-      if (pos == -1)
+      if (pos === -1)
         pos = href.substr(href.lastIndexOf('/')).length;
       href = href.substr(0, href.lastIndexOf('/') + pos) + ':orig';
     } else {
       if (href.search(this.twimg_profile) !== -1) {
         var pos = href.substr(href.lastIndexOf('/')).lastIndexOf('_');
-        if (pos == -1)
+        if (pos === -1)
           pos = href.substr(href.lastIndexOf('/')).lastIndexOf('.');
         href = href.substr(0, href.lastIndexOf('/') + pos) + href.substr(href.lastIndexOf('.'));
       }
@@ -52,33 +52,31 @@ module.exports = {
     var b = __dirname.substr(0, __dirname.lastIndexOf('\\'));
     var c = __dirname.lastIndexOf('.asar');
     var d = __dirname.lastIndexOf('.app/Contents/Resources/app');
-    if (d != -1)
+    if (d !== -1) {
       return __dirname.substr(0, d) + '/data/';
-    else if (c != -1)
-    {
+    } else if (c !== -1) {
       if (a.length > b.length)
         return a.substr(0, a.lastIndexOf('/')) + '/data/';
       else
         return b.substr(0, b.lastIndexOf('\\')) + '\\data\\';
-    }
-    else
+    } else {
       return __dirname + '/data/';
+    }
   },
   getWritableRootPath () {
     var a = __dirname.substr(0, __dirname.lastIndexOf('/'));
     var b = __dirname.substr(0, __dirname.lastIndexOf('\\'));
     var c = __dirname.lastIndexOf('.asar');
     var d = __dirname.lastIndexOf('.app/Contents/Resources/app');
-    if (d != -1)
+    if (d !== -1) {
       return __dirname.substr(0, d) + '/';
-    else if (c != -1)
-    {
+    } else if (c !== -1) {
       if (a.length > b.length)
         return a.substr(0, a.lastIndexOf('/'));
       else
         return b.substr(0, b.lastIndexOf('\\'));
-    }
-    else
+    } else {
       return __dirname + '/';
-  }
+    }
+  },
 };

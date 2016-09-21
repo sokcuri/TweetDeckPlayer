@@ -32,6 +32,7 @@
   "devDependencies": {
     "electron": "^1.4.0",
     "electron-packager": "^8.0.0",
+    "eslint": "^3.5.0",
     "rimraf": "^2.5.4"
   },
   "repository": {
@@ -39,6 +40,7 @@
     "url": "http://github.com/sokcuri/TweetDeckPlayer"
   },
   "scripts": {
+    "eslint": "eslint src/ tools/",
     "start": "node_modules/.bin/electron ./src/index.js",
     "build": "node tools/build.js",
     "clean": "node tools/clean.js"

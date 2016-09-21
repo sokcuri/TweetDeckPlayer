@@ -72,7 +72,7 @@ module.exports = () => {
     if (!text) return;
     text = text.textContent.toLowerCase();
     for (let word of words) {
-      if (typeof word === 'string' && text.indexOf(word) > -1) {
+      if (typeof word === 'string' && text.indexOf(word.toLowerCase()) > -1) {
         action(tweet);
         return;
       }

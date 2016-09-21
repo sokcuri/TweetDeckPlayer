@@ -31,6 +31,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "csscomb": "^3.1.8",
     "electron": "^1.4.0",
     "electron-packager": "^8.0.0",
     "eslint": "^3.5.0",
@@ -41,6 +42,8 @@
     "url": "http://github.com/sokcuri/TweetDeckPlayer"
   },
   "scripts": {
+    "csslint": "csscomb src/css/ --lint --verbose",
+    "csscomb": "csscomb src/css/ --verbose",
     "start": "electron ./src/index.js",
     "eslint": "eslint src/ tools/",
     "build": "node tools/build.js",

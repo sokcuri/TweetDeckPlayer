@@ -784,7 +784,7 @@ var run = chk_win => {
         .js-compose-text {
           white-space: pre-wrap;
           word-wrap: break-word;
-          word-break: break-all;
+          word-break: break-word;
           z-index: 2;
           position: inherit;
           background-color: transparent;
@@ -793,25 +793,47 @@ var run = chk_win => {
           -webkit-text-fill-color: transparent;
         }
         .mark_mention {
+          word-break: break-word;
           #border-radius: 3px;
           color: transparent;
           background-color: transparent;
           -webkit-text-fill-color: var(--mention-color);
         }
+        .mark_mention:before {
+          content: '\\2061';
+        }
         .mark_hashtag {
+          word-break: break-word;
           color: transparent;
           background-color: transparent;
           -webkit-text-fill-color: var(--hashtag-color);
         }
+        .mark_hashtag:before {
+          content: '\\2061';
+        }
         .mark_url {
+          word-break: break-word;
           color: transparent;
           background-color: transparent;
           -webkit-text-fill-color: var(--url-color);
         }
+        .mark_url:before {
+          content: '\\2061';
+        }
         .mark_heart {
+          word-break: break-word;
           color: transparent;
           background-color: transparent;
           -webkit-text-fill-color: #dd2e44;
+        }
+        .mark_normal {
+          word-break: break-word;
+          color: transparent;
+          background-color: transparent;
+          -webkit-text-fill-color: black;
+        }
+        .mark_normal:before {
+          content: '\\2061';
         }
         .mark_exceed {
           border-radius: 3px;

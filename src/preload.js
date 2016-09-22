@@ -279,18 +279,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var n = 0;
     var result = '';
-    for (var i = 0; i < text.length; i++) {
-      if (text[i] === '&')
-        result += '&amp;';
+    var norm_text = '';
+    for (var i = 0; i <= text.length; i++) {
+      if (i == text.length && norm_text) {
+        result += `<mark class="mark_normal">${norm_text}</mark>`;
+        norm_text = '';
+        break;
+      }
+      else if (text[i] === '&')
+        norm_text += '&amp;';
       else if (text[i] === '<')
-        result += '&lt;';
+        norm_text += '&lt;';
       else if (text[i] === '>')
-        result += '&gt';
-      else if (text[i] === '\n' && i + 1 === text.length)
-        result += '\n&nbsp;';
-      else if (text[i] === '♥')
+        norm_text += '&gt';
+      else if (text[i] === '♥') {
+        if (norm_text) {
+          result += `<mark class="mark_normal">${norm_text}</mark>`;
+          norm_text = '';
+        }
         result += '<mark class="mark_heart">♥</mark>';
+      }
       else if (i === indices[n]) {
+        if (norm_text) {
+          result += `<mark class="mark_normal">${norm_text}</mark>`;
+          norm_text = '';
+        }
         if (typeof entities[n].screenName !== 'undefined' && entities[n].screenName.length > 2) {
           result += text.substr(entities[n].indices[0], entities[n].indices[1] - entities[n].indices[0]).replace('@' + entities[n].screenName, '<mark class="mark_mention">$&</mark>');
           i += entities[n].indices[1] - entities[n].indices[0] - 1;
@@ -306,11 +319,11 @@ document.addEventListener('DOMContentLoaded', () => {
           i += entities[n].indices[1] - entities[n].indices[0] - 1;
           n++;
         } else {
-          result += text[i];
+          norm_text += text[i];
           n++;
         }
       } else {
-        result += text[i];
+        norm_text += text[i];
       }
     }
     return result;

@@ -9,7 +9,7 @@
   background: rgba(240, 240, 240, 0.85);
   border: 1px solid silver;
   border-radius: 5px;
-  font-family: ".SFNSText-Regular", 'Segoe UI', 'Yu Gothic UI', 'Meiryo UI', 'Malgun Gothic', 'Tahoma', 'Gulim', sans-serif;
+  font-family: '.SFNSText-Regular', 'Segoe UI', 'Yu Gothic UI', 'Meiryo UI', 'Malgun Gothic', 'Tahoma', 'Gulim', sans-serif;
   color: black;
   -webkit-user-select: none;
   user-select: none;
@@ -95,8 +95,7 @@
   border-bottom-right-radius: 3px;
 }
 
-.emoji-tab:not(.active):hover {
-}
+
 
 .emoji-tab:focus {
   outline: none;
@@ -114,7 +113,6 @@
   -webkit-filter: grayscale(1);
 }
 
-.emoji-tab.active img.emoji,
-.emoji-tab:hover img.emoji {
+.emoji-tab.active img.emoji, .emoji-tab:hover img.emoji {
   -webkit-filter: none;
 }

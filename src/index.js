@@ -1033,7 +1033,7 @@ ipcMain.on('twtlib-open', (event, arg) => {
   });
   twtlibWin.on('close', () => {
     twtlibWin = null;
-
+    win.focus();
   });
   twtlibWin.loadURL('file:///' + path.join(__dirname, 'ui/twtlib.html'));
 });

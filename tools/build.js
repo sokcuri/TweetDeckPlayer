@@ -23,10 +23,10 @@ const buildOne = (targetOptions) => {
     };
     const option = Object.assign({}, baseOption, targetOptions);
     packager(option, (err, appPaths) => {
-        const appPath = appPaths[0];
         if (!!err) {
-            console.err(err);
+            console.error(err);
         } else {
+            const appPath = appPaths[0];
             fs.unlink(path.join(appPath, 'version'));
             copyFile(path.join(projectDir, 'LICENSE'), path.join(appPath, 'LICENSE'));
             copyFile(path.join(projectDir, 'README.md'), path.join(appPath, 'README.md'));

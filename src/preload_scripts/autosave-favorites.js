@@ -82,8 +82,12 @@ function favoriteAutoSave (target) {
 
 function tossElement (e) {
   if (typeof e !== 'undefined') {
-    if (!config.enableAutoSaveFav || process.platform === 'darwin' ? remote.getGlobal('keyState').alt : remote.getGlobal('keyState').ctrl) return;
-    favoriteAutoSave(window.$(`[data-key="${e}"]`));
+    if (process.platform === 'darwin' ? remote.getGlobal('keyState').alt : remote.getGlobal('keyState').ctrl) {
+      return;
+    }
+    else if (config.enableAutoSaveFav) {
+      favoriteAutoSave(window.$(`[data-key="${e}"]`));
+    }
   }
 }
 

@@ -11,10 +11,9 @@
  */
 
 .starry .icon-favorite:before {
-  content: "\f007";
+  content: '\f007';
 }
 
-.starry .icon-favorite-color,
-.starry .is-favorite .icon-favorite-toggle {
+.starry .icon-favorite-color, .starry .is-favorite .icon-favorite-toggle {
   color: #fab41e;
 }

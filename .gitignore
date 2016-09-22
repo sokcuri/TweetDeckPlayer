@@ -69,6 +69,7 @@ data/
 
 # Build Results
 build/
+dist/
 
 # asar files
 *.asar

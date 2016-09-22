@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: ".SFNSText-Regular", 'Segoe UI', 'Yu Gothic UI', 'Meiryo UI', 'Malgun Gothic', 'Tahoma', 'Gulim', sans-serif;
+  font-family: '.SFNSText-Regular', 'Segoe UI', 'Yu Gothic UI', 'Meiryo UI', 'Malgun Gothic', 'Tahoma', 'Gulim', sans-serif;
   color: #333;
   -webkit-user-select: none;
   cursor: default;
@@ -201,8 +201,7 @@ section .multicolumn > div {
   width: 75px;
 }
 
-.settings-item input[type='text'],
-.settings-item textarea {
+.settings-item input[type='text'], .settings-item textarea {
   box-sizing: border-box;
   padding: 7px;
   width: 100%;
@@ -212,8 +211,7 @@ section .multicolumn > div {
   resize: none;
 }
 
-.settings-item button
-{
+.settings-item button {
   position: relative;
   top: 0;
   padding: 7px 15px;

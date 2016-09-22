@@ -40,8 +40,7 @@
   background-color: #55acee;
 }
 
-.settings-root.dark .settings-item input[type='text'],
-.settings-root.dark .settings-item textarea {
+.settings-root.dark .settings-item input[type='text'], .settings-root.dark .settings-item textarea {
   background: rgba(255,255,255,0.02);
   color: #ddd;
   border: 1px solid #606060;

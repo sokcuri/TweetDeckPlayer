@@ -775,13 +775,16 @@ var run = chk_win => {
         .highlights {
           white-space: pre-wrap;
           word-wrap: break-word;
-          word-break: keep-all;
+          word-break: break-all;
           color: transparent;
           -webkit-text-fill-color: black;
           padding: 10px;
           line-height: 18px;
         }
         .js-compose-text {
+          white-space: pre-wrap;
+          word-wrap: break-word;
+          word-break: break-all;
           z-index: 2;
           position: inherit;
           background-color: transparent;

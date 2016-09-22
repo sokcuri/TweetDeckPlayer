@@ -256,8 +256,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.TD_mustaches['app_container.mustache'] = window.TD_mustaches['app_container.mustache'].replace('<div id="open-modal', '<div style="min-width: 650px;" id="open-modal');
 
     // mention/url highlight
-    window.TD_mustaches['compose/compose_inline_reply.mustache'] = window.TD_mustaches['compose/compose_inline_reply.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text keep-all');
-    window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text keep-all');
+    window.TD_mustaches['compose/compose_inline_reply.mustache'] = window.TD_mustaches['compose/compose_inline_reply.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text');
+    window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text');
 
     // create emojipad entry point
     window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<div class="js-send-button-container', '<div class="btn btn-on-blue padding-v--9 emojipad--entry-point"><img class="emoji" src="https://twemoji.maxcdn.com/2/72x72/1f600.png" style="pointer-events:none;"></div> <div class="js-send-button-container').replace('<textarea class="js-compose-text', '<textarea id="docked-textarea" class="js-compose-text');

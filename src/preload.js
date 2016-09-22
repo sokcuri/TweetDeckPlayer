@@ -292,6 +292,14 @@ document.addEventListener('DOMContentLoaded', () => {
         norm_text += '&lt;';
       else if (text[i] === '>')
         norm_text += '&gt';
+      else if (text[i] === '\n' && i + 1 === text.length)
+      {
+        if (norm_text) {
+          result += `<mark class="mark_normal">${norm_text}</mark>`;
+          norm_text = '';
+        }
+        result += '\n&nbsp;';
+      }
       else if (text[i] === '♥') {
         if (norm_text) {
           result += `<mark class="mark_normal">${norm_text}</mark>`;

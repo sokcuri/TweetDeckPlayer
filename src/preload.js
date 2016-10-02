@@ -22,6 +22,8 @@ const TwtLib = require('./preload_scripts/twtlib');
 const AutoSaveFav = require('./preload_scripts/autosave-favorites');
 const EmojiPad = require('./preload_scripts/emojipad');
 const EmojiName = require('./preload_scripts/emojiname');
+const QuoteWithoutNotification = require('./preload_scripts/quote-without-notification');
+
 
 // 퍼포먼스 문제로 비활성화
 // 로딩 프로그레스 바 모듈 로드
@@ -93,6 +95,7 @@ ipcRenderer.on('apply-config', event => {
 var Addr = {
   img: '',
   link: '',
+  id: '',
 };
 
 // 포인터 이벤트
@@ -146,6 +149,9 @@ ipcRenderer.on('command', (event, cmd) => {
     case 'reload':
       remote.getCurrentWindow().reload();
       break;
+    case 'quotewithoutnotification':
+      QuoteWithoutNotification(ipcRenderer, Addr.id);
+      break;
   }
 });
 
@@ -192,6 +198,10 @@ window.addEventListener('contextmenu', e => {
     // 링크
     Addr.link = document.querySelector('a:hover').href;
     target = 'link';
+  } else if (document.querySelector('article.stream-item:hover')) {
+    // 트윗
+    target = 'tweet';
+    Addr.id = document.querySelector('article.stream-item:hover').getAttribute('data-tweet-id'); 
   } else {
     // 기본 컨텍스트
     target = 'main';

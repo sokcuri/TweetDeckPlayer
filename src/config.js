@@ -30,6 +30,8 @@ module.exports = {
       config.twColorURL = '#a84dba';
     if (!config.customizeColumnSize)
       config.customizeColumnSize = '310';
+    if (!config.quoteServer)
+      config.quoteServer = 'https://quote.sapphire.sh';
 
     this.data = config;
     return config;

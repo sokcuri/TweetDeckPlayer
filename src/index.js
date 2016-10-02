@@ -338,6 +338,14 @@ var sub_open_page_external = webContents => ({
   },
 });
 
+// quote
+var sub_quote_without_notification = webContents => ({
+  label: 'Quote without notification',
+  click () {
+    webContents.send('command', 'quotewithoutnotification');
+  },
+});
+
 app.on('ready', () => {
     // 리눅스 일부 환경에서 검은색으로 화면이 뜨는 문제 해결을 위한 코드
     // chrome://gpu/ 를 확인해 Canvas Hardware acceleration이 사용 불가면 disable-gpu를 달아준다
@@ -1012,6 +1020,12 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       template.push(sub_copy_img(event.sender));
       template.push(sub_open_img(event.sender));
       template.push(sub_search_img_google(event.sender));
+      template.push(separator);
+      template.push(sub_reload(event.sender));
+      break;
+
+    case 'tweet':
+      template.push(sub_quote_without_notification(event.sender));
       template.push(separator);
       template.push(sub_reload(event.sender));
       break;

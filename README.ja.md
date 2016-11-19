@@ -2,7 +2,7 @@
 
 http://github.com/sokcuri/TweetDeckPlayer
 
-TweetDeck Playerは、[Electron](http://electron.atom.io/)をベースにしたTweetDeck専用ブラウザです。既存のウェブブラウザよりもっと軽く安定的に動作し、いろんな追加機能を加えてもっと便利に使用できます。また、ウェブブラウザと独立的にセッションを管理しているのでウェブブラウザとは別のアカウントでサインインできます。
+TweetDeck Playerは、[Electron](http://electron.atom.io/)ベースのTweetDeck専用ブラウザです。既存のウェブブラウザよりもっと軽く安定的に動作し、いろんな追加機能を加えてもっと便利に使用できます。また、ウェブブラウザと独立的にセッションを管理しているのでウェブブラウザとは別のアカウントでサインインできます。
 
 ご使用中発生した不具合のご報告や質問はこちらへどうぞ。
 https://github.com/sokcuri/TweetDeckPlayer/issues
@@ -33,15 +33,15 @@ https://github.com/sokcuri/TweetDeckPlayer/issues
   - ときどき画像の自動保存が動作しない問題を修正しました。
   - メッセージのtypoの修正しました。
 - 機能の追加・改善
-  - ハイライト機能の色のカスタマイズできるようにしました。
+  - ハイライト機能の色のカスタマイズできるようになりました。
   - 名前の絵文字表示機能が改善され、再起動する必要がなくなりました。
-  - キーボードで操作時アニメーションを消去する機能の追加しました。
-  - コラムのサイズのカスタマイズ機能の追加しました。
-  - 複数のフォントを設定できるようにしました。
+  - キーボードで操作時アニメーションを消去する機能を追加しました。
+  - コラムのサイズのカスタマイズ機能を追加しました。
+  - 複数のフォントを設定できるようになりました。
   - 짤 자동저장 기능을 사용중일 때 키를 누르고 마음을 찍으면 짤 저장이 되지 않는 기능 추가 (MAC: alt, Win/Linux: ctrl) 
 
-> 最新リリーズは[TweetDeck Playerのリリーズページ](https://github.com/sokcuri/TweetDeckPlayer/releases)からダウンロードできます。
-> 更新履歴はChangeLog.mdファイルまたはTweetDeck Playerのリリーズページを参照してください。
+> 最新リリースは[TweetDeck Playerのリリースページ](https://github.com/sokcuri/TweetDeckPlayer/releases)からダウンロードできます。
+> 更新履歴はChangeLog.mdファイルまたはTweetDeck Playerのリリースページを参照してください。
 
 # 要求スペック
 
@@ -72,8 +72,8 @@ https://github.com/sokcuri/TweetDeckPlayer/issues
 * reload는 아무곳에 우클릭 후 reload 메뉴를 누르시거나 alt를 누르고 View의 Reload 메뉴를 눌러주세요.
 
 # インストール
-## リリーズページからダウンロード
-[TweetDeck Playerのリリーズページ](https://github.com/sokcuri/TweetDeckPlayer/releases)からファイルをダウンロードします。
+## リリースページからダウンロード
+[TweetDeck Playerのリリースページ](https://github.com/sokcuri/TweetDeckPlayer/releases)からファイルをダウンロードします。
 - MacOS :
  - `TweetDeckPlayer ... darwin-x64.zip`をダウンロードし解凍します。
  - `TweetDeckPlayer.app` で起動します。
@@ -135,7 +135,7 @@ $ npm install
 
 # 著作権・告知事項
 "TweetDeck"は、Twitter, Incの商標です。
-TweetDeck PlayerはTwitterとは全く関連がないサードパーティアプリケーションです。TweetDeck Playerの利用中発生した問題については、Twitterじゃなく、TweetDeck Playerの開発者にご報告してください。
+TweetDeck PlayerはTwitterとは全く関連がないサードパーティアプリケーションです。TweetDeck Playerの利用中発生した問題については、Twitterではなく、TweetDeck Playerの開発者にご報告してください。
 
 # ライセンス
 The MIT License (MIT)

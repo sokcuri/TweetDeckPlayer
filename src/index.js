@@ -15,9 +15,11 @@ const Config = require('./config');
 let win, popup, settingsWin, twtlibWin, accessibilityWin;
 
 function getSamePos (x, y) {
-  for (var i = 0; i < max(x.length, y.length); i++)
-    if (i === x.length || i === y.length || x[i] !== y[i])
+  for (var i = 0; i < Math.max(x.length, y.length); i++) {
+    if (i === x.length || i === y.length || x[i] !== y[i]) {
       return i;
+    }
+  }
 }
 
 ipcMain.on('load-config', (event, arg) => {
@@ -485,7 +487,7 @@ app.on('ready', () => {
         },
       ],
     });
-    
+
     template[3] = {
       role: 'window',
       submenu: [
@@ -529,7 +531,7 @@ app.on('ready', () => {
         },
       ],
     },
-    
+
     template[4] = {
       role: 'help',
       submenu: [
@@ -596,7 +598,9 @@ var hotfix_accessibility_mode = () => {
         }, 1000);
       }
     });
-  } else setTimeout(hotfix_accessibility_mode, 1000);
+  } else {
+    setTimeout(hotfix_accessibility_mode, 1000);
+  }
 };
 // 시현님 기여어
 // Special Thanks for @uto_correction, @Gar_ella
@@ -779,7 +783,7 @@ var run = chk_win => {
           line-height: 18px;
           transition: transform 1s;
         }
-        
+
         .highlights {
           white-space: pre-wrap;
           word-wrap: break-word;
@@ -865,7 +869,7 @@ var run = chk_win => {
         }
         `);
       win.webContents.send('apply-config');
-      
+
       // 유저 스크립트 로딩
       fs.readdir(path.join(Util.getWritableRootPath(), 'scripts'), (error, files) => {
         if (error) {
@@ -890,12 +894,12 @@ var run = chk_win => {
       });
     } catch (e) { }
   });
-  
+
   win.on('close', () => {
     try {
       Config.load();
       Config.data.bounds = win.getBounds();
-      if (popup) Config.data.popup_bounds = popup.getBounds(); 
+      if (popup) Config.data.popup_bounds = popup.getBounds();
       Config.save();
       win = null;
     } catch (e) { };
@@ -903,9 +907,9 @@ var run = chk_win => {
 
   win.webContents.on('new-window', (e, url) => {
     e.preventDefault();
-    if (global.keyState.shift)
+    if (global.keyState.shift) {
       shell.openExternal(url);
-    else if (Config.data.openURLInInternalBrowser) {
+    } else if (Config.data.openURLInInternalBrowser) {
       var preference = (Config.data && Config.data.popup_bounds) ? Config.data.popup_bounds : {};
       preference.icon = path.join(__dirname, 'tweetdeck.ico');
       preference.modal = false;
@@ -919,8 +923,9 @@ var run = chk_win => {
       popup = new BrowserWindow(preference);
       popup.on('close', () => {
         Config.load();
-        if (popup)
+        if (popup) {
           Config.data.popup_bounds = popup.getBounds();
+        }
         Config.save();
         popup = null;
       });
@@ -938,7 +943,7 @@ var run = chk_win => {
 
 // 컨텍스트 메뉴
 ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
-  
+
   var template = [];
   var separator = { type: 'separator' };
 

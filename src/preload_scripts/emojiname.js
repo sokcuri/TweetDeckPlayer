@@ -8,15 +8,16 @@ function EmojiApply () {
     if (!config.applyEmojiName) return;
     var target;
     target = [jq(elem).find('.fullname'),
-              jq(elem).find('.js-action-url').find('.fullname'),
-              jq(elem).find('.account-link'),
-              jq(elem).find('.nbfc'),
-              jq(elem).find('.social-proof-names'),
-              jq(elem).find('.title-content')];
+      jq(elem).find('.js-action-url').find('.fullname'),
+      jq(elem).find('.account-link'),
+      jq(elem).find('.nbfc'),
+      jq(elem).find('.social-proof-names'),
+      jq(elem).find('.title-content')];
 
     for (let t of target) {
-      if (t.length && !jq(t[0]).find('img.emoji').length)
+      if (t.length && !jq(t[0]).find('img.emoji').length) {
         t[0].innerHTML = twemoji.parse(t[0].innerHTML);
+      }
     }
   }
 

@@ -65,28 +65,25 @@
                 start: [ require('./config').load().customizeColumnSize ],
                 step: 1,
                 range: {
-                  'min': [ 250 ],
-                  'max': [ 600 ]
+                  min: [ 250 ],
+                  max: [ 600 ],
                 },
                 format: {
-                  to: function ( value ) {
-                  return Math.floor(value);
+                  to (value) {
+                    return Math.floor(value);
                   },
-                  from: function ( value ) {
+                  from (value) {
                     console.log(value);
-                  return value;
-                  }
-                }
+                    return value;
+                  },
+                },
               });
-              </script>
-              <script>
               var tTime;
               var inputFormat = document.getElementById('customizeColumnSize');
 
-              sliderFormat.noUiSlider.on('update', function( values, handle ) {
+              sliderFormat.noUiSlider.on('update', (values, handle) => {
                 inputFormat.value = values[handle];
-                if (!tTime || tTime + 100 < new Date().getTime())
-                {
+                if (!tTime || tTime + 100 < new Date().getTime()) {
                   var event = new Event('change');
                   var settingForm = document.getElementById('settingform');
                   settingForm.dispatchEvent(event);
@@ -94,7 +91,7 @@
                 }
               });
 
-              inputFormat.addEventListener('change', function(){
+              inputFormat.addEventListener('change', () => {
                 sliderFormat.noUiSlider.set(this.value);
               });
               </script>
@@ -198,7 +195,7 @@
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="minimizeScrollAnimForTweetSel"><label for="minimizeScrollAnimForTweetSel"><div></div></label>
-                  Minimize Scroll Animation for Tweet Selection 
+                  Minimize Scroll Animation for Tweet Selection
                 </label>
               </div>
             </div>
@@ -214,7 +211,7 @@
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="autoSaveFavUrlName"><label for="autoSaveFavUrlName"><div></div></label>
-                  Save image file name by url 
+                  Save image file name by url
                 </label>
               </div>
               <div class="settings-item sub-header">Path to Save</div>

@@ -22,16 +22,21 @@ module.exports = {
     Object.assign(config, userConfig);
 
     // default value
-    if (!config.twColorMention)
+    if (!config.twColorMention) {
       config.twColorMention = '#cb4f5f';
-    if (!config.twColorHashtag)
-      config.twColorHashtag = '#2b7bb9'; 
-    if (!config.twColorURL)
+    }
+    if (!config.twColorHashtag) {
+      config.twColorHashtag = '#2b7bb9';
+    }
+    if (!config.twColorURL) {
       config.twColorURL = '#a84dba';
-    if (!config.customizeColumnSize)
+    }
+    if (!config.customizeColumnSize) {
       config.customizeColumnSize = '310';
-    if (!config.quoteServer)
+    }
+    if (!config.quoteServer) {
       config.quoteServer = 'https://quote.sapphire.sh';
+    }
 
     this.data = config;
     return config;

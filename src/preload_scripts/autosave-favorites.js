@@ -84,8 +84,7 @@ function tossElement (e) {
   if (typeof e !== 'undefined') {
     if (process.platform === 'darwin' ? remote.getGlobal('keyState').alt : remote.getGlobal('keyState').ctrl) {
       return;
-    }
-    else if (config.enableAutoSaveFav) {
+    } else if (config.enableAutoSaveFav) {
       favoriteAutoSave(window.$(`[data-key="${e}"]`));
     }
   }

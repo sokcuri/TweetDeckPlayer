@@ -16,8 +16,9 @@ function onload () {
   var wrapper = document.getElementById('wrapper');
   // 트윗덱 테마를 바탕으로 설정창 테마 변경.
   var theme = ipcRenderer.sendSync('request-theme');
-  if (theme === 'dark')
+  if (theme === 'dark') {
     wrapper.classList.add('dark');
+  }
 
   var settingsTop = wrapper.getElementsByClassName('top')[0];
   var settingsMain = wrapper.getElementsByTagName('main')[0];

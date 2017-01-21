@@ -58,10 +58,11 @@ ipcRenderer.on('apply-config', event => {
         return fonts.filter(x => !tmpSet.has(x));
       })();
 
-      if (notSupported.length !== 0)
+      if (notSupported.length !== 0) {
         console.warn(`Not Supported Font(s): ${notSupported.join(', ')}`);
+      }
       style = `font-family: ${sf.join(',')} !important;`;
-      
+
       node.remove();
     } else {
       style = '';
@@ -78,10 +79,11 @@ ipcRenderer.on('apply-config', event => {
       cl.remove('starry');
       cl.add('hearty');
     }
-    if (config.applyCustomizeSlider && !cl.contains('customize-columns'))
+    if (config.applyCustomizeSlider && !cl.contains('customize-columns')) {
       cl.add('customize-columns');
-    else if (!config.applyCustomizeSlider && cl.contains('customize-columns'))
+    } else if (!config.applyCustomizeSlider && cl.contains('customize-columns')) {
       cl.remove('customize-columns');
+    }
 
     style += `--column-size: ${config.customizeColumnSize}px;`;
 
@@ -100,10 +102,11 @@ var Addr = {
 
 // 포인터 이벤트
 ipcRenderer.on('no-pointer', (event, opt) => {
-  if (opt && !document.body.classList.contain('no-pointer'))
+  if (opt && !document.body.classList.contain('no-pointer')) {
     document.body.classList.add('no-pointer');
-  else if (!opt && document.body.classList.contain('no-pointer'))
+  } else if (!opt && document.body.classList.contain('no-pointer')) {
     document.body.classList.remove('no-pointer');
+  }
 });
 
 // 메인 스레드에서 렌더러로 요청하는 커맨드
@@ -201,7 +204,7 @@ window.addEventListener('contextmenu', e => {
   } else if (document.querySelector('article.stream-item:hover')) {
     // 트윗
     target = 'tweet';
-    Addr.id = document.querySelector('article.stream-item:hover').getAttribute('data-tweet-id'); 
+    Addr.id = document.querySelector('article.stream-item:hover').getAttribute('data-tweet-id');
   } else {
     // 기본 컨텍스트
     target = 'main';
@@ -225,12 +228,14 @@ document.addEventListener('DOMContentLoaded', EmojiName);
 document.addEventListener('dragstart', evt => {
   var imageSrc = '';
   var imageOrgSrc = '';
-  // 트윗 미디어 이미지
-  if (evt.srcElement.classList.contains('js-media-image-link'))
+
+  if (evt.srcElement.classList.contains('js-media-image-link')) {
+    // 트윗 미디어 이미지
     imageSrc = evt.srcElement.style.backgroundImage.slice(5, -2);
-  // 일반 이미지
-  else if (typeof evt.srcElement.currentSrc !== 'undefined' && evt.srcElement.currentSrc !== '')
+  } else if (typeof evt.srcElement.currentSrc !== 'undefined' && evt.srcElement.currentSrc !== '') {
+    // 일반 이미지
     imageSrc = evt.srcElement.currentSrc;
+  }
 
   // 이미지인 경우
   if (imageSrc) {
@@ -284,40 +289,37 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyHighlights (text) {
     var entities = twitter.extractEntitiesWithIndices(text);
     var indices = [];
-    for (let item of entities)
+    for (let item of entities) {
       indices.push(item.indices[0]);
+    }
 
     var n = 0;
     var result = '';
     var norm_text = '';
     for (var i = 0; i <= text.length; i++) {
-      if (i == text.length && norm_text) {
+      if (i === text.length && norm_text) {
         result += `<mark class="mark_normal">${norm_text}</mark>`;
         norm_text = '';
         break;
-      }
-      else if (text[i] === '&')
+      } else if (text[i] === '&') {
         norm_text += '&amp;';
-      else if (text[i] === '<')
+      } else if (text[i] === '<') {
         norm_text += '&lt;';
-      else if (text[i] === '>')
+      } else if (text[i] === '>') {
         norm_text += '&gt';
-      else if (text[i] === '\n' && i + 1 === text.length)
-      {
+      } else if (text[i] === '\n' && i + 1 === text.length) {
         if (norm_text) {
           result += `<mark class="mark_normal">${norm_text}</mark>`;
           norm_text = '';
         }
         result += '\n&nbsp;';
-      }
-      else if (text[i] === '♥') {
+      } else if (text[i] === '♥') {
         if (norm_text) {
           result += `<mark class="mark_normal">${norm_text}</mark>`;
           norm_text = '';
         }
         result += '<mark class="mark_heart">♥</mark>';
-      }
-      else if (i === indices[n]) {
+      } else if (i === indices[n]) {
         if (norm_text) {
           result += `<mark class="mark_normal">${norm_text}</mark>`;
           norm_text = '';
@@ -356,15 +358,17 @@ document.addEventListener('DOMContentLoaded', () => {
         var text = jq(el[i]).val();
 
         // 인라인 height 반영
-        if (jq(el[i]).parent().children('div')[0].style !== el[i].style.cssText)
+        if (jq(el[i]).parent().children('div')[0].style !== el[i].style.cssText) {
           jq(el[i]).parent().children('div')[0].style = el[i].style.cssText;
+        }
 
         // html 하이라이트 반영
         jq(el[i]).parent().children('div').children('div').html(applyHighlights(text));
 
         // placeholder
-        if (text === '')
+        if (text === '') {
           jq(el[i]).parent().children('div').children('div').html('<span class="placeholder">' + el[i].placeholder + '</span>');
+        }
 
         // 마지막 멘션 아이디가 셀렉션 지정되는 버그 회피
         var x = el[i];
@@ -376,8 +380,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (prev_focus !== document.querySelector(':focus')) {
           setTimeout(() => {
             var v = jq(x).val();
-            if (window.getSelection().toString().length > 3)
+            if (window.getSelection().toString().length > 3) {
               jq(x).focus().val('').val(v);
+            }
           }, 100);
         }
       }
@@ -392,8 +397,9 @@ document.addEventListener('DOMContentLoaded', () => {
       jq(evt.target).parent().children('div').children('div').html(applyHighlights(text));
 
       // placeholder
-      if (text === '')
+      if (text === '') {
         jq(evt.target).parent().children('div').children('div').html('<span class="placeholder">' + jq(evt.target)[0].placeholder + '</span>');
+      }
     }
   }
 
@@ -444,9 +450,9 @@ document.addEventListener('DOMContentLoaded', () => {
   var processMiscTweet_ptn = '(c||a&&(!s||n||l))&&(h||m||this.publishChirpsInternal("publish","home",[e]))';
   var processMiscTweet_rep = '(c||(a||config.disableCheckFriendship=="on")&&((!s||config.disableFilteringMentionUser=="on")||n||l))&&(h||(m&&!config.showRetweetFollowingUser=="on")||this.publishChirpsInternal("publish","home",[e]))';
 
-  if (processMiscTweet.search(processMiscTweet_ptn) === -1)
+  if (processMiscTweet.search(processMiscTweet_ptn) === -1) {
     console.warn('procMiscTweet pattern not found');
-  else {
+  } else {
     processMiscTweet = processMiscTweet.replace(processMiscTweet_ptn, processMiscTweet_rep);
     TD.services.TwitterClient.prototype.processMiscTweet = Function('e', processMiscTweet);
   }
@@ -486,21 +492,21 @@ document.addEventListener('DOMContentLoaded', () => {
   var processMiscTweet_ptn = '(c||a&&(!s||n||l))&&(h||m||this.publishChirpsInternal("publish","home",[e]))';
   var processMiscTweet_rep = '(c||(a||config.disableCheckFriendship=="on")&&((!s||config.disableFilteringMentionUser=="on")||n||l))&&(h||(m&&!config.showRetweetFollowingUser=="on")||this.publishChirpsInternal("publish","home",[e]))';
 
-  if (processMiscTweet.search(processMiscTweet_ptn) === -1)
+  if (processMiscTweet.search(processMiscTweet_ptn) === -1) {
     console.warn('procMiscTweet pattern not found');
-  else {
+  } else {
     processMiscTweet = processMiscTweet.replace(processMiscTweet_ptn, processMiscTweet_rep);
     TD.services.TwitterClient.prototype.processMiscTweet = Function('e,t,i', processMiscTweet);
   }
 
-  // Favorite to Image Save 
+  // Favorite to Image Save
   var processFavorite = TD.services.TwitterClient.prototype.favorite.toString().substr(17);
   processFavorite = processFavorite.substr(0, processFavorite.length - 1);
 
   window.AutoSaveFav = AutoSaveFav;
   processFavorite = 'AutoSaveFav(e);' + processFavorite;
   TD.services.TwitterClient.prototype.favorite = Function('e,t,i', processFavorite);
-  
+
   // Fast Retweet
   TD.services.TwitterStatus.prototype.retweet_direct = function (e) {
     if (config.enableFastRetweet && !keyState.shift) {
@@ -576,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   TD.services.TwitterStatus.prototype.retweet_old = TD.services.TwitterStatus.prototype.retweet;
   TD.services.TwitterStatus.prototype.retweet = TD.services.TwitterStatus.prototype.retweet_direct;
-  
+
   // TweetDeck Ready Check
   var TDP = {};
   if (TD) ipcRenderer.send('page-ready-tdp', this);
@@ -612,10 +618,12 @@ document.addEventListener('DOMContentLoaded', () => {
           var el = EmojiPad.element;
           var rect = el.getClientRects()[0];
 
-          if (window.innerWidth - rect.left - 10 < rect.width)
+          if (window.innerWidth - rect.left - 10 < rect.width) {
             el.style.left = `${window.innerWidth - rect.width - 10}px`;
-          if (window.innerHeight - rect.top - 10 < rect.height)
+          }
+          if (window.innerHeight - rect.top - 10 < rect.height) {
             el.style.top = `${window.innerHeight - rect.height - 10}px`;
+          }
         };
         document.body.addEventListener('click', e => {
           if (e.target !== dockBtn && EmojiPad.isOpen) EmojiPad.hide();

@@ -66,7 +66,9 @@ module.exports = () => {
       myID = document.querySelector('.js-account-summary .username');
       myID = myID.textContent.trim();
     }
-    let userID = tweet.querySelector('.username').textContent;
+    let userID = tweet.querySelector('.username');
+    if (!userID) return;
+    userID = userID.textContent;
     if (userID === myID) return;
     let text = tweet.querySelector('.js-tweet-text');
     if (!text) return;

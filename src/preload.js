@@ -21,7 +21,6 @@ const CBPaste = require('./preload_scripts/clipboard-paste');
 const TwtLib = require('./preload_scripts/twtlib');
 const AutoSaveFav = require('./preload_scripts/autosave-favorites');
 const EmojiPad = require('./preload_scripts/emojipad');
-const EmojiName = require('./preload_scripts/emojiname');
 const QuoteWithoutNotification = require('./preload_scripts/quote-without-notification');
 
 
@@ -221,8 +220,6 @@ document.addEventListener('DOMContentLoaded', TwtLib);
 if (config.enableUnlinkis) {
   document.addEventListener('DOMContentLoaded', Unlinkis);
 }
-
-document.addEventListener('DOMContentLoaded', EmojiName);
 
 // 트윗에 첨부된 이미지를 드래그해서 저장할 수 있도록 함
 document.addEventListener('dragstart', evt => {

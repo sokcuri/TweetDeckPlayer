@@ -37,3 +37,15 @@
 .starry .is-selected.dm-action            .icon-favorite {
   color: #fab41e !important;
 }
+
+/*
+ * https://github.com/eramdam/BetterTweetDeck/blob/master/src/css/features/stars.css
+ */
+
+.starry .heart-anim {
+  visibility: hidden !important;
+}
+
+.starry .icon-favorite.is-invisible {
+  visibility: visible !important;
+}

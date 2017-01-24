@@ -1,3 +1,11 @@
+/* CSS Variable
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables
+ */
+:root {
+  --heart-color: #e81c4f;
+  --star-color: #fab41e;
+}
+
 /* 필터링된 트윗 */
 .masked-tweet {
   text-align: center;
@@ -16,7 +24,7 @@
 
 .starry .icon-favorite-color,
 .starry .is-favorite .icon-favorite-toggle {
-  color: #fab41e;
+  color: var(--star-color);
 }
 
 /* 별표 가리킬 때 색상 수정
@@ -35,7 +43,7 @@
 .starry .tweet-action.is-selected         .icon-favorite,
 .starry .is-selected.tweet-detail-action  .icon-favorite,
 .starry .is-selected.dm-action            .icon-favorite {
-  color: #fab41e !important;
+  color: var(--star-color) !important;
 }
 
 /*

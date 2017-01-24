@@ -14,6 +14,26 @@
   content: '\f007';
 }
 
-.starry .icon-favorite-color, .starry .is-favorite .icon-favorite-toggle {
+.starry .icon-favorite-color,
+.starry .is-favorite .icon-favorite-toggle {
   color: #fab41e;
+}
+
+/* 별표 가리킬 때 색상 수정
+ * 참고: https://github.com/eramdam/BetterTweetDeck/commit/262fc14878eccc165a0ae04a4ad67e0778f5bb1b
+ */
+
+.starry .tweet-action:hover               .icon-favorite,
+.starry .tweet-detail-action:hover        .icon-favorite,
+.starry .dm-action:hover                  .icon-favorite,
+.starry .tweet-action:focus               .icon-favorite,
+.starry .tweet-detail-action:focus        .icon-favorite,
+.starry .dm-action:focus                  .icon-favorite,
+.starry .tweet-action:active              .icon-favorite,
+.starry .tweet-detail-action:active       .icon-favorite,
+.starry .dm-action:active                 .icon-favorite,
+.starry .tweet-action.is-selected         .icon-favorite,
+.starry .is-selected.tweet-detail-action  .icon-favorite,
+.starry .is-selected.dm-action            .icon-favorite {
+  color: #fab41e !important;
 }

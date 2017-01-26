@@ -1,3 +1,4 @@
+const path = require('path');
 module.exports = {
   twimg_media: 'twimg.com/media',
   twimg_profile: 'twimg.com/profile_images',
@@ -63,7 +64,7 @@ module.exports = {
         return b.substr(0, b.lastIndexOf('\\')) + '\\data\\';
       }
     } else {
-      return __dirname + '/data/';
+      return path.join(__dirname, '../data');
     }
   },
   getWritableRootPath () {
@@ -80,7 +81,7 @@ module.exports = {
         return b.substr(0, b.lastIndexOf('\\'));
       }
     } else {
-      return __dirname + '/';
+      return path.join(__dirname, '..');
     }
   },
 };

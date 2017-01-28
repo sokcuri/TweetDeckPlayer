@@ -101,9 +101,9 @@ var Addr = {
 
 // 포인터 이벤트
 ipcRenderer.on('no-pointer', (event, opt) => {
-  if (opt && !document.body.classList.contain('no-pointer')) {
+  if (opt && !document.body.classList.contains('no-pointer')) {
     document.body.classList.add('no-pointer');
-  } else if (!opt && document.body.classList.contain('no-pointer')) {
+  } else if (!opt && document.body.classList.contains('no-pointer')) {
     document.body.classList.remove('no-pointer');
   }
 });

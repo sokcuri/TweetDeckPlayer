@@ -90,10 +90,14 @@ module.exports = function imageViewer () {
     viewer.close();
   });
   $(document.body).on('click', 'a[rel=mediaPreview]', event => {
+    const target = $(event.currentTarget);
+    const videoOverlay = target.has('.video-overlay');
+    if (videoOverlay.length !== 0) {
+      return;
+    }
     event.preventDefault();
     // event.stopPropagation();
     event.stopImmediatePropagation();
-    const target = $(event.currentTarget);
     const container = target.parents('.media-preview');
     const images = container.find('a[rel=mediaPreview]');
     const parameter = {

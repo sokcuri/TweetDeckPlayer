@@ -70,12 +70,16 @@ class TDPImageViewer {
     next.disabled = (index === length - 1);
   }
   prev () {
-    this.index -= 1;
-    this.update();
+    if (!this.toolbar.querySelector('.tiv-btn-prev').disabled) {
+      this.index -= 1;
+      this.update();
+    }
   }
   next () {
-    this.index += 1;
-    this.update();
+    if (!this.toolbar.querySelector('.tiv-btn-next').disabled) {
+      this.index += 1;
+      this.update();
+    }
   }
   show () {
     this.viewer.style.display = 'flex';

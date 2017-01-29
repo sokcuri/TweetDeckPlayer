@@ -89,6 +89,7 @@
   margin: auto;
   max-width: 100%;
   transition: filter .3s;
+  will-change: filter;
 }
 .tiv-image.loading {
   filter: saturate(0%) brightness(40%);

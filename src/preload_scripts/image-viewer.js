@@ -14,7 +14,9 @@ const VIEWER_HTML = `
       </button>
     </div>
   </nav>
-  <img class="tiv-image">
+  <div class="tiv-imagewrapper">
+    <img class="tiv-image">
+  </div>
 `;
 
 function extractURL (img) {
@@ -31,11 +33,12 @@ class TDPImageViewer {
     const viewer = this.viewer = document.createElement('div');
     viewer.classList.add('tdp-image-viewer');
     viewer.innerHTML = VIEWER_HTML;
+    const wrapper = this.wrapper = viewer.querySelector('.tiv-imagewrapper');
     const image = this.image = viewer.querySelector('img.tiv-image');
     const toolbar = this.toolbar = viewer.querySelector('.tiv-toolbar');
     viewer.addEventListener('click', event => {
       event.preventDefault();
-      if (viewer.isSameNode(event.target)) {
+      if (wrapper.isSameNode(event.target)) {
         this.close();
       }
     });
@@ -56,6 +59,7 @@ class TDPImageViewer {
     const {images, index} = this;
     const length = images.length;
     this.image.src = images[index].url;
+    this.wrapper.scrollTop = 0;
     const prev = this.toolbar.querySelector('.tiv-btn-prev');
     const next = this.toolbar.querySelector('.tiv-btn-next');
     prev.disabled = (index === 0);
@@ -70,7 +74,7 @@ class TDPImageViewer {
     this.update();
   }
   show () {
-    this.viewer.style.display = 'block';
+    this.viewer.style.display = 'flex';
   }
   close () {
     this.viewer.style.display = 'none';

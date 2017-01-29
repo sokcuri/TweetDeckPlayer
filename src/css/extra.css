@@ -61,39 +61,40 @@
 /* 트윗덱 이미지뷰어 */
 .tdp-image-viewer {
   position: fixed;
-  display: none;
+  display: none; /* flex */
+  flex-direction: column;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 10px 70px;
-  background-color: rgba(0, 0, 0, .9);
   z-index: 999;
-  overflow-y: auto;
+  background-color: rgba(0, 0, 0, .9);
 }
 /* 노트:
 * Chromium >= 53 지원을 위해 user-select속성에
 * -webkit- prefix를 붙여야 함.
 * 출처: http://caniuse.com/#feat=user-select
 */
-.tiv-image {
-  display: block;
-  margin: 50px auto;
-  max-width: 100%;
+.tiv-imagewrapper {
+  flex: 1;
+  padding: 50px;
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
   -webkit-user-select: none;
   user-select: none;
 }
+.tiv-image {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+}
 .tiv-toolbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
   padding: 5px;
   clear: both;
   background-color: rgba(0, 0, 0, .8);
-}
-.tiv-btngroup-left, .tiv-btngroup-right {
-  padding: 0 10px;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .tiv-btngroup-left {
   float: left;
@@ -104,7 +105,8 @@
 .tiv-button {
   display: inline-block;
   margin: 0 5px;
-  padding: 10px 30px;
+  padding: 5px 15px;
+  width: 120px;
   border-radius: 5px;
   border: 1px solid #666;
   background-color: #333;

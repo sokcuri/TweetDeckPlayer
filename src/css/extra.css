@@ -88,6 +88,10 @@
   display: block;
   margin: auto;
   max-width: 100%;
+  transition: filter .3s;
+}
+.tiv-image.loading {
+  filter: saturate(0%) brightness(40%);
 }
 .tiv-toolbar {
   padding: 5px;

@@ -96,6 +96,7 @@
 .tiv-toolbar {
   padding: 5px;
   clear: both;
+  z-index: 9999;
   background-color: rgba(0, 0, 0, .8);
   -webkit-user-select: none;
   user-select: none;

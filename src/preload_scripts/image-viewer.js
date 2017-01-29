@@ -1,3 +1,7 @@
+const Config = require('../config');
+
+const config = Config.load();
+
 const VIEWER_HTML = `
   <nav class="tiv-toolbar">
     <div class="tiv-btngroup-left">
@@ -85,6 +89,9 @@ module.exports = function imageViewer () {
   const viewer = new TDPImageViewer;
   const $ = window.$;
   $(document).on('tiv-show-image', (event, parameter) => {
+    if (!config.altImageViewer) {
+      return;
+    }
     viewer.images = parameter.images;
     viewer.index = parameter.index;
     viewer.update();
@@ -94,6 +101,9 @@ module.exports = function imageViewer () {
     viewer.close();
   });
   $(document.body).on('click', 'a[rel=mediaPreview]', event => {
+    if (!config.altImageViewer) {
+      return;
+    }
     const target = $(event.currentTarget);
     const videoOverlay = target.has('.video-overlay');
     if (videoOverlay.length !== 0) {

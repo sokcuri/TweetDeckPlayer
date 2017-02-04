@@ -22,7 +22,7 @@ const TwtLib = require('./preload_scripts/twtlib');
 const AutoSaveFav = require('./preload_scripts/autosave-favorites');
 const EmojiPad = require('./preload_scripts/emojipad');
 const QuoteWithoutNotification = require('./preload_scripts/quote-without-notification');
-
+const GifAutoplay = require('./preload_scripts/gif-autoplay');
 
 // 퍼포먼스 문제로 비활성화
 // 로딩 프로그레스 바 모듈 로드
@@ -216,6 +216,7 @@ window.addEventListener('contextmenu', e => {
 document.addEventListener('DOMContentLoaded', WordFilter);
 document.addEventListener('DOMContentLoaded', CBPaste);
 document.addEventListener('DOMContentLoaded', TwtLib);
+document.addEventListener('DOMContentLoaded', GifAutoplay);
 
 if (config.enableUnlinkis) {
   document.addEventListener('DOMContentLoaded', Unlinkis);

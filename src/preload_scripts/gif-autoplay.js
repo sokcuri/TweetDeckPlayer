@@ -22,6 +22,7 @@ function Autoplay () {
         const target = event.currentTarget;
         const video = target.querySelector('video');
         if (video && video.paused) {
+          target.classList.remove('is-paused');
           video.play();
         }
       })
@@ -29,6 +30,7 @@ function Autoplay () {
         const target = event.currentTarget;
         const video = target.querySelector('video');
         if (video && !video.paused) {
+          target.classList.add('is-paused');
           video.pause();
         }
       });

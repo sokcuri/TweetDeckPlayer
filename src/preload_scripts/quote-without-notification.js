@@ -1,3 +1,4 @@
+/* globals TD */
 const Config = require('../config');
 
 function MakeQuoteWithoutNotification (ipcRenderer, id) {

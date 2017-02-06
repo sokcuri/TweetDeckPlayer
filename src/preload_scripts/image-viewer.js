@@ -96,18 +96,31 @@ class TDPImageViewer {
 module.exports = function imageViewer () {
   const viewer = new TDPImageViewer;
   const $ = window.$;
-  $(document).on('tiv-show-image', (event, parameter) => {
-    if (!config.altImageViewer) {
-      return;
-    }
-    viewer.images = parameter.images;
-    viewer.index = parameter.index;
-    viewer.update();
-    viewer.show();
-  });
-  $(document).on('tiv-close', event => {
-    viewer.close();
-  });
+  $(document)
+    .on('tiv-show-image', (event, parameter) => {
+      if (!config.altImageViewer) {
+        return;
+      }
+      viewer.images = parameter.images;
+      viewer.index = parameter.index;
+      viewer.update();
+      viewer.show();
+    })
+    .on('tiv-close', event => {
+      viewer.close();
+    })
+    .on('keyup', event_ => {
+      const event = event_.originalEvent;
+      if (viewer.viewer.style.display === 'none') return;
+      const code = event.code;
+      if (code === 'ArrowLeft') {
+        viewer.prev();
+      } else if (code === 'ArrowRight') {
+        viewer.next();
+      } else if (code === 'Escape') {
+        viewer.close();
+      }
+    });
   $(document.body).on('click', 'a[rel=mediaPreview]', event => {
     if (!config.altImageViewer) {
       return;

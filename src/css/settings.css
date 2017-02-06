@@ -201,7 +201,9 @@ section .multicolumn > div {
   width: 75px;
 }
 
-.settings-item input[type='text'], .settings-item textarea {
+.settings-item input[type='text'],
+.settings-item textarea,
+.settings-item select {
   box-sizing: border-box;
   padding: 7px;
   width: 100%;
@@ -209,6 +211,7 @@ section .multicolumn > div {
   border-radius: 3px;
   font-size: 1em;
   resize: none;
+  background-color: #fff;
 }
 
 .settings-item button {

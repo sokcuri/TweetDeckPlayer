@@ -40,7 +40,7 @@ function onload () {
   let settingForm = document.getElementById('settingform');
 
   var save = event => {
-    let settingElements = settingForm.querySelectorAll('input, textarea');
+    let settingElements = settingForm.querySelectorAll('input, textarea, select');
     for (let elem of settingElements) {
       let id = elem.id;
       let value = elem.value;

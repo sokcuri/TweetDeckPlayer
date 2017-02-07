@@ -109,15 +109,21 @@ module.exports = function imageViewer () {
     .on('tiv-close', event => {
       viewer.close();
     })
-    .on('keyup', event_ => {
+    .on('keydown', event_ => {
       const event = event_.originalEvent;
       if (viewer.viewer.style.display === 'none') return;
       const code = event.code;
       if (code === 'ArrowLeft') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
         viewer.prev();
       } else if (code === 'ArrowRight') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
         viewer.next();
       } else if (code === 'Escape') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
         viewer.close();
       }
     });

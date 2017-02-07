@@ -763,6 +763,17 @@ var run = chk_win => {
       .no-pointer {
         pointer-events: none;
       }`);
+    if (Config.data.blockGoogleAnalytics) {
+      const gaurl = ['*://*.google-analytics.com'];
+      const ses = win.webContents.session;
+      ses.webRequest.onBeforeRequest(gaurl, (details, callback) => {
+        const block = /google-analytics/i.test(details.url);
+        callback({
+          cancel: block,
+          requestHeaders: details.requestHeaders,
+        });
+      });
+    }
   });
 
   ipcMain.on('page-ready-tdp', (event, arg) => {

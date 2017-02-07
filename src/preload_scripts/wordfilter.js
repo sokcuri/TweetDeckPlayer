@@ -89,6 +89,20 @@ module.exports = () => {
         return;
       }
     }
+    if (config.filterUserName) {
+      let userName = tweet.querySelector('.fullname');
+      userName = userName.textContent.toLowerCase();
+      for (let word of words) {
+        if (typeof word === 'string' && userName.indexOf(word.toLowerCase()) > -1) {
+          action(tweet);
+          return;
+        }
+        if (word instanceof RegExp && word.test(userName)) {
+          action(tweet);
+          return;
+        }
+      }
+    }
   }
   const wordFilterObserver = new MutationObserver(mutations => {
     for (let mut of mutations) {

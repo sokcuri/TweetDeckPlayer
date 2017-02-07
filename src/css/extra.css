@@ -58,6 +58,10 @@
   visibility: visible !important;
 }
 
+.tdp-circle-profile img.avatar {
+  border-radius: 50%;
+}
+
 /* 트윗덱 이미지뷰어 */
 .tdp-image-viewer {
   position: fixed;

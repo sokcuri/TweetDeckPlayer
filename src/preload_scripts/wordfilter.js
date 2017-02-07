@@ -47,7 +47,7 @@ module.exports = () => {
       tweet.removeEventListener('click', revealOriginal);
       // GIF 움짤이 있다면 이를 재생시킨다.
       let gif = tweet.querySelector('video.js-media-gif');
-      if (gif && gif.paused) {
+      if (gif && gif.paused && config.gifAutoplay === 'default') {
         gif.play();
       }
     }

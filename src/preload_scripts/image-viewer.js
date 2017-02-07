@@ -111,7 +111,7 @@ module.exports = function imageViewer () {
     })
     .on('keydown', event_ => {
       const event = event_.originalEvent;
-      if (viewer.viewer.style.display === 'none') return;
+      if (viewer.viewer.style.display !== 'flex') return;
       const code = event.code;
       if (code === 'ArrowLeft') {
         event.preventDefault();

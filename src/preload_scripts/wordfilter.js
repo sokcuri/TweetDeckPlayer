@@ -13,6 +13,9 @@ module.exports = () => {
       // see: http://stackoverflow.com/a/2630538
       return new RegExp(match[1], 'i');
     } else {
+      if (config.stripWhitespace) {
+        word = word.replace(/\s+/g, '');
+      }
       return word;
     }
   });
@@ -73,6 +76,9 @@ module.exports = () => {
     let text = tweet.querySelector('.js-tweet-text');
     if (!text) return;
     text = text.textContent.toLowerCase();
+    if (config.stripWhitespace) {
+      text = text.replace(/\s+/g, '');
+    }
     for (let word of words) {
       if (typeof word === 'string' && text.indexOf(word.toLowerCase()) > -1) {
         action(tweet);

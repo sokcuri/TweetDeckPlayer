@@ -58,6 +58,7 @@
   visibility: visible !important;
 }
 
+.tdp-circle-profile .prf-img,
 .tdp-circle-profile img.avatar {
   border-radius: 50%;
 }

@@ -43,9 +43,7 @@ function generateFilename (imgurl, index) {
   return result;
 }
 
-function favoriteAutoSave (target) {
-  //if (!target.matches('a.tweet-action[rel="favorite"]')) return;
-  const tweet = window.$(target.closest('.js-tweet')[0]);
+function favoriteAutoSave (tweet) {
   // Already favorited. quit function
   // if (tweet.hasClass('is-favorite')) return;
 

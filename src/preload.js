@@ -465,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (config.minimizeScrollAnimForTweetSel) {
       var obj = {};
       Error.captureStackTrace(obj, this);
-      if (obj.stack.search('at d.calculateScrollDuration') !== -1) return 1;
+      if (obj.stack.search('at p.calculateScrollDuration') !== -1) return 1;
     }
     return (a < b ? a : b);
   };

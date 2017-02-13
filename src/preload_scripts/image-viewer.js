@@ -41,8 +41,8 @@ class TDPImageViewer {
     const image = this.image = viewer.querySelector('img.tiv-image');
     const toolbar = this.toolbar = viewer.querySelector('.tiv-toolbar');
     viewer.addEventListener('click', event => {
-      event.preventDefault();
       if (wrapper.isSameNode(event.target)) {
+        event.stopImmediatePropagation();
         this.close();
       }
     });
@@ -137,7 +137,6 @@ module.exports = function imageViewer () {
       return;
     }
     event.preventDefault();
-    // event.stopPropagation();
     event.stopImmediatePropagation();
     const container = target.parents('.media-preview');
     const images = container.find('a[rel=mediaPreview]');

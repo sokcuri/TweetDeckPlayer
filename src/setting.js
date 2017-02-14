@@ -16,8 +16,9 @@ function onload () {
   var wrapper = document.getElementById('wrapper');
   // 트윗덱 테마를 바탕으로 설정창 테마 변경.
   var theme = ipcRenderer.sendSync('request-theme');
-  if (theme === 'dark')
+  if (theme === 'dark') {
     wrapper.classList.add('dark');
+  }
 
   var settingsTop = wrapper.getElementsByClassName('top')[0];
   var settingsMain = wrapper.getElementsByTagName('main')[0];
@@ -39,7 +40,7 @@ function onload () {
   let settingForm = document.getElementById('settingform');
 
   var save = event => {
-    let settingElements = settingForm.querySelectorAll('input, textarea');
+    let settingElements = settingForm.querySelectorAll('input, textarea, select');
     for (let elem of settingElements) {
       let id = elem.id;
       let value = elem.value;

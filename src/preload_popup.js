@@ -27,10 +27,11 @@ var Addr = {
 
 // 포인터 이벤트
 ipcRenderer.on('no-pointer', (event, opt) => {
-  if (opt && !document.body.classList.contain('no-pointer'))
+  if (opt && !document.body.classList.contain('no-pointer')) {
     document.body.classList.add('no-pointer');
-  else if (!opt && document.body.classList.contain('no-pointer'))
+  } else if (!opt && document.body.classList.contain('no-pointer')) {
     document.body.classList.remove('no-pointer');
+  }
 });
 
 // 메인 스레드에서 렌더러로 요청하는 커맨드
@@ -145,12 +146,13 @@ if (config.enableUnlinkis) {
 document.addEventListener('dragstart', evt => {
   var imageSrc = '';
   var imageOrgSrc = '';
-  // 트윗 미디어 이미지
-  if (evt.srcElement.classList.contains('js-media-image-link'))
+  if (evt.srcElement.classList.contains('js-media-image-link')) {
+    // 트윗 미디어 이미지
     imageSrc = evt.srcElement.style.backgroundImage.slice(5, -2);
-  // 일반 이미지
-  else if (typeof evt.srcElement.currentSrc !== 'undefined' && evt.srcElement.currentSrc !== '')
+  } else if (typeof evt.srcElement.currentSrc !== 'undefined' && evt.srcElement.currentSrc !== '') {
+    // 일반 이미지
     imageSrc = evt.srcElement.currentSrc;
+  }
 
   // 이미지인 경우
   if (imageSrc) {

@@ -50,8 +50,9 @@
     const TEXTS = new Set(config.commonTexts || []);
 
     var theme = ipcRenderer.sendSync('request-theme');
-    if (theme == 'dark')
+    if (theme === 'dark') {
       wrapper.classList.add('dark');
+    }
 
     var settingsTop = wrapper.getElementsByClassName('top')[0];
     var settingsMain = wrapper.getElementsByTagName('main')[0];

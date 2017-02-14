@@ -65,28 +65,25 @@
                 start: [ require('./config').load().customizeColumnSize ],
                 step: 1,
                 range: {
-                  'min': [ 250 ],
-                  'max': [ 600 ]
+                  min: [ 250 ],
+                  max: [ 600 ],
                 },
                 format: {
-                  to: function ( value ) {
-                  return Math.floor(value);
+                  to (value) {
+                    return Math.floor(value);
                   },
-                  from: function ( value ) {
+                  from (value) {
                     console.log(value);
-                  return value;
-                  }
-                }
+                    return value;
+                  },
+                },
               });
-              </script>
-              <script>
               var tTime;
               var inputFormat = document.getElementById('customizeColumnSize');
 
-              sliderFormat.noUiSlider.on('update', function( values, handle ) {
+              sliderFormat.noUiSlider.on('update', (values, handle) => {
                 inputFormat.value = values[handle];
-                if (!tTime || tTime + 100 < new Date().getTime())
-                {
+                if (!tTime || tTime + 100 < new Date().getTime()) {
                   var event = new Event('change');
                   var settingForm = document.getElementById('settingform');
                   settingForm.dispatchEvent(event);
@@ -94,10 +91,17 @@
                 }
               });
 
-              inputFormat.addEventListener('change', function(){
+              inputFormat.addEventListener('change', () => {
                 sliderFormat.noUiSlider.set(this.value);
               });
               </script>
+              <div class="settings-item sub-header">Misc.</div>
+              <div class="settings-item">
+                <label>
+                  <input type="checkbox" id="useCircleProfileImage"><label for="useCircleProfileImage"><div></div></label>
+                  Circle profile image
+                </label>
+              </div>
             </div>
             <header><span>Timeline</span></header>
             <div class="contents">
@@ -112,6 +116,18 @@
                 <label>
                   <input type="checkbox" id="hideFilteredTweet"><label for="hideFilteredTweet"><div></div></label>
                   Completely Hide Filtered Tweet
+                </label>
+              </div>
+              <div class="settings-item">
+                <label>
+                  <input type="checkbox" id="stripWhitespace"><label for="stripWhitespace"><div></div></label>
+                  Strip Whitespace before filtering.
+                </label>
+              </div>
+              <div class="settings-item">
+                <label>
+                  <input type="checkbox" id="filterUserName"><label for="filterUserName"><div></div></label>
+                  Apply filter to user's name
                 </label>
               </div>
               <div class="settings-item">
@@ -185,11 +201,13 @@
               <div class="settings-item description for-checkbox">
                 Press Shift+Enter to insert a line break.
               </div>
+              <div class="settings-item sub-header">GIF Autoplay</div>
               <div class="settings-item">
-                <label>
-                  <input type="checkbox" id="applyEmojiName"><label for="applyEmojiName"><div></div></label>
-                  Show Color Emoji in User Names
-                </label>
+                <select name="gifAutoplay" id="gifAutoplay">
+                  <option value="default">Autoplay (Default)</option>
+                  <option value="mouseenter">Hover to play</option>
+                  <option value="click">Click to play</option>
+                </select>
               </div>
             </div>
             <header><span>Performance</span></header>
@@ -198,7 +216,7 @@
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="minimizeScrollAnimForTweetSel"><label for="minimizeScrollAnimForTweetSel"><div></div></label>
-                  Minimize Scroll Animation for Tweet Selection 
+                  Minimize Scroll Animation for Tweet Selection
                 </label>
               </div>
             </div>
@@ -214,12 +232,27 @@
               <div class="settings-item">
                 <label>
                   <input type="checkbox" id="autoSaveFavUrlName"><label for="autoSaveFavUrlName"><div></div></label>
-                  Save image file name by url 
+                  Save image file name by url
                 </label>
               </div>
               <div class="settings-item sub-header">Path to Save</div>
               <div class="settings-item"><input type="text" id="autoSavePath"></div>
               <div class="settings-item description">Default path is 'Favorited Images' under TweetDeck Player's directory.</div>
+              <div class="settings-item sub-header">Image Viewer</div>
+              <div class="settings-item">
+                <label>
+                  <input type="checkbox" id="altImageViewer"><label for="altImageViewer"><div></div></label>
+                  Use alternative image viewer
+                </label>
+              </div>
+              <div class="settings-item sub-header">Privacy</div>
+              <div class="settings-item">
+                <label>
+                  <input type="checkbox" id="blockGoogleAnalytics"><label for="blockGoogleAnalytics"><div></div></label>
+                  Block Google Analytics
+                </label>
+              </div>
+              <div class="settings-item description">You should restart app to apply this setting.</div>
             </div>
           </section>
         </form>

@@ -1,3 +1,11 @@
+/* CSS Variable
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables
+ */
+:root {
+  --heart-color: #e81c4f;
+  --star-color: #fab41e;
+}
+
 /* 필터링된 트윗 */
 .masked-tweet {
   text-align: center;
@@ -14,6 +22,113 @@
   content: '\f007';
 }
 
-.starry .icon-favorite-color, .starry .is-favorite .icon-favorite-toggle {
-  color: #fab41e;
+.starry .icon-favorite-color,
+.starry .is-favorite .icon-favorite-toggle {
+  color: var(--star-color);
+}
+
+/* 별표 가리킬 때 색상 수정
+ * 참고: https://github.com/eramdam/BetterTweetDeck/commit/262fc14878eccc165a0ae04a4ad67e0778f5bb1b
+ */
+
+.starry .tweet-action:hover               .icon-favorite,
+.starry .tweet-detail-action:hover        .icon-favorite,
+.starry .dm-action:hover                  .icon-favorite,
+.starry .tweet-action:focus               .icon-favorite,
+.starry .tweet-detail-action:focus        .icon-favorite,
+.starry .dm-action:focus                  .icon-favorite,
+.starry .tweet-action:active              .icon-favorite,
+.starry .tweet-detail-action:active       .icon-favorite,
+.starry .dm-action:active                 .icon-favorite,
+.starry .tweet-action.is-selected         .icon-favorite,
+.starry .is-selected.tweet-detail-action  .icon-favorite,
+.starry .is-selected.dm-action            .icon-favorite {
+  color: var(--star-color) !important;
+}
+
+/*
+ * https://github.com/eramdam/BetterTweetDeck/blob/master/src/css/features/stars.css
+ */
+
+.starry .heart-anim {
+  visibility: hidden !important;
+}
+
+.starry .icon-favorite.is-invisible {
+  visibility: visible !important;
+}
+
+.tdp-circle-profile .prf-img,
+.tdp-circle-profile img.avatar {
+  border-radius: 50%;
+}
+
+/* 트윗덱 이미지뷰어 */
+.tdp-image-viewer {
+  position: fixed;
+  display: none; /* flex */
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, .9);
+}
+/* 노트:
+* Chromium >= 53 지원을 위해 user-select속성에
+* -webkit- prefix를 붙여야 함.
+* 출처: http://caniuse.com/#feat=user-select
+*/
+.tiv-imagewrapper {
+  flex: 1;
+  padding: 50px;
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.tiv-image {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+  transition: filter .3s;
+  will-change: filter;
+}
+.tiv-image.loading {
+  filter: saturate(0%) brightness(40%);
+}
+.tiv-toolbar {
+  padding: 5px;
+  clear: both;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, .8);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.tiv-btngroup-left {
+  float: left;
+}
+.tiv-btngroup-right {
+  float: right;
+}
+.tiv-button {
+  display: inline-block;
+  margin: 0 5px;
+  padding: 5px 15px;
+  width: 120px;
+  border-radius: 5px;
+  border: 1px solid #666;
+  background-color: #333;
+  color: #eee;
+  font-size: 12pt;
+  transition: background-color .2s;
+}
+.tiv-button:not(:disabled):hover {
+  background-color: #555;
+}
+.tiv-button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
 }

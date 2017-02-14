@@ -13,6 +13,9 @@ module.exports = () => {
       // see: http://stackoverflow.com/a/2630538
       return new RegExp(match[1], 'i');
     } else {
+      if (config.stripWhitespace) {
+        word = word.replace(/\s+/g, '');
+      }
       return word;
     }
   });
@@ -47,7 +50,7 @@ module.exports = () => {
       tweet.removeEventListener('click', revealOriginal);
       // GIF 움짤이 있다면 이를 재생시킨다.
       let gif = tweet.querySelector('video.js-media-gif');
-      if (gif && gif.paused) {
+      if (gif && gif.paused && config.gifAutoplay === 'default') {
         gif.play();
       }
     }
@@ -66,11 +69,16 @@ module.exports = () => {
       myID = document.querySelector('.js-account-summary .username');
       myID = myID.textContent.trim();
     }
-    let userID = tweet.querySelector('.username').textContent;
+    let userID = tweet.querySelector('.username');
+    if (!userID) return;
+    userID = userID.textContent;
     if (userID === myID) return;
     let text = tweet.querySelector('.js-tweet-text');
     if (!text) return;
     text = text.textContent.toLowerCase();
+    if (config.stripWhitespace) {
+      text = text.replace(/\s+/g, '');
+    }
     for (let word of words) {
       if (typeof word === 'string' && text.indexOf(word.toLowerCase()) > -1) {
         action(tweet);
@@ -79,6 +87,20 @@ module.exports = () => {
       if (word instanceof RegExp && word.test(text)) {
         action(tweet);
         return;
+      }
+    }
+    if (config.filterUserName) {
+      let userName = tweet.querySelector('.fullname');
+      userName = userName.textContent.toLowerCase();
+      for (let word of words) {
+        if (typeof word === 'string' && userName.indexOf(word.toLowerCase()) > -1) {
+          action(tweet);
+          return;
+        }
+        if (word instanceof RegExp && word.test(userName)) {
+          action(tweet);
+          return;
+        }
       }
     }
   }

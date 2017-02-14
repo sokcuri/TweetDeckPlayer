@@ -1,3 +1,4 @@
+const path = require('path');
 module.exports = {
   twimg_media: 'twimg.com/media',
   twimg_profile: 'twimg.com/profile_images',
@@ -7,14 +8,16 @@ module.exports = {
     var href = _href;
     if (href.search(this.twimg_media) !== -1) {
       var pos = href.substr(href.lastIndexOf('/')).lastIndexOf(':');
-      if (pos === -1)
+      if (pos === -1) {
         pos = href.substr(href.lastIndexOf('/')).length;
+      }
       href = href.substr(0, href.lastIndexOf('/') + pos) + ':orig';
     } else {
       if (href.search(this.twimg_profile) !== -1) {
         var pos = href.substr(href.lastIndexOf('/')).lastIndexOf('_');
-        if (pos === -1)
+        if (pos === -1) {
           pos = href.substr(href.lastIndexOf('/')).lastIndexOf('.');
+        }
         href = href.substr(0, href.lastIndexOf('/') + pos) + href.substr(href.lastIndexOf('.'));
       }
     }
@@ -55,12 +58,13 @@ module.exports = {
     if (d !== -1) {
       return __dirname.substr(0, d) + '/data/';
     } else if (c !== -1) {
-      if (a.length > b.length)
+      if (a.length > b.length) {
         return a.substr(0, a.lastIndexOf('/')) + '/data/';
-      else
+      } else {
         return b.substr(0, b.lastIndexOf('\\')) + '\\data\\';
+      }
     } else {
-      return __dirname + '/data/';
+      return path.join(__dirname, '../data');
     }
   },
   getWritableRootPath () {
@@ -71,12 +75,13 @@ module.exports = {
     if (d !== -1) {
       return __dirname.substr(0, d) + '/';
     } else if (c !== -1) {
-      if (a.length > b.length)
+      if (a.length > b.length) {
         return a.substr(0, a.lastIndexOf('/'));
-      else
+      } else {
         return b.substr(0, b.lastIndexOf('\\'));
+      }
     } else {
-      return __dirname + '/';
+      return path.join(__dirname, '..');
     }
   },
 };

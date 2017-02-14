@@ -41,8 +41,8 @@ class TDPImageViewer {
     const image = this.image = viewer.querySelector('img.tiv-image');
     const toolbar = this.toolbar = viewer.querySelector('.tiv-toolbar');
     viewer.addEventListener('click', event => {
+      event.stopPropagation();
       if (wrapper.isSameNode(event.target)) {
-        event.stopImmediatePropagation();
         this.close();
       }
     });

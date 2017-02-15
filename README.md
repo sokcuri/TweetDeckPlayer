@@ -3,7 +3,7 @@ Copyright (c) 2016-2017 Sokcuri, Dalgona, Gaeulbyul and other contributors
 http://github.com/sokcuri/TweetDeckPlayer
 
 > 최신 릴리즈는 [트윗덱 플레이어 릴리즈 페이지](https://github.com/sokcuri/TweetDeckPlayer/releases)에서 다운로드할 수 있습니다.  
-> 업데이트 이력은 [ChangeLog.md]() 파일을 확인하거나 릴리즈 페이지를 참고하세요.
+> 업데이트 이력은 [ChangeLog.md](ChangeLog.md) 파일을 확인하거나 릴리즈 페이지를 참고하세요.
 
 > 사용 중 문의사항 또는 이슈가 있다면 [트윗덱 플레이어 이슈 페이지](https://github.com/sokcuri/TweetDeckPlayer/issues)를 방문하세요.
 

@@ -66,7 +66,7 @@ http://github.com/sokcuri/TweetDeckPlayer
 
 문서 파일
 --------
-* [README.md]() - 지금 보고 계신 이 파일입니다!
-* [ChangeLog.md]() - 트윗덱 플레이어 업데이트 및 변경사항을 확인할 수 있습니다.
-* [Installation.md]() - 패키지 또는 쉘을 통한 수동 설치 방법에 대해서 알아봅니다.
-* [LICENSE.md]() - 트윗덱, 트윗덱 플레이어 및 라이브러리의 라이센스를 고지합니다.
+* [README.md](README.md) - 지금 보고 계신 이 파일입니다!
+* [ChangeLog.md](ChangeLog.md) - 트윗덱 플레이어 업데이트 및 변경사항을 확인할 수 있습니다.
+* [Installation.md](Installation.md) - 패키지 또는 쉘을 통한 수동 설치 방법에 대해서 알아봅니다.
+* [LICENSE.md](LICENSE.md) - 트윗덱, 트윗덱 플레이어 및 라이브러리의 라이센스를 고지합니다.

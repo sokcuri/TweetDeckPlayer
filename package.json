@@ -12,19 +12,23 @@
     {
       "name": "GaeulByul",
       "url": "https://github.com/zn"
+    },
+    {
+      "name": "TintypeMolly",
+      "url": "https://github.com/TintypeMolly"
     }
   ],
   "name": "TweetDeckPlayer",
-  "version": "2.0.1",
+  "version": "2.2.0",
   "main": "src/index.js",
   "dependencies": {
-    "electron": "^1.4.0",
     "async": "^2.0.1",
     "detect-font": "^0.1.3",
+    "electron": "^1.6.0",
     "jquery": "^3.1.0",
     "nouislider": "^8.5.1",
     "request": "^2.74.0",
-    "twemoji": "^2.1.5",
+    "twemoji": "^2.2.5",
     "twitter-text": "^1.14.0"
   },
   "bugs": {

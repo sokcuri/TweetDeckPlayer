@@ -621,6 +621,14 @@ var run = chk_win => {
 
   win.setAlwaysOnTop(Config.data.defaultTopmost && true || false);
 
+  if (Config.data.isMaximized) {
+    win.maximize();
+  }
+
+  if (Config.data.isFullScreen) {
+    win.setFullScreen(true);
+  }
+
   // 체크를 위한 윈도우가 존재하는 경우 닫기
   if (chk_win) {
     chk_win.close();
@@ -906,11 +914,33 @@ var run = chk_win => {
     } catch (e) { }
   });
 
-  win.on('close', () => {
+  win.on('close', e => {
     try {
       Config.load();
+
+      Config.data.isMaximized = win.isMaximized();
+      Config.data.isFullScreen = win.isFullScreen();
+      
+      e.sender.hide();
+      if (e.sender.isMaximized()) {
+        e.sender.unmaximize();
+      }
+      if (e.sender.isFullScreen()){
+        e.sender.setFullScreen(false);
+      }
+      
       Config.data.bounds = win.getBounds();
-      if (popup) Config.data.popup_bounds = popup.getBounds();
+      if (popup) {
+        Config.data.popup_bounds = popup.getBounds();
+
+        popup.sender.hide();
+        if (popup.sender.isMaximized()) {
+          popup.sender.unmaximize();
+        }
+        if (popup.sender.isFullScreen()){
+          popup.sender.setFullScreen(false);
+        }
+      }
       Config.save();
       win = null;
     } catch (e) { };

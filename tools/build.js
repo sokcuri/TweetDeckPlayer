@@ -41,6 +41,7 @@ const prebuild = () => {
 
 const postSingleBuild = appPath => {
   fs.removeSync(path.join(appPath, 'version'));
+  fs.removeSync(path.join(appPath, 'LICENSE'));
   fs.copySync(path.join(projectDir, 'LICENSE.md'), path.join(appPath, 'LICENSE.md'));
   fs.copySync(path.join(projectDir, 'README.md'), path.join(appPath, 'README.md'));
   fs.copySync(path.join(projectDir, 'README.ja.md'), path.join(appPath, 'README.ja.md'));

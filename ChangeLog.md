@@ -1,6 +1,15 @@
 # 트윗덱 플레이어 ChangeLog
 http://github.com/sokcuri/TweetDeckPlayer/releases
 
+
+트윗덱 플레이어 v2.21
+-----------------------------
+* 내장 이미지 뷰어가 DM 및 기타 섹션에서 정상적으로 표시되지 않는 문제를 수정했습니다. (#70)
+
+
+## Special Thanks
+* [MagmaChipmunk](https://github.com/MagmaChipmunk) - 버그 #70을 제보해주셨습니다.
+
 트윗덱 플레이어 v2.20
 -----------------------------
 * 트윗덱 플레이어 설정 UI를 개선했습니다.
@@ -48,9 +57,11 @@ http://github.com/sokcuri/TweetDeckPlayer/releases
 * [eramdam](https://github.com/eramdam) - 관심글 별표 옵션기능 작성하는 데 [BetterTweetDeck](https://github.com/eramdam/BetterTweetDeck)을 참고했습니다.
 * [MagmaChipmunk](https://github.com/MagmaChipmunk) - 버그 #63을 제보해주셨습니다.
 
+
 트윗덱 플레이어 v2.01a
 -----------------------------
 트윗 입력창의 줄바꿈이 올바르지 않게 되면서 맞지 않게 되는 현상 수정
+
 
 트윗덱 플레이어 v2.01
 -----------------------------
@@ -72,6 +83,7 @@ http://github.com/sokcuri/TweetDeckPlayer/releases
   - 폰트 여러개 지정하는 기능 추가
   - 컬럼 너비 커스터마이징 기능 추가
   - 짤 자동저장 기능을 사용중일 때 키를 누르고 마음을 찍으면 짤 저장이 되지 않는 기능 추가 (MAC: alt, Win/Linux: ctrl) 
+
 
 트윗덱 플레이어 v2.00
 -----------------------------

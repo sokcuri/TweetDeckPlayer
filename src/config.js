@@ -37,9 +37,6 @@ module.exports = {
     if (!config.quoteServer) {
       config.quoteServer = 'https://quote.sapphire.sh';
     }
-    if (!config.hasOwnProperty('altImageViewer')) {
-      config.altImageViewer = 'on';
-    }
 
     this.data = config;
     return config;

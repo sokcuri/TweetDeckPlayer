@@ -611,36 +611,91 @@ ipcMain.on('nogpu-relaunch', () => {
   setTimeout(() => app.quit(), 100);
 });
 
+// JS version number compare
+// electron 버전 비교를 위해서 삽입
+// http://stackoverflow.com/questions/6832596/how-to-compare-software-version-number-using-js-only-number
+var versionCompare = (v1, v2, options) => {
+  var lexicographical = options && options.lexicographical,
+    zeroExtend = options && options.zeroExtend,
+    v1parts = v1.split('.'),
+    v2parts = v2.split('.');
+
+  var isValidPart = x => {
+    return (lexicographical ? /^\d+[A-Za-z]*$/ : /^\d+$/).test(x);
+  };
+
+  if (!v1parts.every(isValidPart) || !v2parts.every(isValidPart)) {
+    return NaN;
+  }
+
+  if (zeroExtend) {
+    while (v1parts.length < v2parts.length) v1parts.push("0");
+    while (v2parts.length < v1parts.length) v2parts.push("0");
+  }
+
+  if (!lexicographical) {
+    v1parts = v1parts.map(Number);
+    v2parts = v2parts.map(Number);
+  }
+
+  for (var i = 0; i < v1parts.length; ++i) {
+    if (v2parts.length === i) {
+      return 1;
+    }
+
+    if (v1parts[i] === v2parts[i]) {
+      continue;
+    } else if (v1parts[i] > v2parts[i]) {
+      return 1;
+    } else {
+      return -1;
+    }
+  }
+
+  if (v1parts.length !== v2parts.length) {
+    return -1;
+  }
+
+  return 0;
+};
+
 // accessibility mode issue (CPU 100% with touch device)
 // https://github.com/sokcuri/TweetDeckPlayer/issues/29
 // accessibility mode 일때 chrome://accessibility의 global setting을 off시킨다
 // accessibility mode 여부는 app.isAccessibilitySupportEnabled()로 확인
+// 1.3.7 버전 이하의 electron에서만 해당되는 문제.
 var hotfix_accessibility_mode = () => {
-  if (app.isAccessibilitySupportEnabled()) {
-    if (accessibilityWin) accessibilityWin.close();
-    accessibilityWin = new BrowserWindow({
-      show: false,
-      width: 0,
-      height: 0,
-      webPreferences: {
-        preload: path.join(__dirname, 'pre_check.js'),
-      },
-    });
-    accessibilityWin.loadURL('chrome://accessibility');
-    accessibilityWin.webContents.on('did-finish-load', () => {
-      if (app.isAccessibilitySupportEnabled()) {
-        accessibilityWin.webContents.executeJavaScript(
-          `if (document.querySelector('#toggle_global').text == 'on')
-          document.querySelector('#toggle_global').click();`);
-        setTimeout(() => {
-          accessibilityWin.close();
-          accessibilityWin = null;
-          setTimeout(hotfix_accessibility_mode, 1000);
-        }, 1000);
-      }
-    });
-  } else {
-    setTimeout(hotfix_accessibility_mode, 1000);
+  if (versionCompare(process.versions.electron, '1.3.8') < 0) {
+    if (app.isAccessibilitySupportEnabled()) {
+      if (accessibilityWin) accessibilityWin.close();
+      accessibilityWin = new BrowserWindow({
+        show: false,
+        width: 0,
+        height: 0,
+        webPreferences: {
+          preload: path.join(__dirname, 'pre_check.js'),
+        },
+      });
+      accessibilityWin.loadURL('chrome://accessibility');
+      accessibilityWin.webContents.on('did-finish-load', () => {
+        if (app.isAccessibilitySupportEnabled()) {
+          accessibilityWin.webContents.executeJavaScript(
+            `if (document.querySelector('#toggle_global').text == 'on')
+            document.querySelector('#toggle_global').click();`);
+          setTimeout(() => {
+            try {
+              accessibilityWin.close();
+              accessibilityWin = null;
+            } catch (e) {
+
+            }
+            setTimeout(hotfix_accessibility_mode, 1000);
+          }, 1000);
+        }
+      });
+    } else {
+      setTimeout(hotfix_accessibility_mode, 1000);
+    }
   }
 };
 // 시현님 기여어

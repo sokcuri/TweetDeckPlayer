@@ -66,7 +66,6 @@ class TDPImageViewer {
     const {images, index} = this;
     const length = images.length;
     this.image.classList.add('loading');
-    console.log(images);
     this.image.src = images[index].url;
     this.wrapper.scrollTop = 0;
     const prev = this.toolbar.querySelector('.tiv-btn-prev');
@@ -158,14 +157,15 @@ module.exports = function imageViewer () {
       if (url === targetImage) {
         parameter.index = index;
       }
-      url = url.replace(/:small$/, ':orig');
+      if (url.indexOf('pbs.twimg.com') !== -1) {
+        url = url.replace(/:small$/, ':orig');
+      } else if (url.indexOf('ton/data/dm') !== -1) {
+        url = url.replace(/:small$/, ':large');
+      }
       parameter.images.push({
         index, url,
       });
     });
-
-    console.log(parameter);
-    console.log(targetImage);
     $(document).trigger('tiv-show-image', parameter);
   });
 };

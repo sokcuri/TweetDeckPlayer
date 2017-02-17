@@ -1,4 +1,4 @@
-# TweetDeck Player v2.20
+# TweetDeck Player
 Copyright (c) 2016-2017 Sokcuri, Dalgona, Gaeulbyul and other contributors
 http://github.com/sokcuri/TweetDeckPlayer
 

@@ -111,6 +111,34 @@ var openSetting = window => {
   settingsWin.loadURL('file:///' + path.join(__dirname, 'setting.html'));
 };
 
+var openPopup = url => {
+  var preference = (Config.data && Config.data.popup_bounds) ? Config.data.popup_bounds : {};
+  preference.icon = path.join(__dirname, 'tweetdeck.ico');
+  preference.modal = false;
+  preference.show = true;
+  preference.autoHideMenuBar = true;
+  preference.webPreferences = {
+    nodeIntegration: false,
+    webSecurity: true,
+    preload: path.join(__dirname, 'preload_popup.js'),
+  };
+  popup = new BrowserWindow(preference);
+  popup.on('close', () => {
+    Config.load();
+    if (popup) {
+      Config.data.popup_bounds = popup.getBounds();
+    }
+    Config.save();
+    popup = null;
+  });
+  popup.webContents.on('new-window', (e, url) => {
+    e.preventDefault();
+    shell.openExternal(url);
+  });
+  popup.loadURL(url);
+  popup.setAlwaysOnTop(win.isAlwaysOnTop());
+};
+
 //
 // edit
 //
@@ -249,6 +277,12 @@ var sub_open_img = webContents => ({
     webContents.send('command', 'openimage');
   },
 });
+var sub_open_img_popup = webContents => ({
+  label: 'Open image in popup',
+  click () {
+    webContents.send('command', 'openimagepopup');
+  },
+});
 var sub_search_img_google = webContents => ({
   label: 'Search image with Google',
   click () {
@@ -263,6 +297,13 @@ var sub_open_link = webContents => ({
   label: 'Open link',
   click () {
     webContents.send('command', 'openlink');
+  },
+});
+
+var sub_open_link_popup = webContents => ({
+  label: 'Open link in Popup',
+  click () {
+    webContents.send('command', 'openlinkpopup');
   },
 });
 
@@ -570,36 +611,91 @@ ipcMain.on('nogpu-relaunch', () => {
   setTimeout(() => app.quit(), 100);
 });
 
+// JS version number compare
+// electron 버전 비교를 위해서 삽입
+// http://stackoverflow.com/questions/6832596/how-to-compare-software-version-number-using-js-only-number
+var versionCompare = (v1, v2, options) => {
+  var lexicographical = options && options.lexicographical,
+    zeroExtend = options && options.zeroExtend,
+    v1parts = v1.split('.'),
+    v2parts = v2.split('.');
+
+  var isValidPart = x => {
+    return (lexicographical ? /^\d+[A-Za-z]*$/ : /^\d+$/).test(x);
+  };
+
+  if (!v1parts.every(isValidPart) || !v2parts.every(isValidPart)) {
+    return NaN;
+  }
+
+  if (zeroExtend) {
+    while (v1parts.length < v2parts.length) v1parts.push("0");
+    while (v2parts.length < v1parts.length) v2parts.push("0");
+  }
+
+  if (!lexicographical) {
+    v1parts = v1parts.map(Number);
+    v2parts = v2parts.map(Number);
+  }
+
+  for (var i = 0; i < v1parts.length; ++i) {
+    if (v2parts.length === i) {
+      return 1;
+    }
+
+    if (v1parts[i] === v2parts[i]) {
+      continue;
+    } else if (v1parts[i] > v2parts[i]) {
+      return 1;
+    } else {
+      return -1;
+    }
+  }
+
+  if (v1parts.length !== v2parts.length) {
+    return -1;
+  }
+
+  return 0;
+};
+
 // accessibility mode issue (CPU 100% with touch device)
 // https://github.com/sokcuri/TweetDeckPlayer/issues/29
 // accessibility mode 일때 chrome://accessibility의 global setting을 off시킨다
 // accessibility mode 여부는 app.isAccessibilitySupportEnabled()로 확인
+// 1.3.7 버전 이하의 electron에서만 해당되는 문제.
 var hotfix_accessibility_mode = () => {
-  if (app.isAccessibilitySupportEnabled()) {
-    if (accessibilityWin) accessibilityWin.close();
-    accessibilityWin = new BrowserWindow({
-      show: false,
-      width: 0,
-      height: 0,
-      webPreferences: {
-        preload: path.join(__dirname, 'pre_check.js'),
-      },
-    });
-    accessibilityWin.loadURL('chrome://accessibility');
-    accessibilityWin.webContents.on('did-finish-load', () => {
-      if (app.isAccessibilitySupportEnabled()) {
-        accessibilityWin.webContents.executeJavaScript(
-          `if (document.querySelector('#toggle_global').text == 'on')
-          document.querySelector('#toggle_global').click();`);
-        setTimeout(() => {
-          accessibilityWin.close();
-          accessibilityWin = null;
-          setTimeout(hotfix_accessibility_mode, 1000);
-        }, 1000);
-      }
-    });
-  } else {
-    setTimeout(hotfix_accessibility_mode, 1000);
+  if (versionCompare(process.versions.electron, '1.3.8') < 0) {
+    if (app.isAccessibilitySupportEnabled()) {
+      if (accessibilityWin) accessibilityWin.close();
+      accessibilityWin = new BrowserWindow({
+        show: false,
+        width: 0,
+        height: 0,
+        webPreferences: {
+          preload: path.join(__dirname, 'pre_check.js'),
+        },
+      });
+      accessibilityWin.loadURL('chrome://accessibility');
+      accessibilityWin.webContents.on('did-finish-load', () => {
+        if (app.isAccessibilitySupportEnabled()) {
+          accessibilityWin.webContents.executeJavaScript(
+            `if (document.querySelector('#toggle_global').text == 'on')
+            document.querySelector('#toggle_global').click();`);
+          setTimeout(() => {
+            try {
+              accessibilityWin.close();
+              accessibilityWin = null;
+            } catch (e) {
+
+            }
+            setTimeout(hotfix_accessibility_mode, 1000);
+          }, 1000);
+        }
+      });
+    } else {
+      setTimeout(hotfix_accessibility_mode, 1000);
+    }
   }
 };
 // 시현님 기여어
@@ -946,36 +1042,11 @@ var run = chk_win => {
     } catch (e) { };
   });
 
-  win.webContents.on('new-window', (e, url) => {
+  win.webContents.on('new-window', (e, url, target) => {
     e.preventDefault();
-    if (global.keyState.shift) {
-      shell.openExternal(url);
-    } else if (Config.data.openURLInInternalBrowser) {
-      var preference = (Config.data && Config.data.popup_bounds) ? Config.data.popup_bounds : {};
-      preference.icon = path.join(__dirname, 'tweetdeck.ico');
-      preference.modal = false;
-      preference.show = true;
-      preference.autoHideMenuBar = true;
-      preference.webPreferences = {
-        nodeIntegration: false,
-        webSecurity: true,
-        preload: path.join(__dirname, 'preload_popup.js'),
-      };
-      popup = new BrowserWindow(preference);
-      popup.on('close', () => {
-        Config.load();
-        if (popup) {
-          Config.data.popup_bounds = popup.getBounds();
-        }
-        Config.save();
-        popup = null;
-      });
-      popup.webContents.on('new-window', (e, url) => {
-        e.preventDefault();
-        shell.openExternal(url);
-      });
-      popup.loadURL(url);
-      popup.setAlwaysOnTop(win.isAlwaysOnTop());
+    if (Config.data.openURLInInternalBrowser && !global.keyState.shift ||
+        target === 'popup') {
+      openPopup(url);
     } else {
       shell.openExternal(url);
     }
@@ -1039,14 +1110,27 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
     case 'image':
       template.push(sub_save_img(event.sender, Addr));
       template.push(sub_copy_img(event.sender));
-      template.push(sub_open_img(event.sender));
+      if (Config.data.enableOpenImageinPopup) {
+        template.push(separator);
+        template.push(sub_open_img(event.sender));
+        template.push(sub_open_img_popup(event.sender));
+        template.push(separator);
+      } else {
+        template.push(sub_open_img(event.sender));
+      }
       template.push(sub_search_img_google(event.sender));
       template.push(separator);
       template.push(sub_reload(event.sender));
       break;
 
     case 'link':
-      template.push(sub_open_link(event.sender));
+      if (!Config.data.enableOpenLinkinPopup) {
+        template.push(sub_open_link(event.sender));
+      } else {
+        template.push(sub_open_link(event.sender));
+        template.push(sub_open_link_popup(event.sender));
+        template.push(separator);
+      }
       template.push(sub_save_link(event.sender, Addr));
       template.push(sub_copy_link(event.sender));
       template.push(separator);
@@ -1060,11 +1144,25 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
     case 'linkandimage':
       template.push(sub_save_link(event.sender, Addr));
       template.push(sub_copy_link(event.sender));
-      template.push(sub_open_link(event.sender));
-      template.push(separator);
+      if (!Config.data.enableOpenLinkinPopup) {
+        template.push(sub_open_link(event.sender));
+        template.push(separator);
+      } else {
+        template.push(sub_open_link(event.sender));
+        template.push(sub_open_link_popup(event.sender));
+        template.push(separator);
+      }
+      
       template.push(sub_save_img(event.sender, Addr));
       template.push(sub_copy_img(event.sender));
-      template.push(sub_open_img(event.sender));
+      if (Config.data.enableOpenImageinPopup) {
+        template.push(separator);
+        template.push(sub_open_img(event.sender));
+        template.push(sub_open_img_popup(event.sender));
+        template.push(separator);
+      } else {
+        template.push(sub_open_img(event.sender));
+      }
       template.push(sub_search_img_google(event.sender));
       template.push(separator);
       template.push(sub_reload(event.sender));

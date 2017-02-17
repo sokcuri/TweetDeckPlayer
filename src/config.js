@@ -7,7 +7,16 @@ const Util = require('./util');
 module.exports = {
   // 설정파일 로드
   _filePath: Util.getUserDataPath() + '/config.json',
-  _defaultConfig: {},
+  _defaultConfig: {
+    twColorMention: '#cb4f5f',
+    twColorHashtag: '#2b7bb9',
+    twColorURL: '#a84dba',
+    customizeColumnSize: '310',
+    quoteServer: 'https://quote.sapphire.sh',
+    altImageViewer: 'on',
+    enableOpenLinkinPopup: 'on',
+    enableOpenImageinPopup: 'on',
+  },
   data: {},
   load () {
     var config = this._defaultConfig;
@@ -20,26 +29,6 @@ module.exports = {
       userConfig = {};
     }
     Object.assign(config, userConfig);
-
-    // default value
-    if (!config.twColorMention) {
-      config.twColorMention = '#cb4f5f';
-    }
-    if (!config.twColorHashtag) {
-      config.twColorHashtag = '#2b7bb9';
-    }
-    if (!config.twColorURL) {
-      config.twColorURL = '#a84dba';
-    }
-    if (!config.customizeColumnSize) {
-      config.customizeColumnSize = '310';
-    }
-    if (!config.quoteServer) {
-      config.quoteServer = 'https://quote.sapphire.sh';
-    }
-    if (!config.hasOwnProperty('altImageViewer')) {
-      config.altImageViewer = 'on';
-    }
 
     this.data = config;
     return config;

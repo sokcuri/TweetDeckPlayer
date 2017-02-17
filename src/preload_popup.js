@@ -61,6 +61,10 @@ ipcRenderer.on('command', (event, cmd) => {
       href = Util.getOrigPath(Addr.img);
       window.open(href);
       break;
+    case 'openimagepopup':
+      href = Util.getOrigPath(Addr.img);
+      window.open(href, 'popup');
+      break;
     case 'googleimage':
       href = 'https://www.google.com/searchbyimage?image_url=' +
                 encodeURI(Util.getOrigPath(Addr.img));

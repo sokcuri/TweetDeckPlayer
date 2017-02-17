@@ -81,9 +81,11 @@
 * 출처: http://caniuse.com/#feat=user-select
 */
 .tiv-imagewrapper {
+  display: flex;
   flex: 1;
   padding: 50px;
   margin: 0;
+  justify-content: center;
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-user-select: none;

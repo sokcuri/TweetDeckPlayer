@@ -1,6 +1,22 @@
 # 트윗덱 플레이어 ChangeLog
 http://github.com/sokcuri/TweetDeckPlayer/releases
 
+
+트윗덱 플레이어 v2.21
+-----------------------------
+* 내장 이미지 뷰어가 정상적으로 열리지 않던 문제를 수정했습니다. (#70)
+* 뷰어의 이미지가 가운데 정렬되도록 개선되었습니다. (#71)
+* 우클릭 컨텍스트 메뉴에 '이미지를 팝업으로 열기', '링크를 팝업으로 열기'를 추가했습니다. (#69)
+* 일부 환경에서 기본 계정 전환 단축키 `Ctrl+<0-9>`가 동작하지 않던 문제를 수정하였습니다. (#62)
+* 일부 PC에서 트윗덱 플레이어가 정상적으로 실행되지 않는 문제가 수정되었으며, 퍼포먼스가 다소 개선되었습니다.
+
+## Special Thanks
+* [MagmaChipmunk](https://github.com/MagmaChipmunk) - 버그 #70을 제보해주셨습니다.
+* [joshua-qa](https://github.com/joshua-qa) - 버그 및 기능개선 #62, #71를 제보해주셨습니다.
+* [astrine](https://github.com/astrine) - 팝업으로 열기 우클릭 컨텍스트 메뉴 추가 #69를 건의해 주셨습니다.
+* [Seran](https://twitter.com/_SeranP) - 일부 PC에서의 정상 실행 불가 문제를 제보해 주셨습니다.
+
+
 트윗덱 플레이어 v2.20
 -----------------------------
 * 트윗덱 플레이어 설정 UI를 개선했습니다.
@@ -48,9 +64,11 @@ http://github.com/sokcuri/TweetDeckPlayer/releases
 * [eramdam](https://github.com/eramdam) - 관심글 별표 옵션기능 작성하는 데 [BetterTweetDeck](https://github.com/eramdam/BetterTweetDeck)을 참고했습니다.
 * [MagmaChipmunk](https://github.com/MagmaChipmunk) - 버그 #63을 제보해주셨습니다.
 
+
 트윗덱 플레이어 v2.01a
 -----------------------------
 트윗 입력창의 줄바꿈이 올바르지 않게 되면서 맞지 않게 되는 현상 수정
+
 
 트윗덱 플레이어 v2.01
 -----------------------------
@@ -72,6 +90,7 @@ http://github.com/sokcuri/TweetDeckPlayer/releases
   - 폰트 여러개 지정하는 기능 추가
   - 컬럼 너비 커스터마이징 기능 추가
   - 짤 자동저장 기능을 사용중일 때 키를 누르고 마음을 찍으면 짤 저장이 되지 않는 기능 추가 (MAC: alt, Win/Linux: ctrl) 
+
 
 트윗덱 플레이어 v2.00
 -----------------------------

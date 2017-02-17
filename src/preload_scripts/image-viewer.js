@@ -41,8 +41,8 @@ class TDPImageViewer {
     const image = this.image = viewer.querySelector('img.tiv-image');
     const toolbar = this.toolbar = viewer.querySelector('.tiv-toolbar');
     viewer.addEventListener('click', event => {
+      event.stopPropagation();
       if (wrapper.isSameNode(event.target)) {
-        event.stopImmediatePropagation();
         this.close();
       }
     });
@@ -138,7 +138,7 @@ module.exports = function imageViewer () {
     }
     event.preventDefault();
     event.stopImmediatePropagation();
-    const container = target.parents('.media-preview');
+    const container = target.parents('.js-media');
     const images = container.find('a[rel=mediaPreview]');
     const parameter = {
       index: 0,
@@ -157,7 +157,11 @@ module.exports = function imageViewer () {
       if (url === targetImage) {
         parameter.index = index;
       }
-      url = url.replace(/:small$/, ':orig');
+      if (url.indexOf('pbs.twimg.com') !== -1) {
+        url = url.replace(/:small$/, ':orig');
+      } else if (url.indexOf('ton/data/dm') !== -1) {
+        url = url.replace(/:small$/, ':large');
+      }
       parameter.images.push({
         index, url,
       });

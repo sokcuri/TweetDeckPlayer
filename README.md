@@ -1,9 +1,9 @@
 # 트윗덱 플레이어
-Copyright (c) 2016-2017 Sokcuri, Dalgona, Gaeulbyul and other contributors
+Copyright (c) 2016-2017 Sokcuri, Dalgona, Gaeulbyul and other contributors  
 http://github.com/sokcuri/TweetDeckPlayer
 
 > 최신 릴리즈는 [트윗덱 플레이어 릴리즈 페이지](https://github.com/sokcuri/TweetDeckPlayer/releases)에서 다운로드할 수 있습니다.  
-> 업데이트 이력은 [ChangeLog.md](ChangeLog.md) 파일을 확인하거나 릴리즈 페이지를 참고하세요.
+> 버전 확인 및 업데이트 이력은 [ChangeLog.md](ChangeLog.md) 파일을 확인하거나 릴리즈 페이지를 참고하세요.
 
 > 사용 중 문의사항 또는 이슈가 있다면 [트윗덱 플레이어 이슈 페이지](https://github.com/sokcuri/TweetDeckPlayer/issues)를 방문하세요.
 
@@ -20,7 +20,7 @@ http://github.com/sokcuri/TweetDeckPlayer
   - 텍스트 폰트 변경
     - 폰트를 여러개 지정하려면 arial, NanumGothic과 같이 입력합니다.
   - 컬럼 너비 커스터마이징
-  - 이름에 이모지 적용
+  - 프로필 이미지 원형 표시
 
 - 이미지 저장 부가 기능
   - 이미지를 끌어서 바탕화면에 저장
@@ -33,6 +33,7 @@ http://github.com/sokcuri/TweetDeckPlayer
   - 빠른 리트윗
     - Shift 키를 누르고 클릭하면 이전과 같은 리트윗 박스가 뜹니다
   - 정규식 트윗 필터
+  - 알림 없는 인용
 
 - 퍼포먼스 향상
   - 키보드로 트윗 선택시 애니메이션 최소화
@@ -41,6 +42,7 @@ http://github.com/sokcuri/TweetDeckPlayer
   - unlink.is 주소 자동 변환
   - 내부 브라우저로 페이지 띄우기
     - shift 키를 누르고 링크를 클릭하면 외부 브라우저로 띄웁니다
+  - 단축키 `Ctrl+<0-9>`를 통한 손쉬운 기본 계정 전환
   - 웹 브라우저와 독립된 세션 제공
 
 * unlink.is, 정규식 트윗 필터 기능은 페이지를 한번 새로고침해야 적용됩니다. 

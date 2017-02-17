@@ -1,6 +1,6 @@
 /* globals $, TD */
 function SwitchAccount () {
-  document.addEventListener('keypress', event => {
+  document.addEventListener('keyup', event => {
     if (!event.ctrlKey) return;
     if (!/Digit\d/.test(event.code)) return;
     let key = parseInt(event.key, 10);

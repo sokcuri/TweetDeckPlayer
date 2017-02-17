@@ -66,6 +66,7 @@ class TDPImageViewer {
     const {images, index} = this;
     const length = images.length;
     this.image.classList.add('loading');
+    console.log(images);
     this.image.src = images[index].url;
     this.wrapper.scrollTop = 0;
     const prev = this.toolbar.querySelector('.tiv-btn-prev');
@@ -138,7 +139,7 @@ module.exports = function imageViewer () {
     }
     event.preventDefault();
     event.stopImmediatePropagation();
-    const container = target.parents('.media-preview');
+    const container = target.parents('.js-media');
     const images = container.find('a[rel=mediaPreview]');
     const parameter = {
       index: 0,
@@ -162,6 +163,9 @@ module.exports = function imageViewer () {
         index, url,
       });
     });
+
+    console.log(parameter);
+    console.log(targetImage);
     $(document).trigger('tiv-show-image', parameter);
   });
 };

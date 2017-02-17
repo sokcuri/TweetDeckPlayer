@@ -37,6 +37,15 @@ module.exports = {
     if (!config.quoteServer) {
       config.quoteServer = 'https://quote.sapphire.sh';
     }
+    if (!config.hasOwnProperty('altImageViewer')) {
+      config.altImageViewer = 'on';
+    }
+    if (!config.hasOwnProperty('enableOpenLinkinPopup')) {
+      config.enableOpenLinkinPopup = 'on';
+    }
+    if (!config.hasOwnProperty('enableOpenImageinPopup')) {
+      config.enableOpenImageinPopup = 'on';
+    }
 
     this.data = config;
     return config;

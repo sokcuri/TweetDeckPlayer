@@ -90,11 +90,22 @@
   user-select: none;
 }
 .tiv-image {
+  position: absolute;
   display: block;
-  margin: auto;
   max-width: 100%;
   transition: filter .3s;
   will-change: filter;
+
+  height: inherit;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  overflow: auto;
+  
+  max-height: calc(100% - 150px);
+  max-width: calc(100% - 150px);
 }
 .tiv-image.loading {
   filter: saturate(0%) brightness(40%);

@@ -138,6 +138,10 @@ ipcRenderer.on('command', (event, cmd) => {
       href = Util.getOrigPath(Addr.img);
       window.open(href);
       break;
+    case 'openimagepopup':
+      href = Util.getOrigPath(Addr.img);
+      window.open(href, 'popup');
+      break;
     case 'googleimage':
       href = 'https://www.google.com/searchbyimage?image_url=' +
                 encodeURI(Util.getOrigPath(Addr.img));
@@ -146,6 +150,10 @@ ipcRenderer.on('command', (event, cmd) => {
     case 'openlink':
       href = Util.getOrigPath(Addr.link);
       window.open(href);
+      break;
+    case 'openlinkpopup':
+      href = Util.getOrigPath(Addr.link);
+      window.open(href, 'popup');
       break;
     case 'copylink':
       href = Util.getOrigPath(Addr.link);

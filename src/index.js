@@ -111,6 +111,34 @@ var openSetting = window => {
   settingsWin.loadURL('file:///' + path.join(__dirname, 'setting.html'));
 };
 
+var openPopup = url => {
+  var preference = (Config.data && Config.data.popup_bounds) ? Config.data.popup_bounds : {};
+  preference.icon = path.join(__dirname, 'tweetdeck.ico');
+  preference.modal = false;
+  preference.show = true;
+  preference.autoHideMenuBar = true;
+  preference.webPreferences = {
+    nodeIntegration: false,
+    webSecurity: true,
+    preload: path.join(__dirname, 'preload_popup.js'),
+  };
+  popup = new BrowserWindow(preference);
+  popup.on('close', () => {
+    Config.load();
+    if (popup) {
+      Config.data.popup_bounds = popup.getBounds();
+    }
+    Config.save();
+    popup = null;
+  });
+  popup.webContents.on('new-window', (e, url) => {
+    e.preventDefault();
+    shell.openExternal(url);
+  });
+  popup.loadURL(url);
+  popup.setAlwaysOnTop(win.isAlwaysOnTop());
+};
+
 //
 // edit
 //
@@ -249,6 +277,12 @@ var sub_open_img = webContents => ({
     webContents.send('command', 'openimage');
   },
 });
+var sub_open_img_popup = webContents => ({
+  label: 'Open image in popup',
+  click () {
+    webContents.send('command', 'openimagepopup');
+  },
+});
 var sub_search_img_google = webContents => ({
   label: 'Search image with Google',
   click () {
@@ -263,6 +297,13 @@ var sub_open_link = webContents => ({
   label: 'Open link',
   click () {
     webContents.send('command', 'openlink');
+  },
+});
+
+var sub_open_link_popup = webContents => ({
+  label: 'Open link in Popup',
+  click () {
+    webContents.send('command', 'openlinkpopup');
   },
 });
 
@@ -946,36 +987,11 @@ var run = chk_win => {
     } catch (e) { };
   });
 
-  win.webContents.on('new-window', (e, url) => {
+  win.webContents.on('new-window', (e, url, target) => {
     e.preventDefault();
-    if (global.keyState.shift) {
-      shell.openExternal(url);
-    } else if (Config.data.openURLInInternalBrowser) {
-      var preference = (Config.data && Config.data.popup_bounds) ? Config.data.popup_bounds : {};
-      preference.icon = path.join(__dirname, 'tweetdeck.ico');
-      preference.modal = false;
-      preference.show = true;
-      preference.autoHideMenuBar = true;
-      preference.webPreferences = {
-        nodeIntegration: false,
-        webSecurity: true,
-        preload: path.join(__dirname, 'preload_popup.js'),
-      };
-      popup = new BrowserWindow(preference);
-      popup.on('close', () => {
-        Config.load();
-        if (popup) {
-          Config.data.popup_bounds = popup.getBounds();
-        }
-        Config.save();
-        popup = null;
-      });
-      popup.webContents.on('new-window', (e, url) => {
-        e.preventDefault();
-        shell.openExternal(url);
-      });
-      popup.loadURL(url);
-      popup.setAlwaysOnTop(win.isAlwaysOnTop());
+    if (Config.data.openURLInInternalBrowser && !global.keyState.shift ||
+        target === 'popup') {
+      openPopup(url);
     } else {
       shell.openExternal(url);
     }
@@ -1039,14 +1055,27 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
     case 'image':
       template.push(sub_save_img(event.sender, Addr));
       template.push(sub_copy_img(event.sender));
-      template.push(sub_open_img(event.sender));
+      if (Config.data.enableOpenImageinPopup) {
+        template.push(separator);
+        template.push(sub_open_img(event.sender));
+        template.push(sub_open_img_popup(event.sender));
+        template.push(separator);
+      } else {
+        template.push(sub_open_img(event.sender));
+      }
       template.push(sub_search_img_google(event.sender));
       template.push(separator);
       template.push(sub_reload(event.sender));
       break;
 
     case 'link':
-      template.push(sub_open_link(event.sender));
+      if (!Config.data.enableOpenLinkinPopup) {
+        template.push(sub_open_link(event.sender));
+      } else {
+        template.push(sub_open_link(event.sender));
+        template.push(sub_open_link_popup(event.sender));
+        template.push(separator);
+      }
       template.push(sub_save_link(event.sender, Addr));
       template.push(sub_copy_link(event.sender));
       template.push(separator);
@@ -1060,11 +1089,25 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
     case 'linkandimage':
       template.push(sub_save_link(event.sender, Addr));
       template.push(sub_copy_link(event.sender));
-      template.push(sub_open_link(event.sender));
-      template.push(separator);
+      if (!Config.data.enableOpenLinkinPopup) {
+        template.push(sub_open_link(event.sender));
+        template.push(separator);
+      } else {
+        template.push(sub_open_link(event.sender));
+        template.push(sub_open_link_popup(event.sender));
+        template.push(separator);
+      }
+      
       template.push(sub_save_img(event.sender, Addr));
       template.push(sub_copy_img(event.sender));
-      template.push(sub_open_img(event.sender));
+      if (Config.data.enableOpenImageinPopup) {
+        template.push(separator);
+        template.push(sub_open_img(event.sender));
+        template.push(sub_open_img_popup(event.sender));
+        template.push(separator);
+      } else {
+        template.push(sub_open_img(event.sender));
+      }
       template.push(sub_search_img_google(event.sender));
       template.push(separator);
       template.push(sub_reload(event.sender));

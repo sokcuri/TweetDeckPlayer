@@ -97,6 +97,7 @@
   max-width: 100%;
   transition: filter .3s;
   will-change: filter;
+  cursor: pointer;
 }
 .tiv-image.loading {
   filter: saturate(0%) brightness(40%);

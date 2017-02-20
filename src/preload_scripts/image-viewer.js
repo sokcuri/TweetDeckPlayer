@@ -49,6 +49,15 @@ class TDPImageViewer {
     image.addEventListener('load', event => {
       image.classList.remove('loading');
     });
+    image.addEventListener('click', event => {
+      if (this.index === this.images.length - 1) {
+        this.index = 0;
+        this.update();
+      }
+      else {
+        this.next();
+      }
+    });
     toolbar.querySelector('.tiv-btn-prev').addEventListener('click', event => {
       event.preventDefault();
       this.prev();

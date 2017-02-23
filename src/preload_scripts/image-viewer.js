@@ -49,6 +49,9 @@ class TDPImageViewer {
     image.addEventListener('load', event => {
       image.classList.remove('loading');
     });
+    image.addEventListener('click', event => {
+      this.circleNext();
+    });
     toolbar.querySelector('.tiv-btn-prev').addEventListener('click', event => {
       event.preventDefault();
       this.prev();
@@ -84,6 +87,10 @@ class TDPImageViewer {
       this.index += 1;
       this.update();
     }
+  }
+  circleNext () {
+    this.index = (this.index === this.images.length - 1) ? 0 : this.index + 1;
+    this.update();
   }
   show () {
     this.viewer.style.display = 'flex';

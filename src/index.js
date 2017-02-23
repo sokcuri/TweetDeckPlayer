@@ -123,9 +123,17 @@ var openPopup = url => {
     preload: path.join(__dirname, 'preload_popup.js'),
   };
   popup = new BrowserWindow(preference);
-  popup.on('close', () => {
+  popup.on('close', e => {
     Config.load();
     if (popup) {
+      e.sender.hide();
+      if (e.sender.isMaximized()) {
+        e.sender.unmaximize();
+      }
+      if (e.sender.isFullScreen()){
+        e.sender.setFullScreen(false);
+      }
+
       Config.data.popup_bounds = popup.getBounds();
     }
     Config.save();

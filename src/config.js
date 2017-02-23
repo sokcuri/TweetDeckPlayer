@@ -16,6 +16,7 @@ module.exports = {
     altImageViewer: 'on',
     enableOpenLinkinPopup: 'on',
     enableOpenImageinPopup: 'on',
+    useCircleProfileImage: false,
   },
   data: {},
   load () {

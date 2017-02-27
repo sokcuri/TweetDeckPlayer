@@ -281,10 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.TD_mustaches['modal/modal_context.mustache'] = window.TD_mustaches['modal/modal_context.mustache'].replace('<div class="js-modal-context', '<div style="min-width: 560px;" class="js-modal-context');
     window.TD_mustaches['app_container.mustache'] = window.TD_mustaches['app_container.mustache'].replace('<div id="open-modal', '<div style="min-width: 650px;" id="open-modal');
 
-    // mention/url highlight
-    window.TD_mustaches['compose/compose_inline_reply.mustache'] = window.TD_mustaches['compose/compose_inline_reply.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text');
-    window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<textarea class="js-compose-text', '<div class="backdrop scroll-v scroll-styled-v scroll-styled-h scroll-alt"><div class="highlights"></div></div><textarea class="js-compose-text');
-
     // create emojipad entry point
     window.TD_mustaches['compose/docked_compose.mustache'] = window.TD_mustaches['compose/docked_compose.mustache'].replace('<div class="js-send-button-container', '<div class="btn btn-on-blue padding-v--9 emojipad--entry-point"><img class="emoji" src="https://twemoji.maxcdn.com/2/72x72/1f600.png" style="pointer-events:none;"></div> <div class="js-send-button-container').replace('<textarea class="js-compose-text', '<textarea id="docked-textarea" class="js-compose-text');
 
@@ -297,68 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     document.title = `TweetDeck Player - ${document.title}`;
   }
-  function applyHighlights (text) {
-    var entities = twitter.extractEntitiesWithIndices(text);
-    var indices = [];
-    for (let item of entities) {
-      indices.push(item.indices[0]);
-    }
-
-    var n = 0;
-    var result = '';
-    var norm_text = '';
-    for (var i = 0; i <= text.length; i++) {
-      if (i === text.length && norm_text) {
-        result += `<mark class="mark_normal">${norm_text}</mark>`;
-        norm_text = '';
-        break;
-      } else if (text[i] === '&') {
-        norm_text += '&amp;';
-      } else if (text[i] === '<') {
-        norm_text += '&lt;';
-      } else if (text[i] === '>') {
-        norm_text += '&gt';
-      } else if (text[i] === '\n' && i + 1 === text.length) {
-        if (norm_text) {
-          result += `<mark class="mark_normal">${norm_text}</mark>`;
-          norm_text = '';
-        }
-        result += '\n&nbsp;';
-      } else if (text[i] === '♥') {
-        if (norm_text) {
-          result += `<mark class="mark_normal">${norm_text}</mark>`;
-          norm_text = '';
-        }
-        result += '<mark class="mark_heart">♥</mark>';
-      } else if (i === indices[n]) {
-        if (norm_text) {
-          result += `<mark class="mark_normal">${norm_text}</mark>`;
-          norm_text = '';
-        }
-        if (typeof entities[n].screenName !== 'undefined' && entities[n].screenName.length > 2) {
-          result += text.substr(entities[n].indices[0], entities[n].indices[1] - entities[n].indices[0]).replace('@' + entities[n].screenName, '<mark class="mark_mention">$&</mark>');
-          i += entities[n].indices[1] - entities[n].indices[0] - 1;
-          n++;
-        } else if (typeof entities[n].hashtag !== 'undefined') {
-          // hashtag
-          result += text.substr(entities[n].indices[0], entities[n].indices[1] - entities[n].indices[0]).replace('#' + entities[n].hashtag, '<mark class="mark_hashtag">$&</mark>');
-          i += entities[n].indices[1] - entities[n].indices[0] - 1;
-          n++;
-        } else if (typeof entities[n].url !== 'undefined') {
-          // url
-          result += text.substr(entities[n].indices[0], entities[n].indices[1] - entities[n].indices[0]).replace(entities[n].url, '<mark class="mark_url">$&</mark>');
-          i += entities[n].indices[1] - entities[n].indices[0] - 1;
-          n++;
-        } else {
-          norm_text += text[i];
-          n++;
-        }
-      } else {
-        norm_text += text[i];
-      }
-    }
-    return result;
-  }
 
   var prev_focus;
   // mention/url highlight
@@ -368,25 +302,11 @@ document.addEventListener('DOMContentLoaded', () => {
       for (var i = 0; i < el.length; i++) {
         var text = jq(el[i]).val();
 
-        // 인라인 height 반영
-        if (jq(el[i]).parent().children('div')[0].style !== el[i].style.cssText) {
-          jq(el[i]).parent().children('div')[0].style = el[i].style.cssText;
-        }
-
-        // html 하이라이트 반영
-        jq(el[i]).parent().children('div').children('div').html(applyHighlights(text));
-
-        // placeholder
-        if (text === '') {
-          jq(el[i]).parent().children('div').children('div').html('<span class="placeholder">' + el[i].placeholder + '</span>');
-        }
-
         // 마지막 멘션 아이디가 셀렉션 지정되는 버그 회피
         var x = el[i];
 
         if (typeof x.dataset.initcompl === 'undefined') {
           x.dataset.initcompl = true;
-          jq(x).on({scroll: handleScroll});
         }
         if (prev_focus !== document.querySelector(':focus')) {
           setTimeout(() => {
@@ -400,31 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     prev_focus = document.querySelector(':focus');
   }
-
-  function handleInput (evt) {
-    if (evt.target.classList.contains('js-compose-text')) {
-      // html 하이라이트 반영
-      var text = jq(evt.target).val();
-      jq(evt.target).parent().children('div').children('div').html(applyHighlights(text));
-
-      // placeholder
-      if (text === '') {
-        jq(evt.target).parent().children('div').children('div').html('<span class="placeholder">' + jq(evt.target)[0].placeholder + '</span>');
-      }
-    }
-  }
-
-  function handleScroll (evt) {
-    if (evt.target.classList.contains('js-compose-text')) {
-      var scrollTop = evt.target.scrollTop;
-      jq(evt.target).parent().children('div').scrollTop(scrollTop);
-
-      var scrollLeft = evt.target.scrollLeft;
-      jq(evt.target).parent().children('div').scrollLeft(scrollLeft);
-    }
-  }
-  jq(document).on({input: handleInput, change: handleChange});
-  jq(document).on({input: handleScroll});
+  jq(document).on({change: handleChange});
 
   // 맥용 한글 기본 입력기 이슈 해결
   jq(document).on('keydown', e => {

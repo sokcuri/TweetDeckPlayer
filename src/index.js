@@ -899,6 +899,16 @@ var run = chk_win => {
     try {
       let emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
       win.webContents.insertCSS(emojipadCSS);
+      win.webContents.insertCSS(`
+        .list-account .emoji {
+          width: 1em;
+          height: 1em;
+        }
+        .customize-columns .column {
+          width: var(--column-size) !important;
+          margin-right: 6px;
+        }
+        `);
       win.webContents.send('apply-config');
 
       // 유저 스크립트 로딩

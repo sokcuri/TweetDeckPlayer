@@ -93,11 +93,11 @@ class TDPImageViewer {
     this.update();
   }
   show () {
+    const {images} = this;
     this.viewer.style.display = 'flex';
-    if (config.tivClickForNextImage) {
+    if (config.tivClickForNextImage && images.length > 1) {
       this.image.classList.add('click-enabled');
-    }
-    else {
+    } else {
       this.image.classList.remove('click-enabled');
     }
   }

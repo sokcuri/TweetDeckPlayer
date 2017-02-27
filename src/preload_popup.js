@@ -54,6 +54,15 @@ ipcRenderer.on('command', (event, cmd) => {
       document.execCommand('selectall');
       break;
     case 'copyimage':
+      window.TD.controller.progressIndicator.addMessage('Image downloading..');
+      const nativeImage = require('electron').nativeImage;
+      var request = require('request').defaults({ encoding: null });
+      request.get(Addr.img, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+          clipboard.writeImage(nativeImage.createFromBuffer(body));
+          window.TD.controller.progressIndicator.addMessage('Image copied to clipboard');
+        }
+      });
       break;
     case 'copyimageurl':
       href = Util.getOrigPath(Addr.img);

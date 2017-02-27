@@ -7,12 +7,16 @@ http://github.com/sokcuri/TweetDeckPlayer/releases
 * 설정 파일 변수값인 useCircleProfileImage의 기본값이 설정되었습니다. (#81)
 * 클립보드 붙여넣기 기능이 개선되었습니다. (#76)
   * 파이어폭스 또는 크롬에서 복사한 이미지를 이제 트윗덱 플레이어에 붙여넣을 수 있습니다.
-* 이미지 클릭 시 다음 이미지 보기 설정이 추가되었습니다. (#85)
+* 트윗덱 플레이어 내장 이미지 뷰어 개선
+  * 이미지 클릭 시 다음 이미지 보기 설정이 추가되었습니다. (#85)
+  * 이제 트윗을 선택하고 스페이스 바를 누르면 이미지뷰어를 띄울 수 있습니다. (#82)
+* 이미지 복사하기 기능이 추가되었습니다. 이미지에 우클릭 후 Copy image 메뉴를 누르면 원본 화질로 받고 클립보드에 저장합니다.
 
 ## Special Thanks
-* [Dalgona](https://github.com/dalgona) - 바쁜데도 불구하고 기능개선 풀리퀘를 날려주었습니다.
-* [Gaeulbyul](https://github.com/zn) - 이미지 붙여넣기 기능을 더 개선해줘서 이제 구글에서 이미지를 쉽게 퍼올수 있게 되었습니다!
 * [ikasty](https://github.com/ikasty) - useCircleProfileImage (#81) 기본값 문제 제시와 해결책을 기여해 주셨습니다.
+* [MagmaChipmunk](https://github.com/MagmaChipmunk) - 스페이스 바를 눌러 이미지뷰어를 띄우는 건의(#82)를 주셨습니다.
+* [Dalgona](https://github.com/dalgona) - 바쁜데도 불구하고 기능개선 풀리퀘를 날려준 고나입니다.
+* [Gaeulbyul](https://github.com/zn) - 이미지 붙여넣기 기능을 더 개선해줘서 너무나 고마운 가을별..!!
 
 
 트윗덱 플레이어 v2.21

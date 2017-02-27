@@ -140,15 +140,6 @@ ipcRenderer.on('command', (event, cmd) => {
           window.TD.controller.progressIndicator.addMessage('Image copied to clipboard');
         }
       });
-
-      var myCanvas = document.getElementById('img_canvas');
-      var ctx = myCanvas.getContext('2d');
-      var img = new Image;
-      img.onload = function () {
-        ctx.drawImage(img,0,0);
-        console.log("dataurl: " + myCanvas.toDataURL());
-      };
-      img.src = Addr.img;
       break;
     case 'copyimageurl':
       href = Util.getOrigPath(Addr.img);

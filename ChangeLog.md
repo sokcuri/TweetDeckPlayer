@@ -3,6 +3,8 @@ http://github.com/sokcuri/TweetDeckPlayer/releases
 
 트윗덱 플레이어 v2.22
 -----------------------------
+* Electron 버전을 1.61beta로 업데이트 하였습니다.
+  * 이번 업데이트로 터치 환경에서 텍스트 선택시 크래시 문제를 해결합니다. (#84)
 * 퍼포먼스 저하 및 레이아웃 깨짐 현상을 발생시키던 트윗 하이라이트 기능을 비활성화 조치했습니다.
 * 설정 파일 변수값인 useCircleProfileImage의 기본값이 설정되었습니다. (#81)
 * 클립보드 붙여넣기 기능이 개선되었습니다. (#76)
@@ -17,6 +19,7 @@ http://github.com/sokcuri/TweetDeckPlayer/releases
 * [MagmaChipmunk](https://github.com/MagmaChipmunk) - 스페이스 바를 눌러 이미지뷰어를 띄우는 건의(#82)를 주셨습니다.
 * [Dalgona](https://github.com/dalgona) - 바쁜데도 불구하고 기능개선 풀리퀘를 날려준 고나입니다.
 * [Gaeulbyul](https://github.com/zn) - 이미지 붙여넣기 기능을 더 개선해줘서 너무나 고마운 가을별..!!
+* [Rubik-Orange](https://github.com/Rubik-Orange) - 윈도우 태블릿에서 트윗 텍스트 선택시 응답없음이 되는 문제를 제보해 주셨습니다.
 
 
 트윗덱 플레이어 v2.21

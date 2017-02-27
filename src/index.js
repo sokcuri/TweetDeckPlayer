@@ -229,6 +229,12 @@ var sub_setting = window => ({
 //
 // image
 //
+var sub_copy_img = webContents => ({
+  label: 'Copy image',
+  click () {
+    webContents.send('command', 'copyimage');
+  },
+});
 var sub_save_img = (webContents, Addr) => ({
   label: 'Save image as..',
   click () {
@@ -273,10 +279,10 @@ var sub_save_img = (webContents, Addr) => ({
     request(path).pipe(fs.createWriteStream(savepath));
   },
 });
-var sub_copy_img = webContents => ({
+var sub_copy_img_url = webContents => ({
   label: 'Copy image URL',
   click () {
-    webContents.send('command', 'copyimage');
+    webContents.send('command', 'copyimageurl');
   },
 });
 var sub_open_img = webContents => ({
@@ -1018,8 +1024,9 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       break;
 
     case 'image':
-      template.push(sub_save_img(event.sender, Addr));
       template.push(sub_copy_img(event.sender));
+      template.push(sub_save_img(event.sender, Addr));
+      template.push(sub_copy_img_url(event.sender));
       if (Config.data.enableOpenImageinPopup) {
         template.push(separator);
         template.push(sub_open_img(event.sender));
@@ -1063,8 +1070,9 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
         template.push(separator);
       }
       
-      template.push(sub_save_img(event.sender, Addr));
       template.push(sub_copy_img(event.sender));
+      template.push(sub_save_img(event.sender, Addr));
+      template.push(sub_copy_img_url(event.sender));
       if (Config.data.enableOpenImageinPopup) {
         template.push(separator);
         template.push(sub_open_img(event.sender));

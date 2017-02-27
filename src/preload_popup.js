@@ -54,6 +54,8 @@ ipcRenderer.on('command', (event, cmd) => {
       document.execCommand('selectall');
       break;
     case 'copyimage':
+      break;
+    case 'copyimageurl':
       href = Util.getOrigPath(Addr.img);
       clipboard.writeText(href);
       break;

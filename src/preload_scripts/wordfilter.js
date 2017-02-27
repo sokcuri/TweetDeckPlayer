@@ -1,5 +1,18 @@
+/* globals TD */
 'use strict';
 const Config = require('../config');
+
+function isBlocked (userID) {
+  const accounts = document.querySelectorAll('.js-account-item');
+  for (const account of accounts) {
+    const key = account.getAttribute('data-account-key');
+    const client = TD.controller.clients.getClient(key);
+    if (client.blocks[userID]) {
+      return true;
+    }
+  }
+  return false;
+}
 
 module.exports = () => {
   const config = Config.load();
@@ -103,6 +116,19 @@ module.exports = () => {
         }
       }
     }
+  }
+  if (config.filterBlockedUser) {
+    TD.vo.Filter.prototype.pass$REAL = TD.vo.Filter.prototype.pass;
+    TD.vo.Filter.prototype.pass = function (item) {
+      if (item instanceof TD.services.TwitterStatus) {
+        const tweet = item.retweetedStatus || item;
+        if (isBlocked(tweet.user.id)) {
+          return false;
+        }
+      }
+      const originalResult = this.pass$REAL(item);
+      return originalResult;
+    };
   }
   const wordFilterObserver = new MutationObserver(mutations => {
     for (let mut of mutations) {

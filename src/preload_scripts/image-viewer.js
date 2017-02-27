@@ -50,7 +50,7 @@ class TDPImageViewer {
       image.classList.remove('loading');
     });
     image.addEventListener('click', event => {
-      this.circleNext();
+      config.tivClickForNextImage ? this.circleNext() : false;
     });
     toolbar.querySelector('.tiv-btn-prev').addEventListener('click', event => {
       event.preventDefault();
@@ -94,6 +94,12 @@ class TDPImageViewer {
   }
   show () {
     this.viewer.style.display = 'flex';
+    if (config.tivClickForNextImage) {
+      this.image.classList.add('click-enabled');
+    }
+    else {
+      this.image.classList.remove('click-enabled');
+    }
   }
   close () {
     this.viewer.style.display = 'none';

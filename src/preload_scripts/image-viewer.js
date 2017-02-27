@@ -123,30 +123,21 @@ module.exports = function imageViewer () {
       viewer.close();
     })
     .on('keydown', event_ => {
-      if (!config.altImageViewer) {
-        return;
-      }
       const event = event_.originalEvent;
+      if (viewer.viewer.style.display !== 'flex') return;
       const code = event.code;
-      if (viewer.viewer.style.display === 'flex') {
-        if (code === 'ArrowLeft') {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          viewer.prev();
-        } else if (code === 'ArrowRight') {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          viewer.next();
-        } else if (code === 'Escape') {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          viewer.close();
-        }
-      } else {
-        if (code === 'Space') {
-          event.preventDefault();
-          $('.is-selected-tweet a[rel=mediaPreview]').eq(0).click();
-        }
+      if (code === 'ArrowLeft') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        viewer.prev();
+      } else if (code === 'ArrowRight') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        viewer.next();
+      } else if (code === 'Escape') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        viewer.close();
       }
     });
   $(document.body).on('click', 'a[rel=mediaPreview]', event => {

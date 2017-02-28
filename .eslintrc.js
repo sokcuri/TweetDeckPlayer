@@ -5,6 +5,9 @@ module.exports = {
     node: true,
     commonjs: true,
   },
+  plugins: [
+    'html',
+  ],
   // 'extends': 'eslint:recommended',
   rules: {
     // 들여쓰기 2칸 공백

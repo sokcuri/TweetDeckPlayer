@@ -50,7 +50,7 @@ class TDPImageViewer {
       image.classList.remove('loading');
     });
     image.addEventListener('click', event => {
-      config.tivClickForNextImage ? this.circleNext() : false;
+      config.tivClickForNextImage && this.circleNext();
     });
     toolbar.querySelector('.tiv-btn-prev').addEventListener('click', event => {
       event.preventDefault();
@@ -123,21 +123,38 @@ module.exports = function imageViewer () {
       viewer.close();
     })
     .on('keydown', event_ => {
+      if (!config.altImageViewer) {
+        return;
+      }
       const event = event_.originalEvent;
-      if (viewer.viewer.style.display !== 'flex') return;
+      const activated = document.activeElement;
+      if (activated.tagName === 'INPUT' || activated.tagName === 'TEXTAREA') {
+        return;
+      }
       const code = event.code;
-      if (code === 'ArrowLeft') {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        viewer.prev();
-      } else if (code === 'ArrowRight') {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        viewer.next();
-      } else if (code === 'Escape') {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        viewer.close();
+      if (viewer.viewer.style.display === 'flex') {
+        if (code === 'ArrowLeft') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          viewer.prev();
+        } else if (code === 'ArrowRight') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          viewer.next();
+        } else if (code === 'Escape') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          viewer.close();
+        }
+      } else {
+        if (code === 'Space') {
+          event.preventDefault();
+          const preview = $('.is-selected-tweet a[rel=mediaPreview]');
+          console.log(preview);
+          if (preview.length > 0) {
+            preview.eq(0).click();
+          }
+        }
       }
     });
   $(document.body).on('click', 'a[rel=mediaPreview]', event => {

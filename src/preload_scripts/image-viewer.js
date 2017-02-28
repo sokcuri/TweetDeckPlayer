@@ -118,6 +118,12 @@ module.exports = function imageViewer () {
       viewer.index = parameter.index;
       viewer.update();
       viewer.show();
+      // Image preload
+      parameter.images.map(img => {
+        const i = new Image;
+        i.src = img.url;
+        return i;
+      });
     })
     .on('tiv-close', event => {
       viewer.close();
@@ -150,7 +156,6 @@ module.exports = function imageViewer () {
         if (code === 'Space') {
           event.preventDefault();
           const preview = $('.is-selected-tweet a[rel=mediaPreview]');
-          console.log(preview);
           if (preview.length > 0) {
             preview.eq(0).click();
           }

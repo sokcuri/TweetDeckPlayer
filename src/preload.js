@@ -359,22 +359,6 @@ document.addEventListener('DOMContentLoaded', () => {
     target.setAttribute('title', date.toLocaleString());
   });
 
-  // 타임라인 룰 변경
-  // - 트윗 작성자가 팔로우중인지 여부를 확인하지 않음
-  // - 팔로우 유저의 리트윗을 보기
-  // - 팔로우가 아닌 유저의 멘션을 보기
-  var processMiscTweet = TD.services.TwitterClient.prototype.processMiscTweet.toString().substr(13);
-  processMiscTweet = processMiscTweet.substr(0, processMiscTweet.length - 1);
-  var processMiscTweet_ptn = '(c||a&&(!s||n||l))&&(h||m||this.publishChirpsInternal("publish","home",[e]))';
-  var processMiscTweet_rep = '(c||(a||config.disableCheckFriendship=="on")&&((!s||config.disableFilteringMentionUser=="on")||n||l))&&(h||(m&&!config.showRetweetFollowingUser=="on")||this.publishChirpsInternal("publish","home",[e]))';
-
-  if (processMiscTweet.search(processMiscTweet_ptn) === -1) {
-    console.warn('procMiscTweet pattern not found');
-  } else {
-    processMiscTweet = processMiscTweet.replace(processMiscTweet_ptn, processMiscTweet_rep);
-    TD.services.TwitterClient.prototype.processMiscTweet = Function('e', processMiscTweet);
-  }
-
   // Minimize Scroll Animation for Tweet Selection
   Math.min = (a, b) => {
     if (config.minimizeScrollAnimForTweetSel) {
@@ -405,17 +389,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keyup', setKeyCheck);
   document.addEventListener('mousedown', setKeyCheck);
   document.addEventListener('mouseup', setKeyCheck);
-
-  // Built-in TweetDeck Filtering Rules
-  var processMiscTweet_ptn = '(c||a&&(!s||n||l))&&(h||m||this.publishChirpsInternal("publish","home",[e]))';
-  var processMiscTweet_rep = '(c||(a||config.disableCheckFriendship=="on")&&((!s||config.disableFilteringMentionUser=="on")||n||l))&&(h||(m&&!config.showRetweetFollowingUser=="on")||this.publishChirpsInternal("publish","home",[e]))';
-
-  if (processMiscTweet.search(processMiscTweet_ptn) === -1) {
-    console.warn('procMiscTweet pattern not found');
-  } else {
-    processMiscTweet = processMiscTweet.replace(processMiscTweet_ptn, processMiscTweet_rep);
-    TD.services.TwitterClient.prototype.processMiscTweet = Function('e,t,i', processMiscTweet);
-  }
 
   // Favorite to Image Save
   var processFavorite = TD.services.TwitterClient.prototype.favorite.toString().substr(17);

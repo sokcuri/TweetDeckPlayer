@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.TD_mustaches['menus/topbar_menu.mustache'] = window.TD_mustaches['menus/topbar_menu.mustache'].replace('Settings{{/i}}</a> </li>', 'Settings{{/i}}</a> </li> <li class="is-selectable"><a href="#" data-action="tdpSettings">{{_i}}TweetDeck Player Settings{{/i}}</a></li>');
 
     // inject tweet indicator label
-    window.TD_mustaches['status/tweet_single.mustache'] = window.TD_mustaches['status/tweet_single.mustache'].replace(/<\/div>$/, '<div class="tdp-color-label"></div></div>');
+    window.TD_mustaches['status/tweet_single.mustache'] = window.TD_mustaches['status/tweet_single.mustache'].replace(/<\/div>$/, '</div><div class="tdp-color-label"></div>');
   }
 
   if (document.title === 'TweetDeck') {

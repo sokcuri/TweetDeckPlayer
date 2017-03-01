@@ -146,12 +146,12 @@ body.tdp-color-labels .tdp-color-label {
   width: 3px;
   height: 100%;
 }
-body.tdp-color-labels .js-tweet.tweet.is-favorite .tdp-color-label {
+body.tdp-color-labels .js-tweet.tweet.is-favorite+.tdp-color-label {
   background-color: #fab41e;
 }
-body.tdp-color-labels .js-tweet.tweet.is-retweet .tdp-color-label {
+body.tdp-color-labels .js-tweet.tweet.is-retweet+.tdp-color-label {
   background-color: #19cf86;
 }
-body.tdp-color-labels .js-tweet.tweet.is-favorite.is-retweet .tdp-color-label {
+body.tdp-color-labels .js-tweet.tweet.is-favorite.is-retweet+.tdp-color-label {
   background-color: #3b94d9;
 }

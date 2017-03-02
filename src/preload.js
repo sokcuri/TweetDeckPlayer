@@ -132,7 +132,7 @@ ipcRenderer.on('command', (event, cmd) => {
       break;
     case 'copyimage':
       window.TD.controller.progressIndicator.addMessage('Image downloading..');
-      const nativeImage = require('electron').nativeImage;
+      const nativeImage = remote.nativeImage;
       var request = require('request').defaults({ encoding: null });
       request.get(Addr.img, function (error, response, body) {
         if (!error && response.statusCode === 200) {

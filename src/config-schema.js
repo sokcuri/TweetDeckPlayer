@@ -105,6 +105,12 @@ module.exports = [
     label: 'Press Enter Key to Tweet',
     description: 'Press Shift+Enter to insert a line break.',
   },
+  {
+    _type: 'entry',
+    name: 'showColorLabels',
+    valueType: 'bool',
+    label: 'Show Color Labels',
+  },
   { _type: 'subsection', label: 'Context Menu' },
   {
     _type: 'entry',

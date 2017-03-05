@@ -137,3 +137,21 @@
   opacity: .6;
   cursor: not-allowed;
 }
+
+/* 트윗 상태(리트윗, 마음) 표시 */
+body.tdp-color-labels .tdp-color-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+}
+body.tdp-color-labels .js-tweet.tweet.is-favorite+.tdp-color-label {
+  background-color: #fab41e;
+}
+body.tdp-color-labels .js-tweet.tweet.is-retweet+.tdp-color-label {
+  background-color: #19cf86;
+}
+body.tdp-color-labels .js-tweet.tweet.is-favorite.is-retweet+.tdp-color-label {
+  background-color: #3b94d9;
+}

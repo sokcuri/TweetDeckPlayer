@@ -3,7 +3,7 @@ function SwitchAccount () {
   document.addEventListener('keyup', event => {
     if (!event.ctrlKey) return;
     if (!/Digit\d/.test(event.code)) return;
-    let key = parseInt(event.key, 10);
+    let key = parseInt(event.keyCode, 10)-48;
     if (Number.isNaN(key)) return;
     key = (key === 0 ? 10 : (key - 1));
     const accounts = $('.js-account-list .js-account-item');

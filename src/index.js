@@ -942,7 +942,7 @@ var run = chk_win => {
 
       Config.data.isMaximized = win.isMaximized();
       Config.data.isFullScreen = win.isFullScreen();
-      
+
       e.sender.hide();
       if (e.sender.isMaximized()) {
         e.sender.unmaximize();
@@ -950,7 +950,7 @@ var run = chk_win => {
       if (e.sender.isFullScreen()){
         e.sender.setFullScreen(false);
       }
-      
+
       Config.data.bounds = win.getBounds();
       if (popup) {
         Config.data.popup_bounds = popup.getBounds();
@@ -1010,7 +1010,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       template.push(sub_selectall(event.sender));
       break;
 
-    case 'text_sel':
+    case 'input_sel':
       template.push(sub_cut(event.sender));
       template.push(sub_copy(event.sender));
       template.push(separator);
@@ -1018,6 +1018,10 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       template.push(sub_delete(event.sender));
       template.push(separator);
       template.push(sub_selectall(event.sender));
+      break;
+
+    case 'text_sel':
+      template.push(sub_copy(event.sender));
       break;
 
     case 'setting':
@@ -1079,7 +1083,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
         template.push(sub_open_link_popup(event.sender));
         template.push(separator);
       }
-      
+
       template.push(sub_copy_img(event.sender));
       template.push(sub_save_img(event.sender, Addr));
       template.push(sub_copy_img_url(event.sender));

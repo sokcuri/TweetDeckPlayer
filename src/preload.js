@@ -203,10 +203,12 @@ window.addEventListener('contextmenu', e => {
   var is_range = document.getSelection().type === 'Range';
 
   // input=text 또는 textarea를 가리킴
-  if (el
+  if (is_range) {
+    target = 'text_sel';
+  } else if (el
     && (el.tagName.toLowerCase() === 'input' && el.type === 'text')
     || (el.tagName.toLowerCase() === 'textarea')) {
-    target = (is_range ? 'text_sel' : 'text');
+    target = (is_range ? 'input_sel' : 'text');
   } else if (document.querySelector('.js-app-settings:hover')) {
     // 설정 버튼
     target = 'setting';

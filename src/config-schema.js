@@ -80,6 +80,13 @@ module.exports = [
   },
   {
     _type: 'entry',
+    name: 'enableWikiLinkFixer',
+    valueType: 'bool',
+    label: 'Fix Wiki links',
+    description: 'It fix incorrect wiki link with unicode character (ex. <u>https://ko.wikipedia.org/wiki/</u>서벌)<br>* <b>Requires reload to apply.</b>',
+  },
+  {
+    _type: 'entry',
     name: 'useStarForFavorite',
     valueType: 'bool',
     label: 'Show Stars on Favorited Tweets (instead of hearts)',

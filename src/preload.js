@@ -25,6 +25,7 @@ const QuoteWithoutNotification = require('./preload_scripts/quote-without-notifi
 const GifAutoplay = require('./preload_scripts/gif-autoplay');
 const ImageViewer = require('./preload_scripts/image-viewer');
 const SwitchAccount = require('./preload_scripts/switch-account');
+const WikiLinkFixer = require('./preload_scripts/wikilinkfix');
 
 // 퍼포먼스 문제로 비활성화
 // 로딩 프로그레스 바 모듈 로드
@@ -275,6 +276,7 @@ document.addEventListener('DOMContentLoaded', TwtLib);
 document.addEventListener('DOMContentLoaded', GifAutoplay);
 document.addEventListener('DOMContentLoaded', ImageViewer);
 document.addEventListener('DOMContentLoaded', SwitchAccount);
+document.addEventListener('DOMContentLoaded', WikiLinkFixer);
 
 if (config.enableUnlinkis) {
   document.addEventListener('DOMContentLoaded', Unlinkis);

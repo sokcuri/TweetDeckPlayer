@@ -403,6 +403,20 @@ var sub_quote_without_notification = webContents => ({
   },
 });
 
+var sub_copy_tweet = webContents => ({
+  label: 'Copy Tweet',
+  click () {
+    webContents.send('command', 'copy-tweet');
+  },
+});
+
+var sub_copy_tweet_with_author = webContents => ({
+  label: 'Copy Tweet (with @author)',
+  click () {
+    webContents.send('command', 'copy-tweet-with-author');
+  },
+});
+
 app.on('ready', () => {
     // 리눅스 일부 환경에서 검은색으로 화면이 뜨는 문제 해결을 위한 코드
     // chrome://gpu/ 를 확인해 Canvas Hardware acceleration이 사용 불가면 disable-gpu를 달아준다
@@ -1101,8 +1115,15 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       break;
 
     case 'tweet':
-      template.push(sub_quote_without_notification(event.sender));
-      template.push(separator);
+      if (Addr.id !== '') {
+        template.push(sub_quote_without_notification(event.sender));
+        template.push(separator);
+      }
+      if (Addr.text !== '') {
+        template.push(sub_copy_tweet(event.sender));
+        template.push(sub_copy_tweet_with_author(event.sender));
+        template.push(separator);
+      }
       template.push(sub_reload(event.sender));
       break;
   }

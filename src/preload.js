@@ -107,6 +107,7 @@ var Addr = {
   img: '',
   link: '',
   id: '',
+  text: '',
 };
 
 // 포인터 이벤트
@@ -183,6 +184,21 @@ ipcRenderer.on('command', (event, cmd) => {
     case 'quotewithoutnotification':
       QuoteWithoutNotification(ipcRenderer, Addr.id);
       break;
+    case 'copy-tweet': {
+      const text = Addr.text;
+      clipboard.writeText(text);
+      window.TD.controller.progressIndicator.addMessage(window.TD.i('Copied text "{{text}}" ! ', { text }));
+    } break;
+    case 'copy-tweet-with-author': {
+      const el = document.querySelector(`article[data-tweet-id="${Addr.id}"]`);
+      const userid = el.querySelector('.username');
+      let text = Addr.text;
+      if (userid) {
+        text += ` (by ${userid.textContent})`;
+      }
+      clipboard.writeText(text);
+      window.TD.controller.progressIndicator.addMessage(window.TD.i('Copied text "{{text}}" ! ', { text }));
+    } break;
   }
 });
 
@@ -234,7 +250,16 @@ window.addEventListener('contextmenu', e => {
   } else if (document.querySelector('article.stream-item:hover')) {
     // 트윗
     target = 'tweet';
-    Addr.id = document.querySelector('article.stream-item:hover').getAttribute('data-tweet-id');
+    /* 참고:
+    * data-tweet-id속성이 없거나 트윗 내용(.js-tweet-text)이 없는 경우가 있다.
+    * - 가리킨 트윗이 Activity column의 팔로워/리스트추가일 경우
+    * - DM인 경우
+    */
+    const hoveredTweet = document.querySelector('article.stream-item:hover');
+    const tweetText = hoveredTweet.querySelector('.js-tweet-text');
+    const tweetId = hoveredTweet.getAttribute('data-tweet-id');
+    Addr.text = tweetText ? tweetText.textContent : '';
+    Addr.id = tweetId || '';
   } else {
     // 기본 컨텍스트
     target = 'main';

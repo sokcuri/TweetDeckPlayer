@@ -657,8 +657,8 @@ var versionCompare = (v1, v2, options) => {
   }
 
   if (zeroExtend) {
-    while (v1parts.length < v2parts.length) v1parts.push("0");
-    while (v2parts.length < v1parts.length) v2parts.push("0");
+    while (v1parts.length < v2parts.length) v1parts.push('0');
+    while (v2parts.length < v1parts.length) v2parts.push('0');
   }
 
   if (!lexicographical) {

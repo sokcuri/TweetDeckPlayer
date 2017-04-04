@@ -92,8 +92,7 @@ ipcRenderer.on('apply-config', event => {
 
     if (config.showColorLabels) {
       cl.add('tdp-color-labels');
-    }
-    else {
+    } else {
       cl.remove('tdp-color-labels');
     }
 

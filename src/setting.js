@@ -97,7 +97,7 @@ function initializeComponents () {
   }
 }
 
-function initializeEntries(entry, form) {
+function initializeEntries (entry, form) {
   let e = document.createElement('div');
   e.className = 'settings-item';
 
@@ -129,7 +129,7 @@ function initializeEntries(entry, form) {
 
   if (entry.description) {
     let e = document.createElement('div');
-    e.className = 'settings-item description' + (entry.valueType == 'bool' ? ' for-checkbox' : '');
+    e.className = 'settings-item description' + (entry.valueType === 'bool' ? ' for-checkbox' : '');
     e.innerHTML = entry.description;
     form.appendChild(e);
   }
@@ -144,8 +144,12 @@ function createSlider (entry, slider, text) {
       max: [ entry.max ],
     },
     format: {
-      to (value) { return Math.floor(value); },
-      from (value) { return value; },
+      to (value) {
+        return Math.floor(value);
+      },
+      from (value) {
+        return value;
+      },
     },
   });
   var tTime;

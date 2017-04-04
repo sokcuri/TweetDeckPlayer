@@ -2,8 +2,6 @@
 const Config = require('../config');
 
 module.exports = () => {
-  const config = Config.load();
-  if (!config.enableWikiLinkFixer) return;
   const linkFixObserver = new MutationObserver(mutations => {
     for (const mut of mutations) {
       const added = mut.addedNodes;

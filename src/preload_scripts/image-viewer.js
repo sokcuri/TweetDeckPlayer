@@ -89,8 +89,10 @@ class TDPImageViewer {
     }
   }
   circleNext () {
-    this.index = (this.index === this.images.length - 1) ? 0 : this.index + 1;
-    this.update();
+    if (this.images.length > 1) {
+      this.index = (this.index === this.images.length - 1) ? 0 : this.index + 1;
+      this.update();
+    }
   }
   show () {
     const {images} = this;

@@ -30,6 +30,13 @@ module.exports = [
     max: 600,
     step: 1,
   },
+  { _type: 'subsection', label: 'Font size' },
+  {
+    _type: 'entry',
+    name: 'customFontSize',
+    valueType: 'text',
+    description: 'It support CSS units (e.g. 12px, 14pt). Default is 12px.',
+  },
   { _type: 'subsection', label: 'Miscellaneous' },
   {
     _type: 'entry',

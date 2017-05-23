@@ -97,6 +97,24 @@ ipcRenderer.on('apply-config', event => {
     }
 
     document.body.style = style;
+
+    let fontsize = config.customFontSize;
+    if (fontsize === '') {
+      fontsize = '12px';
+    }
+    if (/^\d+$/.test(fontsize)) {
+      fontsize = fontsize.toString() + 'px';
+    }
+
+    fontsize = fontsize.replace(/'/g, String.raw`\'`);
+    fontsize = fontsize.replace(/\\/g, '');
+    PlayerMonkey.GM_addStyle(`
+      html, body, .os-windows, .is-inverted-dark,
+      .tweet-text, .tweet-translation-text, .js-quoted-tweet-text {
+        font-size: '${fontsize}';
+        line-height: initial;
+      }
+    `);
   } catch (e) {
     console.warn(e);
   }

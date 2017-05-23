@@ -283,7 +283,6 @@ var sub_save_img = (webContents, Addr) => ({
         cookieString += '=';
         cookieString += cookie.value;
         cookieString += ';';
-        console.log(cookieString);
         jar.setCookie(request.cookie(cookieString), 'https://ton.twitter.com');
       });
       // http 요청을 보내고 저장

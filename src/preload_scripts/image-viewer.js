@@ -1,4 +1,5 @@
 const Config = require('../config');
+const Util = require('../util');
 
 const config = Config.load();
 
@@ -194,11 +195,7 @@ module.exports = function imageViewer () {
       if (url === targetImage) {
         parameter.index = index;
       }
-      if (url.indexOf('pbs.twimg.com') !== -1) {
-        url = url.replace(/:small$/, ':orig');
-      } else if (url.indexOf('ton/data/dm') !== -1) {
-        url = url.replace(/:small$/, ':large');
-      }
+      url = Util.getOrigPath(url);
       parameter.images.push({
         index, url,
       });

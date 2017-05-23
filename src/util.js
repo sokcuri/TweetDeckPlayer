@@ -4,24 +4,14 @@ module.exports = {
   twimg_profile: 'twimg.com/profile_images',
 
   // 트위터 이미지의 원본 크기를 가리키는 링크를 반환
-  getOrigPath (_href) {
-    var href = _href;
-    if (href.search(this.twimg_media) !== -1) {
-      var pos = href.substr(href.lastIndexOf('/')).lastIndexOf(':');
-      if (pos === -1) {
-        pos = href.substr(href.lastIndexOf('/')).length;
-      }
-      href = href.substr(0, href.lastIndexOf('/') + pos) + ':orig';
-    } else {
-      if (href.search(this.twimg_profile) !== -1) {
-        var pos = href.substr(href.lastIndexOf('/')).lastIndexOf('_');
-        if (pos === -1) {
-          pos = href.substr(href.lastIndexOf('/')).lastIndexOf('.');
-        }
-        href = href.substr(0, href.lastIndexOf('/') + pos) + href.substr(href.lastIndexOf('.'));
-      }
+  getOrigPath (url) {
+    let result = url;
+    if (url.includes('pbs.twimg.com')) {
+      result = url.replace(/:small$/, ':orig');
+    } else if (url.includes('ton/data/dm')) {
+      result = url.replace(/:small$/, ':large');
     }
-    return href;
+    return result;
   },
 
   // 주어진 링크의 파일 이름을 반환
@@ -31,7 +21,6 @@ module.exports = {
     if (href.search(':') !== -1) {
       href = href.substr(0, href.search(':'));
     }
-
     return href;
   },
 

@@ -275,8 +275,23 @@ var sub_save_img = (webContents, Addr) => ({
     // savepath가 없는 경우 리턴
     if (typeof savepath === 'undefined') return;
 
-    // http 요청을 보내고 저장
-    request(path).pipe(fs.createWriteStream(savepath));
+    session.defaultSession.cookies.get({url: 'https://twitter.com'}, (error, cookies) => {
+      const jar = request.jar();
+      cookies.forEach(cookie => {
+        let cookieString = '';
+        cookieString += cookie.name;
+        cookieString += '=';
+        cookieString += cookie.value;
+        cookieString += ';';
+        console.log(cookieString);
+        jar.setCookie(request.cookie(cookieString), 'https://ton.twitter.com');
+      });
+      // http 요청을 보내고 저장
+      request({
+        url: path,
+        jar,
+      }).pipe(fs.createWriteStream(savepath));
+    });
   },
 });
 var sub_copy_img_url = webContents => ({

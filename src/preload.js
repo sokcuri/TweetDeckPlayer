@@ -594,6 +594,10 @@ document.addEventListener('DOMContentLoaded', () => {
             f();
           };
         }
+        TD.config.decider_overlay = {};
+        if (config.useOldStyleReply) {
+          TD.config.decider_overlay.simplified_replies = false;
+        }
       }
     }, 1000);
   };

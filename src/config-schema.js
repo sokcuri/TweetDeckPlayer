@@ -188,6 +188,14 @@ module.exports = [
     label: 'Click the Image to Cycle Through Images',
     description: 'You can still move forward or backword through images using the buttons on top of the screen.',
   },
+  { _type: 'subsection', label: 'Feature' },
+  {
+    _type: 'entry',
+    name: 'useOldStyleReply',
+    valueType: 'bool',
+    label: 'Use Old-style Reply',
+    description: '<b>Requires reload to apply.</b>',
+  },
   { _type: 'subsection', label: 'Privacy' },
   {
     _type: 'entry',

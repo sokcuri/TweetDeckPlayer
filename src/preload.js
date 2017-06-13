@@ -110,9 +110,11 @@ ipcRenderer.on('apply-config', event => {
     fontsize = fontsize.replace(/\\/g, '');
     PlayerMonkey.GM_addStyle(`
       html, body, .os-windows, .is-inverted-dark,
-      .tweet-text, .tweet-translation-text, .js-quoted-tweet-text {
-        font-size: '${fontsize}';
+      .tweet-text,
+      .column {
+        font-size: ${fontsize} !important;
         line-height: initial;
+        font-family: inherit;
       }
     `);
   } catch (e) {

@@ -20,6 +20,7 @@ module.exports = {
     enableOpenImageinPopup: 'on',
     useCircleProfileImage: false,
     useOldStyleReply: false,
+    useCounterClear: false,
   },
   data: {},
   load () {

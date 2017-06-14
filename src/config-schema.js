@@ -196,6 +196,13 @@ module.exports = [
     label: 'Use Old-style Reply',
     description: '<b>Requires reload to apply.</b>',
   },
+  {
+    _type: 'entry',
+    name: 'useCounterClear',
+    valueType: 'bool',
+    label: 'Clear notification counter periodically',
+    description: '<b>Requires reload to apply.</b>',
+  },
   { _type: 'subsection', label: 'Privacy' },
   {
     _type: 'entry',

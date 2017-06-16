@@ -40,9 +40,9 @@ module.exports = [
   { _type: 'subsection', label: 'Miscellaneous' },
   {
     _type: 'entry',
-    name: 'useCircleProfileImage',
+    name: 'useSquareProfileImage',
     valueType: 'bool',
-    label: 'Circle Profile Image',
+    label: 'Square Profile Image',
   },
 
   { _type: 'section', label: 'Timeline' },

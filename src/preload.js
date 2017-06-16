@@ -78,7 +78,7 @@ ipcRenderer.on('apply-config', event => {
       cl.remove('starry');
       cl.add('hearty');
     }
-    cl.toggle('tdp-circle-profile', config.useCircleProfileImage);
+    cl.toggle('tdp-square-profile', config.useSquareProfileImage);
     if (config.applyCustomizeSlider && !cl.contains('customize-columns')) {
       cl.add('customize-columns');
     } else if (!config.applyCustomizeSlider && cl.contains('customize-columns')) {

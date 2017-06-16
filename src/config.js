@@ -18,7 +18,7 @@ module.exports = {
     tivClickForNextImage: 'on',
     enableOpenLinkinPopup: 'on',
     enableOpenImageinPopup: 'on',
-    useCircleProfileImage: false,
+    useSquareProfileImage: false,
     useOldStyleReply: false,
     useCounterClear: false,
   },

@@ -1,7 +1,9 @@
 const electron = require('electron');
 const {app, BrowserWindow, dialog, session, Menu, MenuItem, ipcMain, shell} = electron;
 const fs = require('fs');
+const mzFS = require('mz/fs');
 const path = require('path');
+const mkdirp = require('mkdirp');
 const request = require('request');
 const child_process = require('child_process');
 const Util = require('./util');
@@ -908,7 +910,8 @@ var run = chk_win => {
     win.webContents.insertCSS(`
       .no-pointer {
         pointer-events: none;
-      }`);
+      }
+    `);
     if (Config.data.blockGoogleAnalytics) {
       const gaurl = ['*://*.google-analytics.com'];
       const ses = win.webContents.session;
@@ -924,44 +927,44 @@ var run = chk_win => {
 
   ipcMain.on('page-ready-tdp', (event, arg) => {
     // destroyed contents when loading
-    try {
-      let emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
-      win.webContents.insertCSS(emojipadCSS);
-      win.webContents.insertCSS(`
-        .list-account .emoji {
-          width: 1em;
-          height: 1em;
-        }
-        .customize-columns .column {
-          width: var(--column-size) !important;
-          margin-right: 6px;
-        }
-        `);
-      win.webContents.send('apply-config');
+    let emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
+    win.webContents.insertCSS(emojipadCSS);
+    win.webContents.insertCSS(`
+      .list-account .emoji {
+        width: 1em;
+        height: 1em;
+      }
+      .customize-columns .column {
+        width: var(--column-size) !important;
+        margin-right: 6px;
+      }
+    `);
+    win.webContents.send('apply-config');
 
-      // 유저 스크립트 로딩
-      fs.readdir(path.join(Util.getWritableRootPath(), 'scripts'), (error, files) => {
-        if (error) {
-          if (error.code === 'ENOENT') {
-            fs.mkdir(path.join(Util.getWritableRootPath(), 'scripts'), () => {});
-          } else {
-            console.error('Fail to read scripts directory!');
-          }
-          return;
-        }
-        let jsFiles = files.filter(f => f.endsWith('.js'));
-        for (let file of jsFiles) {
-          let filepath = path.join(path.join(Util.getWritableRootPath(), 'scripts'), file);
-          fs.readFile(filepath, 'utf8', (error, script) => {
-            if (error) {
-              console.error('Fail to read userscript "%s"!', filepath);
-            } else {
-              win.webContents.executeJavaScript(script);
-            }
-          });
-        }
-      });
-    } catch (e) { }
+    // 유저 스크립트 로딩
+    const noop = () => {};
+    const loadUserAssets = async () => {
+      const rootPath = Util.getWritableRootPath();
+      const userScriptsPath = path.join(rootPath, 'scripts');
+      const userStylesPath = path.join(rootPath, 'styles');
+      mkdirp(userScriptsPath, noop);
+      mkdirp(userStylesPath, noop);
+      const styleFiles = await mzFS.readdir(userStylesPath);
+      const styles = styleFiles.filter(f => f.endsWith('.css'));
+      for (const style of styles) {
+        const cssPath = path.join(userStylesPath, style);
+        const css = await mzFS.readFile(cssPath, 'utf8');
+        win.webContents.insertCSS(css);
+      }
+      const scriptFiles = await mzFS.readdir(userScriptsPath);
+      const scripts = scriptFiles.filter(f => f.endsWith('.js'));
+      for (const script of scripts) {
+        const jsPath = path.join(userScriptsPath, script);
+        const js = await mzFS.readFile(jsPath, 'utf8');
+        win.webContents.executeJavaScript(js);
+      }
+    };
+    loadUserAssets();
   });
 
   win.on('close', e => {

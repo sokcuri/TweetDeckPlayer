@@ -28,10 +28,6 @@ const SwitchAccount = require('./preload_scripts/switch-account');
 const WikiLinkFixer = require('./preload_scripts/wikilinkfix');
 const CounterClear = require('./preload_scripts/counterclear.js');
 
-// 퍼포먼스 문제로 비활성화
-// 로딩 프로그레스 바 모듈 로드
-//require('./pace.min.js');
-
 // 설정 파일 읽기
 var config = Config.load();
 
@@ -332,11 +328,11 @@ document.addEventListener('dragstart', evt => {
 }, false);
 
 document.addEventListener('DOMContentLoaded', () => {
-  let TD = window.TD;
-  let jq = window.$;
+  const TD = window.TD;
+  const $ = window.$;
 
   function patchContentEditable () {
-    jq('[contenteditable="true"]').css({
+    $('[contenteditable="true"]').css({
       opacity: 0,
       pointerEvents: 'none',
     });
@@ -369,9 +365,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // mention/url highlight
   function handleChange (evt) {
     if (evt.target.id === 'account-safeguard-checkbox' || evt.target.id === 'inline-account-safeguard-checkbox') {
-      var el = jq('.js-compose-text');
+      var el = $('.js-compose-text');
       for (var i = 0; i < el.length; i++) {
-        var text = jq(el[i]).val();
+        var text = $(el[i]).val();
 
         // 마지막 멘션 아이디가 셀렉션 지정되는 버그 회피
         var x = el[i];
@@ -381,9 +377,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (prev_focus !== document.querySelector(':focus')) {
           setTimeout(() => {
-            var v = jq(x).val();
+            var v = $(x).val();
             if (window.getSelection().toString().length > 3) {
-              jq(x).focus().val('').val(v);
+              $(x).focus().val('').val(v);
             }
           }, 100);
         }
@@ -391,14 +387,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     prev_focus = document.querySelector(':focus');
   }
-  jq(document).on({change: handleChange});
+  $(document).on({change: handleChange});
 
   // 맥용 한글 기본 입력기 이슈 해결
-  jq(document).on('keydown', e => {
+  $(document).on('keydown', e => {
     if (document.activeElement === document.body && e.key >= 'ㄱ' && e.key <= 'ㅣ') {
       e.preventDefault();
       e.stopPropagation();
-      jq(document.activeElement).trigger(jq.Event('keypress', {which: e.which}));
+      $(document.activeElement).trigger($.Event('keypress', {which: e.which}));
     } else if (!e.rep && e.which === 13) {
       // 엔터키로 트윗하기
       var el = document.activeElement;
@@ -407,12 +403,12 @@ document.addEventListener('DOMContentLoaded', () => {
          (el.tagName.toLowerCase() === 'textarea'))) {
         e.preventDefault();
         e.stopPropagation();
-        jq(document.activeElement).trigger(jq.Event('keypress', {which: e.which, keyCode: e.which, ctrlKey: true, rep: true}));
+        $(document.activeElement).trigger($.Event('keypress', {which: e.which, keyCode: e.which, ctrlKey: true, rep: true}));
       }
     }
   });
 
-  jq(document).on('mouseover', '.tweet-timestamp', e => {
+  $(document).on('mouseover', '.tweet-timestamp', e => {
     const target = e.currentTarget;
     const time = target.getAttribute('data-time');
     const date = new Date(parseInt(time, 10));
@@ -491,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       var e = 1 === TD.storage.accountController.getAccountsForService('twitter').length;
       this.isRetweeted && e ? (this.setRetweeted(!1),
-      jq(document).trigger('uiUndoRetweet', {
+      $(document).trigger('uiUndoRetweet', {
         tweetId: this.getMainTweet().id,
         from: this.account.getKey(),
       })) : new TD.components.ActionDialog(this);
@@ -533,78 +529,63 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   TD.services.TwitterStatus.prototype.retweet_old = TD.services.TwitterStatus.prototype.retweet;
   TD.services.TwitterStatus.prototype.retweet = TD.services.TwitterStatus.prototype.retweet_direct;
-
   // TweetDeck Ready Check
-  var TDP = {};
-  if (TD) ipcRenderer.send('page-ready-tdp', this);
-  TDP.onPageLoad = () => {
+  $(document).on('TD.ready', () => {
+    ipcRenderer.send('page-ready-tdp', this);
+    TD.controller.progressIndicator.addMessage(TD.i(VERSION));
     setTimeout(() => {
-      if (!TD || !TD.ready) {
-        TDP.onPageLoad();
-      } else {
-        TD.controller.progressIndicator.addMessage(TD.i(VERSION));
-        setTimeout(() => {
-          TD.settings.setUseStream(TD.settings.getUseStream());
-          patchContentEditable();
-        }, 3000);
-        /*
-        if (Pace) {
-          setTimeout(() => {
-            PlayerMonkey.GM_addStyle('.pace-progress { display: none }');
-          }, 2000);
-        }*/
-        if (config.useStarForFavorite) {
-          const cl = document.body.classList;
-          cl.remove('hearty');
-          cl.add('starry');
-        }
+      TD.settings.setUseStream(TD.settings.getUseStream());
+      patchContentEditable();
+    }, 3000);
+    if (config.useStarForFavorite) {
+      const cl = document.body.classList;
+      cl.remove('hearty');
+      cl.add('starry');
+    }
 
-        // Enable emojipad
-        var emojiPadCSS = document.createElement('link');
-        var dockBtn = document.getElementsByClassName('emojipad--entry-point')[0];
-        document.body.appendChild(EmojiPad.element);
-        dockBtn.onclick = e => {
-          EmojiPad.show(e.clientX, e.clientY);
+    // Enable emojipad
+    var emojiPadCSS = document.createElement('link');
+    var dockBtn = document.querySelector('.emojipad--entry-point');
+    document.body.appendChild(EmojiPad.element);
+    dockBtn.addEventListener('click', e => {
+      EmojiPad.show(e.clientX, e.clientY);
 
-          var el = EmojiPad.element;
-          var rect = el.getClientRects()[0];
+      var el = EmojiPad.element;
+      var rect = el.getClientRects()[0];
 
-          if (window.innerWidth - rect.left - 10 < rect.width) {
-            el.style.left = `${window.innerWidth - rect.width - 10}px`;
-          }
-          if (window.innerHeight - rect.top - 10 < rect.height) {
-            el.style.top = `${window.innerHeight - rect.height - 10}px`;
-          }
-        };
-        document.body.addEventListener('click', e => {
-          if (e.target !== dockBtn && EmojiPad.isOpen) EmojiPad.hide();
-        }, false);
-        EmojiPad.onEmojiClick = chr => {
-          var txt = document.getElementById('docked-textarea');
-          txt.value += chr;
-          var evt = document.createEvent('HTMLEvents');
-          evt.initEvent('change', false, true);
-          txt.dispatchEvent(evt);
-        };
-
-        // Integrate TDP settings
-        {
-          var f = TD.controller.stats.navbarSettingsClick.bind({});
-          TD.controller.stats.navbarSettingsClick = () => {
-            var btn = document.querySelector('a[data-action=tdpSettings]');
-            btn.addEventListener('click', e => {
-              ipcRenderer.send('open-settings');
-            }, false);
-            f();
-          };
-        }
-        TD.config.decider_overlay = {};
-        if (config.useOldStyleReply) {
-          TD.config.decider_overlay.simplified_replies = false;
-        }
+      if (window.innerWidth - rect.left - 10 < rect.width) {
+        el.style.left = `${window.innerWidth - rect.width - 10}px`;
       }
-    }, 1000);
-  };
+      if (window.innerHeight - rect.top - 10 < rect.height) {
+        el.style.top = `${window.innerHeight - rect.height - 10}px`;
+      }
+    });
+    document.body.addEventListener('click', e => {
+      if (e.target !== dockBtn && EmojiPad.isOpen) EmojiPad.hide();
+    }, false);
+    EmojiPad.onEmojiClick = chr => {
+      var txt = document.getElementById('docked-textarea');
+      txt.value += chr;
+      var evt = document.createEvent('HTMLEvents');
+      evt.initEvent('change', false, true);
+      txt.dispatchEvent(evt);
+    };
 
-  TDP.onPageLoad();
+    // Integrate TDP settings
+    {
+      var f = TD.controller.stats.navbarSettingsClick.bind({});
+      TD.controller.stats.navbarSettingsClick = () => {
+        var btn = document.querySelector('a[data-action=tdpSettings]');
+        btn.addEventListener('click', e => {
+          ipcRenderer.send('open-settings');
+        }, false);
+        f();
+      };
+    }
+    TD.config.decider_overlay = {};
+    if (config.useOldStyleReply) {
+      TD.config.decider_overlay.simplified_replies = false;
+    }
+  });
+
 });

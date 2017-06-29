@@ -275,7 +275,20 @@ window.addEventListener('contextmenu', e => {
     const hoveredTweet = document.querySelector('article.stream-item:hover');
     const tweetText = hoveredTweet.querySelector('.js-tweet-text');
     const tweetId = hoveredTweet.getAttribute('data-tweet-id');
-    Addr.text = tweetText ? tweetText.textContent : '';
+    function getTextOrEmoji (node) {
+      if (node.nodeType === HTMLElement.TEXT_NODE) {
+        return node.textContent;
+      } else if (node.nodeType === HTMLElement.ELEMENT_NODE && node.classList.contains('emoji')) {
+        return node.getAttribute('alt');
+      } else {
+        return '';
+      }
+    }
+    const textWithEmoji = Array
+      .from(tweetText ? tweetText.childNodes : [])
+      .map(getTextOrEmoji)
+      .join('');
+    Addr.text = textWithEmoji;
     Addr.id = tweetId || '';
   } else {
     // 기본 컨텍스트

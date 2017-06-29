@@ -14,7 +14,7 @@ app.setPath('userData', Util.getUserDataPath());
 // 설정
 const Config = require('./config');
 
-let win, popup, settingsWin, twtlibWin, accessibilityWin;
+let win, popup, settingsWin, twtlibWin, accessibilityWin, gTranslatorWin;
 
 function getSamePos (x, y) {
   for (var i = 0; i < Math.max(x.length, y.length); i++) {
@@ -148,6 +148,23 @@ var openPopup = url => {
   popup.loadURL(url);
   popup.setAlwaysOnTop(win.isAlwaysOnTop());
 };
+
+function openGoogleTranslatorWindow (text) {
+  if (!gTranslatorWin) {
+    gTranslatorWin = new BrowserWindow({
+      width: 900,
+      height: 600,
+      title: 'Google Translator',
+      autoHideMenuBar: true,
+      webPreferences: {
+        nodeIntegration: false,
+        webSecurity: true,
+      },
+    });
+  }
+  const encodedText = encodeURIComponent(text);
+  gTranslatorWin.loadURL(`https://translate.google.com/#auto/ko/${encodedText}`);
+}
 
 //
 // edit
@@ -430,6 +447,13 @@ var sub_copy_tweet_with_author = webContents => ({
   label: 'Copy Tweet (with @author)',
   click () {
     webContents.send('command', 'copy-tweet-with-author');
+  },
+});
+
+var sub_open_google_translator = webContents => ({
+  label: 'Translate Tweet via Google Translator',
+  click () {
+    webContents.send('command', 'open-google-translator');
   },
 });
 
@@ -1140,6 +1164,8 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
         template.push(sub_copy_tweet(event.sender));
         template.push(sub_copy_tweet_with_author(event.sender));
         template.push(separator);
+        template.push(sub_open_google_translator(event.sender));
+        template.push(separator);
       }
       template.push(sub_reload(event.sender));
       break;
@@ -1191,3 +1217,8 @@ ipcMain.on('twtlib-open', (event, arg) => {
 ipcMain.on('twtlib-send-text', (event, arg) => {
   win.webContents.send('twtlib-add-text', arg);
 });
+
+ipcMain.on('open-google-translator', (event, arg) => {
+  let { text } = arg;
+  openGoogleTranslatorWindow(text);
+})

@@ -216,6 +216,11 @@ ipcRenderer.on('command', (event, cmd) => {
       clipboard.writeText(text);
       window.TD.controller.progressIndicator.addMessage(window.TD.i('Copied text "{{text}}" ! ', { text }));
     } break;
+    case 'open-google-translator': {
+      ipcRenderer.send('open-google-translator', {
+        text: Addr.text,
+      });
+    } break;
   }
 });
 

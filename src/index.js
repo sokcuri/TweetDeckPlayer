@@ -1,7 +1,9 @@
 const electron = require('electron');
 const {app, BrowserWindow, dialog, session, Menu, MenuItem, ipcMain, shell} = electron;
 const fs = require('fs');
+const mzFS = require('mz/fs');
 const path = require('path');
+const mkdirp = require('mkdirp');
 const request = require('request');
 const child_process = require('child_process');
 const Util = require('./util');
@@ -12,7 +14,7 @@ app.setPath('userData', Util.getUserDataPath());
 // 설정
 const Config = require('./config');
 
-let win, popup, settingsWin, twtlibWin, accessibilityWin;
+let win, popup, settingsWin, twtlibWin, accessibilityWin, gTranslatorWin;
 
 function getSamePos (x, y) {
   for (var i = 0; i < Math.max(x.length, y.length); i++) {
@@ -147,6 +149,23 @@ var openPopup = url => {
   popup.setAlwaysOnTop(win.isAlwaysOnTop());
 };
 
+function openGoogleTranslatorWindow (text) {
+  if (!gTranslatorWin) {
+    gTranslatorWin = new BrowserWindow({
+      width: 900,
+      height: 600,
+      title: 'Google Translator',
+      autoHideMenuBar: true,
+      webPreferences: {
+        nodeIntegration: false,
+        webSecurity: true,
+      },
+    });
+  }
+  const encodedText = encodeURIComponent(text);
+  gTranslatorWin.loadURL(`https://translate.google.com/#auto/ko/${encodedText}`);
+}
+
 //
 // edit
 //
@@ -275,8 +294,22 @@ var sub_save_img = (webContents, Addr) => ({
     // savepath가 없는 경우 리턴
     if (typeof savepath === 'undefined') return;
 
-    // http 요청을 보내고 저장
-    request(path).pipe(fs.createWriteStream(savepath));
+    session.defaultSession.cookies.get({url: 'https://twitter.com'}, (error, cookies) => {
+      const jar = request.jar();
+      cookies.forEach(cookie => {
+        let cookieString = '';
+        cookieString += cookie.name;
+        cookieString += '=';
+        cookieString += cookie.value;
+        cookieString += ';';
+        jar.setCookie(request.cookie(cookieString), 'https://ton.twitter.com');
+      });
+      // http 요청을 보내고 저장
+      request({
+        url: path,
+        jar,
+      }).pipe(fs.createWriteStream(savepath));
+    });
   },
 });
 var sub_copy_img_url = webContents => ({
@@ -400,6 +433,27 @@ var sub_quote_without_notification = webContents => ({
   label: 'Quote without notification',
   click () {
     webContents.send('command', 'quotewithoutnotification');
+  },
+});
+
+var sub_copy_tweet = webContents => ({
+  label: 'Copy Tweet',
+  click () {
+    webContents.send('command', 'copy-tweet');
+  },
+});
+
+var sub_copy_tweet_with_author = webContents => ({
+  label: 'Copy Tweet (with @author)',
+  click () {
+    webContents.send('command', 'copy-tweet-with-author');
+  },
+});
+
+var sub_open_google_translator = webContents => ({
+  label: 'Translate Tweet via Google Translator',
+  click () {
+    webContents.send('command', 'open-google-translator');
   },
 });
 
@@ -643,8 +697,8 @@ var versionCompare = (v1, v2, options) => {
   }
 
   if (zeroExtend) {
-    while (v1parts.length < v2parts.length) v1parts.push("0");
-    while (v2parts.length < v1parts.length) v2parts.push("0");
+    while (v1parts.length < v2parts.length) v1parts.push('0');
+    while (v2parts.length < v1parts.length) v2parts.push('0');
   }
 
   if (!lexicographical) {
@@ -880,7 +934,8 @@ var run = chk_win => {
     win.webContents.insertCSS(`
       .no-pointer {
         pointer-events: none;
-      }`);
+      }
+    `);
     if (Config.data.blockGoogleAnalytics) {
       const gaurl = ['*://*.google-analytics.com'];
       const ses = win.webContents.session;
@@ -896,44 +951,44 @@ var run = chk_win => {
 
   ipcMain.on('page-ready-tdp', (event, arg) => {
     // destroyed contents when loading
-    try {
-      let emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
-      win.webContents.insertCSS(emojipadCSS);
-      win.webContents.insertCSS(`
-        .list-account .emoji {
-          width: 1em;
-          height: 1em;
-        }
-        .customize-columns .column {
-          width: var(--column-size) !important;
-          margin-right: 6px;
-        }
-        `);
-      win.webContents.send('apply-config');
+    let emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
+    win.webContents.insertCSS(emojipadCSS);
+    win.webContents.insertCSS(`
+      .list-account .emoji {
+        width: 1em;
+        height: 1em;
+      }
+      .customize-columns .column {
+        width: var(--column-size) !important;
+        margin-right: 6px;
+      }
+    `);
+    win.webContents.send('apply-config');
 
-      // 유저 스크립트 로딩
-      fs.readdir(path.join(Util.getWritableRootPath(), 'scripts'), (error, files) => {
-        if (error) {
-          if (error.code === 'ENOENT') {
-            fs.mkdir(path.join(Util.getWritableRootPath(), 'scripts'), () => {});
-          } else {
-            console.error('Fail to read scripts directory!');
-          }
-          return;
-        }
-        let jsFiles = files.filter(f => f.endsWith('.js'));
-        for (let file of jsFiles) {
-          let filepath = path.join(path.join(Util.getWritableRootPath(), 'scripts'), file);
-          fs.readFile(filepath, 'utf8', (error, script) => {
-            if (error) {
-              console.error('Fail to read userscript "%s"!', filepath);
-            } else {
-              win.webContents.executeJavaScript(script);
-            }
-          });
-        }
-      });
-    } catch (e) { }
+    // 유저 스크립트 로딩
+    const noop = () => {};
+    const loadUserAssets = async () => {
+      const rootPath = Util.getWritableRootPath();
+      const userScriptsPath = path.join(rootPath, 'scripts');
+      const userStylesPath = path.join(rootPath, 'styles');
+      mkdirp(userScriptsPath, noop);
+      mkdirp(userStylesPath, noop);
+      const styleFiles = await mzFS.readdir(userStylesPath);
+      const styles = styleFiles.filter(f => f.endsWith('.css'));
+      for (const style of styles) {
+        const cssPath = path.join(userStylesPath, style);
+        const css = await mzFS.readFile(cssPath, 'utf8');
+        win.webContents.insertCSS(css);
+      }
+      const scriptFiles = await mzFS.readdir(userScriptsPath);
+      const scripts = scriptFiles.filter(f => f.endsWith('.js'));
+      for (const script of scripts) {
+        const jsPath = path.join(userScriptsPath, script);
+        const js = await mzFS.readFile(jsPath, 'utf8');
+        win.webContents.executeJavaScript(js);
+      }
+    };
+    loadUserAssets();
   });
 
   win.on('close', e => {
@@ -942,7 +997,7 @@ var run = chk_win => {
 
       Config.data.isMaximized = win.isMaximized();
       Config.data.isFullScreen = win.isFullScreen();
-      
+
       e.sender.hide();
       if (e.sender.isMaximized()) {
         e.sender.unmaximize();
@@ -950,7 +1005,7 @@ var run = chk_win => {
       if (e.sender.isFullScreen()){
         e.sender.setFullScreen(false);
       }
-      
+
       Config.data.bounds = win.getBounds();
       if (popup) {
         Config.data.popup_bounds = popup.getBounds();
@@ -1010,7 +1065,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       template.push(sub_selectall(event.sender));
       break;
 
-    case 'text_sel':
+    case 'input_sel':
       template.push(sub_cut(event.sender));
       template.push(sub_copy(event.sender));
       template.push(separator);
@@ -1018,6 +1073,10 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       template.push(sub_delete(event.sender));
       template.push(separator);
       template.push(sub_selectall(event.sender));
+      break;
+
+    case 'text_sel':
+      template.push(sub_copy(event.sender));
       break;
 
     case 'setting':
@@ -1079,7 +1138,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
         template.push(sub_open_link_popup(event.sender));
         template.push(separator);
       }
-      
+
       template.push(sub_copy_img(event.sender));
       template.push(sub_save_img(event.sender, Addr));
       template.push(sub_copy_img_url(event.sender));
@@ -1097,8 +1156,17 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       break;
 
     case 'tweet':
-      template.push(sub_quote_without_notification(event.sender));
-      template.push(separator);
+      if (Addr.id !== '') {
+        template.push(sub_quote_without_notification(event.sender));
+        template.push(separator);
+      }
+      if (Addr.text !== '') {
+        template.push(sub_copy_tweet(event.sender));
+        template.push(sub_copy_tweet_with_author(event.sender));
+        template.push(separator);
+        template.push(sub_open_google_translator(event.sender));
+        template.push(separator);
+      }
       template.push(sub_reload(event.sender));
       break;
   }
@@ -1149,3 +1217,8 @@ ipcMain.on('twtlib-open', (event, arg) => {
 ipcMain.on('twtlib-send-text', (event, arg) => {
   win.webContents.send('twtlib-add-text', arg);
 });
+
+ipcMain.on('open-google-translator', (event, arg) => {
+  let { text } = arg;
+  openGoogleTranslatorWindow(text);
+})

@@ -30,12 +30,19 @@ module.exports = [
     max: 600,
     step: 1,
   },
+  { _type: 'subsection', label: 'Font size' },
+  {
+    _type: 'entry',
+    name: 'customFontSize',
+    valueType: 'text',
+    description: 'It support CSS units (e.g. 12px, 14pt). Default is 12px.',
+  },
   { _type: 'subsection', label: 'Miscellaneous' },
   {
     _type: 'entry',
-    name: 'useCircleProfileImage',
+    name: 'useSquareProfileImage',
     valueType: 'bool',
-    label: 'Circle Profile Image',
+    label: 'Square Profile Image',
   },
 
   { _type: 'section', label: 'Timeline' },
@@ -180,6 +187,21 @@ module.exports = [
     valueType: 'bool',
     label: 'Click the Image to Cycle Through Images',
     description: 'You can still move forward or backword through images using the buttons on top of the screen.',
+  },
+  { _type: 'subsection', label: 'Feature' },
+  {
+    _type: 'entry',
+    name: 'useOldStyleReply',
+    valueType: 'bool',
+    label: 'Use Old-style Reply',
+    description: '<b>Requires reload to apply.</b>',
+  },
+  {
+    _type: 'entry',
+    name: 'useCounterClear',
+    valueType: 'bool',
+    label: 'Clear notification counter periodically',
+    description: '<b>Requires reload to apply.</b>',
   },
   { _type: 'subsection', label: 'Privacy' },
   {

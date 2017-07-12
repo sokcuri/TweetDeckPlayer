@@ -58,9 +58,9 @@
   visibility: visible !important;
 }
 
-.tdp-circle-profile .prf-img,
-.tdp-circle-profile img.avatar {
-  border-radius: 50%;
+.tdp-square-profile .prf-img,
+.tdp-square-profile img.avatar {
+  border-radius: 10%;
 }
 
 /* 트윗덱 이미지뷰어 */

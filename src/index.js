@@ -921,7 +921,7 @@ var run = chk_win => {
   // electron post 리다이렉트 문제 해결 코드
   win.webContents.on('did-get-redirect-request', (e, oldURL, newURL, isMainFrame) => {
     if (isMainFrame) {
-      setTimeout(() => win.loadURL(newURL), 200);
+      setTimeout(() => win.webContents.send('redirect-url', newURL), 100);
       e.preventDefault();
     }
   });

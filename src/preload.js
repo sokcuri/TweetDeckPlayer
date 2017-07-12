@@ -607,3 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 });
+
+ipcRenderer.on('redirect-url', function(event, url) {
+    window.location.assign(url);
+});

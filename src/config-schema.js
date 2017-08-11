@@ -15,6 +15,13 @@ module.exports = [
     valueType: 'text',
     description: 'Leave it blank if you want to use the default font.',
   },
+  { _type: 'subsection', label: 'Font size' },
+  {
+    _type: 'entry',
+    name: 'customFontSize',
+    valueType: 'text',
+    description: 'It support CSS units (e.g. 12px, 14pt). Default is 12px.',
+  },
   { _type: 'subsection', label: 'Custom Column Width' },
   {
     _type: 'entry',
@@ -29,13 +36,6 @@ module.exports = [
     min: 250,
     max: 600,
     step: 1,
-  },
-  { _type: 'subsection', label: 'Font size' },
-  {
-    _type: 'entry',
-    name: 'customFontSize',
-    valueType: 'text',
-    description: 'It support CSS units (e.g. 12px, 14pt). Default is 12px.',
   },
   { _type: 'subsection', label: 'Miscellaneous' },
   {

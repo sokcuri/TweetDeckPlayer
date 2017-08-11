@@ -111,7 +111,6 @@ ipcRenderer.on('apply-config', event => {
       .column {
         font-size: ${fontsize} !important;
         line-height: initial;
-        font-family: inherit;
       }
     `);
   } catch (e) {

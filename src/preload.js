@@ -63,8 +63,11 @@ var autoReload = () => {
         window.toastMessage('Automatically reload in one minute');
         loadTimeStamp += 60000;
         autoReload_alermed++;
+        break;
       }
-    break;
+      
+      setTimeout(autoReload, 60000);
+      return;
 
     case 1:
       if (checkTime(50000)) {
@@ -78,7 +81,7 @@ var autoReload = () => {
         remote.getCurrentWindow().reload();
     break;
   }
-  setTimeout(autoReload, 60000);
+  setTimeout(autoReload, 5000);
 }
 autoReload();
 

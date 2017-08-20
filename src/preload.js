@@ -155,13 +155,13 @@ ipcRenderer.on('command', (event, cmd) => {
       document.execCommand('selectall');
       break;
     case 'copyimage':
-      window.TD.controller.progressIndicator.addMessage('Image downloading..');
+      window.toastMessage('Image downloading..');
       const nativeImage = require('electron').nativeImage;
       var request = require('request').defaults({ encoding: null });
       request.get(Addr.img, function (error, response, body) {
         if (!error && response.statusCode === 200) {
           clipboard.writeImage(nativeImage.createFromBuffer(body));
-          window.TD.controller.progressIndicator.addMessage('Image copied to clipboard');
+          window.toastMessage('Image copied to clipboard');
         }
       });
       break;
@@ -203,7 +203,7 @@ ipcRenderer.on('command', (event, cmd) => {
     case 'copy-tweet': {
       const text = Addr.text;
       clipboard.writeText(text);
-      window.TD.controller.progressIndicator.addMessage(window.TD.i('Copied text "{{text}}" ! ', { text }));
+      window.toastMessage(window.TD.i('Copied text "{{text}}" ! ', { text }));
     } break;
     case 'copy-tweet-with-author': {
       const el = document.querySelector(`article[data-tweet-id="${Addr.id}"]`);
@@ -213,7 +213,7 @@ ipcRenderer.on('command', (event, cmd) => {
         text += ` (by ${userid.textContent})`;
       }
       clipboard.writeText(text);
-      window.TD.controller.progressIndicator.addMessage(window.TD.i('Copied text "{{text}}" ! ', { text }));
+      window.toastMessage(window.TD.i('Copied text "{{text}}" ! ', { text }));
     } break;
     case 'open-google-translator': {
       ipcRenderer.send('open-google-translator', {
@@ -347,6 +347,20 @@ document.addEventListener('dragstart', evt => {
 document.addEventListener('DOMContentLoaded', () => {
   const TD = window.TD;
   const $ = window.$;
+
+  window.toastMessage = message => {
+    window.webpackJsonp([0], [(a, b, c) => {
+      const toaster = c(8);
+      toaster.showNotification({ message });
+    }]);
+  };
+
+  window.toastErrorMessage = message => {
+    window.webpackJsonp([0], [(a, b, c) => {
+      const toaster = c(8);
+      toaster.showErrorNotification({ message });
+    }]);
+  };
 
   function patchContentEditable () {
     $('[contenteditable="true"]').css({
@@ -484,7 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
       var s = function (e) {
         var t = TD.core.defer.fail();
         if (403 === e.status || 404 === e.status) {
-          TD.controller.progressIndicator.addMessage((r ? TD.i('Failed: Unretweet -') : TD.i('Failed: Retweet -')) + ' ' + JSON.parse(e.responseText).errors[0].message);
+          window.toastErrorMessage((r ? TD.i('Failed: Unretweet -') : TD.i('Failed: Retweet -')) + ' ' + JSON.parse(e.responseText).errors[0].message);
         }
         403 !== e.status && 404 !== e.status || (t = this.refreshRetweet(o)),
         t.addErrback(function () {
@@ -549,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // TweetDeck Ready Check
   $(document).on('TD.ready', () => {
     ipcRenderer.send('page-ready-tdp', this);
-    TD.controller.progressIndicator.addMessage(TD.i(VERSION));
+    window.toastMessage(TD.i(VERSION));
     setTimeout(() => {
       TD.settings.setUseStream(TD.settings.getUseStream());
       patchContentEditable();
@@ -598,10 +612,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, false);
         f();
       };
-    }
-    TD.config.decider_overlay = {};
-    if (config.useOldStyleReply) {
-      TD.config.decider_overlay.simplified_replies = false;
     }
   });
 

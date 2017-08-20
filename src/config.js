@@ -19,7 +19,6 @@ module.exports = {
     enableOpenLinkinPopup: 'on',
     enableOpenImageinPopup: 'on',
     useSquareProfileImage: false,
-    useOldStyleReply: false,
     useCounterClear: false,
   },
   data: {},

@@ -14,7 +14,7 @@ module.exports = {
     customizeColumnSize: '310',
     customFontSize: '',
     quoteServer: 'https://quote.sapphire.sh',
-    altImageViewer: 'off',
+    altImageViewer: '',
     tivClickForNextImage: 'on',
     enableOpenLinkinPopup: 'on',
     enableOpenImageinPopup: 'on',

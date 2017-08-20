@@ -191,13 +191,6 @@ module.exports = [
   { _type: 'subsection', label: 'Feature' },
   {
     _type: 'entry',
-    name: 'useOldStyleReply',
-    valueType: 'bool',
-    label: 'Use Old-style Reply',
-    description: '<b>Requires reload to apply.</b>',
-  },
-  {
-    _type: 'entry',
     name: 'useCounterClear',
     valueType: 'bool',
     label: 'Clear notification counter periodically',

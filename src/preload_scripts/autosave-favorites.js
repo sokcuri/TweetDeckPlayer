@@ -20,7 +20,7 @@ function download (url, filename) {
     fs.mkdirSync(savepath);
   } catch (error) {
     if (error.code !== 'EEXIST') {
-      window.TD.controller.progressIndicator.addMessage('Failed - Save Image : Cannot make folder');
+      window.toastErrorMessage('Failed - Save Image : Cannot make folder');
       return;
     }
   }
@@ -28,7 +28,7 @@ function download (url, filename) {
   try {
     request(url).pipe(fs.createWriteStream(filepath));
   } catch (e) {
-    window.TD.controller.progressIndicator.addMessage(`Failed - Save Image : Cannot save image to ${filepath}`);
+    window.toastErrorMessage(`Failed - Save Image : Cannot save image to ${filepath}`);
   }
 }
 

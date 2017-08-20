@@ -20,7 +20,7 @@ function SwitchAccount () {
       accountKeys: [accountKey],
     });
     const message = TD.i('Default Account Switched to {{name}}', { name });
-    TD.controller.progressIndicator.addMessage(message);;
+    window.toastMessage(message);;
   });
 }
 

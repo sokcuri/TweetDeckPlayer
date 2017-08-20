@@ -45,10 +45,10 @@ function MakeQuoteWithoutNotification (ipcRenderer, id) {
     var quoteUrl = data.url;
     ipcRenderer.send('twtlib-send-text', quoteUrl);
     jq(document).trigger('uiComposeTweet', { type: 'tweet' });
-    TD.controller.progressIndicator.addMessage('Quote link generated');
+    window.toastMessage('Quote link generated');
 
   }).catch(function (err) {
-    TD.controller.progressIndicator.addMessage(err);
+    window.toastErrorMessage(err);
   });
 };
 

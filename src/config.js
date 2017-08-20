@@ -20,6 +20,7 @@ module.exports = {
     enableOpenImageinPopup: 'on',
     useSquareProfileImage: false,
     useCounterClear: false,
+    autoReloadCycle: 12
   },
   data: {},
   load () {

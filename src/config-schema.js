@@ -204,4 +204,19 @@ module.exports = [
     label: 'Block Google Analytics',
     description: 'You should restart the app to apply this setting.',
   },
+  { _type: 'subsection', label: 'Auto Reload (Hours)' },
+  {
+      _type: 'entry',
+      name: 'applyAutoReload',
+      valueType: 'bool',
+      label: 'Enabled',
+  },
+  {
+    _type: 'entry',
+    name: 'autoReloadCycle',
+    valueType: 'number',
+    min: 1,
+    max: 168,
+    step: 1,
+  },
 ];

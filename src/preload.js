@@ -36,6 +36,48 @@ var keyState = {
   alt: false,
   ctrl: false,
 };
+console.error(config);
+
+var loadTimeStamp, configReloadCycle;
+var autoReload_alermed = 0;
+
+// n시간 후 강제 리로드
+var autoReload = () => {
+
+  config = Config.load();
+  if (config.autoReloadCycle != configReloadCycle) {
+    loadTimeStamp = new Date().getTime();
+    configReloadCycle = config.autoReloadCycle * 1;
+  }
+
+  var checkTime = (milliseconds) => {
+    return (loadTimeStamp + 60000 * 60 * configReloadCycle + milliseconds <= new Date().getTime())
+  }
+
+  switch(autoReload_alermed) {
+    case 0:
+      if (window.toastMessage && checkTime(0)) {
+        window.toastMessage('Automatically reload in one minute');
+        loadTimeStamp += 60000;
+        autoReload_alermed++;
+      }
+    break;
+
+    case 1:
+      if (checkTime(50000)) {
+        window.toastMessage('Automatically reload in a few seconds');
+        autoReload_alermed++;
+      }
+    break;
+
+    case 2:
+      if (checkTime(60000))
+        remote.getCurrentWindow().reload();
+    break;
+  }
+  setTimeout(autoReload, 1000);
+}
+autoReload();
 
 ipcRenderer.on('apply-config', event => {
   var style = '';

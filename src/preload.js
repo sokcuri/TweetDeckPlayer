@@ -105,14 +105,22 @@ ipcRenderer.on('apply-config', event => {
 
     fontsize = fontsize.replace(/'/g, String.raw`\'`);
     fontsize = fontsize.replace(/\\/g, '');
-    PlayerMonkey.GM_addStyle(`
+    var tdp_customFontStyle = document.getElementById('TDP_customFontStyle');
+    if (tdp_customFontStyle === null) {
+      tdp_customFontStyle = document.createElement('style');
+      tdp_customFontStyle.id = 'TDP_customFontStyle';
+      document.body.appendChild(tdp_customFontStyle)
+    }
+
+    tdp_customFontStyle.innerText = `
       html, body, .os-windows, .is-inverted-dark,
       .tweet-text,
       .column {
         font-size: ${fontsize} !important;
         line-height: initial;
       }
-    `);
+    `;
+    
   } catch (e) {
     console.warn(e);
   }

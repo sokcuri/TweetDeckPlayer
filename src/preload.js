@@ -717,7 +717,3 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 });
-
-ipcRenderer.on('reload-noti-alarm', function(event) {
-
-});

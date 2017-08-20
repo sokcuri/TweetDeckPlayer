@@ -45,9 +45,10 @@ var autoReload_alermed = 0;
 var autoReload = () => {
 
   config = Config.load();
-  if (config.autoReloadCycle != configReloadCycle) {
+  if (!config.applyAutoReload || config.autoReloadCycle != configReloadCycle) {
     loadTimeStamp = new Date().getTime();
     configReloadCycle = config.autoReloadCycle * 1;
+    autoReload_alermed = 0;
   }
 
   var checkTime = (milliseconds) => {

@@ -47,6 +47,7 @@ http://github.com/sokcuri/TweetDeckPlayer
     - shift 키를 누르고 링크를 클릭하면 외부 브라우저로 띄웁니다
   - 단축키 `Ctrl+<0-9>`를 통한 손쉬운 기본 계정 전환
   - 웹 브라우저와 독립된 세션 제공
+  - 
 
 * unlink.is, 정규식 트윗 필터 기능은 페이지를 한번 새로고침해야 적용됩니다. 
 * 페이지 새로고침은 아무곳에 우클릭 후 reload 메뉴를 누르시거나 alt를 누르고 View의 Reload 메뉴를 눌러주세요.

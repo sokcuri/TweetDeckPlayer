@@ -6,6 +6,7 @@ try {
 } catch (e) {
   console.warn('remote error : ' + e);
 };
+const path = require('path');
 const fs = require('fs');
 const twitter = require('twitter-text');
 const twemoji = require('twemoji');
@@ -36,10 +37,11 @@ var keyState = {
   alt: false,
   ctrl: false,
 };
-console.error(config);
 
 var loadTimeStamp, configReloadCycle;
 var autoReload_alermed = 0;
+
+var updateSound_backup;
 
 // n시간 후 강제 리로드
 var autoReload = () => {
@@ -160,7 +162,55 @@ ipcRenderer.on('apply-config', event => {
         line-height: initial;
       }
     `;
-    
+
+    // Notification Alarm sound
+    if (updateSound_backup === undefined) {
+      updateSound_backup = document.getElementById("update-sound").innerHTML;
+    }
+
+    if (config.applyNotiAlarmSound) {
+      var base64_encode = file => {
+          var bitmap = fs.readFileSync(file);
+          return new Buffer(bitmap).toString('base64');
+      };
+
+      var base64_decode = (base64str, file) => {
+          // create buffer object from base64 encoded string, it is important to tell the constructor that the string is base64 encoded
+          var bitmap = new Buffer(base64str, 'base64');
+          // write buffer to file
+          fs.writeFileSync(file, bitmap);
+          console.log('******** File created from base64 encoded string ********');
+      };
+
+      var convertDataURIToBinary = dataURI => {
+        var BASE64_MARKER = ';base64,';
+        var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+        var base64 = dataURI.substring(base64Index);
+        var raw = window.atob(base64);
+        var rawLength = raw.length;
+        var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+        for(i = 0; i < rawLength; i++) {
+          array[i] = raw.charCodeAt(i);
+        }
+        return array;
+      }
+
+      var ext = config.notiAlarmSoundExt;
+      data = `data:audio/${ext};base64,${base64_encode(path.join(Util.getUserDataPath(), 'alarmfile'))}`;
+
+      var binary = convertDataURIToBinary(data);
+      var blob =new Blob([binary], {type : `audio/${ext}`});
+      var blobUrl = URL.createObjectURL(blob);
+
+      document.getElementById("update-sound").innerHTML = `<source src="${blobUrl}">`;
+      document.getElementById("update-sound").pause();
+      document.getElementById("update-sound").load();
+    } else {
+      document.getElementById("update-sound").innerHTML = updateSound_backup;
+      document.getElementById("update-sound").pause();
+      document.getElementById("update-sound").load();
+    }
   } catch (e) {
     console.warn(e);
   }
@@ -665,6 +715,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-ipcRenderer.on('redirect-url', function(event, url) {
-    window.location.assign(url);
+ipcRenderer.on('reload-noti-alarm', function(event) {
+
 });

@@ -143,7 +143,20 @@ module.exports = [
       { value: 'click', label: 'Click to Play' },
     ],
   },
-
+  { _type: 'section', label: 'Notification' },
+  { _type: 'subsection', label: 'Alarm Sound' },
+  {
+    _type: 'entry',
+    name: 'applyNotiAlarmSound',
+    valueType: 'bool',
+    label: 'Enabled',
+  },
+  {
+    _type: 'entry',
+    name: 'notiAlarmSoundSource',
+    valueType: 'alarmfile',
+    label: 'Browse File',
+  },
   { _type: 'section', label: 'Performance' },
   { _type: 'subsection', label: 'Animation' },
   {

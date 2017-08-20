@@ -3,6 +3,9 @@ const noUiSlider = require('nouislider');
 const {ipcRenderer} = electron;
 
 const schema = require('./config-schema');
+const path = require('path');
+const fs = require('fs');
+const Util = require('./util');
 
 function saveConfig (config) {
   ipcRenderer.send('save-config', config);
@@ -38,6 +41,8 @@ function onload () {
     if (!elem) continue;
     if (elem.type === 'checkbox') {
       elem.checked = Boolean(value);
+    } else if (elem.type === 'file') {
+
     } else {
       elem.value = value;
     }
@@ -53,7 +58,46 @@ function onload () {
       if (typeof value === 'string') {
         value = value.trim();
       }
-      if (elem.type === 'checkbox') {
+      if (elem.type === 'file') {
+        if (elem.files && elem.files.length > 0) {
+          if (elem.id === 'notiAlarmSoundSource') {
+            // check to valid sound file
+            if (elem.files && elem.files.length > 0) {
+              try {
+                let blobUrl = URL.createObjectURL(document.querySelector('input[type="file"]').files[0]);
+                let audio = new Audio(blobUrl);
+                audio.addEventListener('canplaythrough', () => {
+                  URL.revokeObjectURL(blobUrl);
+                  audio.remove();
+                  let ext = elem.files[0].name.substr(elem.files[0].name.lastIndexOf('.'));
+                  fs.createReadStream(elem.files[0].path).pipe(fs.createWriteStream(path.join(Util.getUserDataPath(), "alarmfile")))
+                    .on('error', function(e) {
+                      alert("Cannot copy audio file");
+                    });
+                    alert("Successfully registered alarm file");
+                    config['notiAlarmSoundExt'] = ext;
+                    elem.value = '';
+                });
+                audio.addEventListener('error', e => {
+                  alert("Invalid or not supported audio file");
+                  URL.revokeObjectURL(blobUrl);
+                  audio.remove();
+                  elem.value = '';
+                })
+              } catch(e) {
+                alert("Can't load file");
+                URL.revokeObjectURL(blobUrl);
+                elem.value = '';
+              }
+            }
+
+          } else {
+            console.info(elem.files[0].path);
+            config[id] = elem.files[0];
+          }
+        }
+      }
+      else if (elem.type === 'checkbox') {
         config[id] = elem.checked ? value : null;
       } else {
         config[id] = value;
@@ -114,6 +158,10 @@ function initializeEntries (entry, form) {
     case 'enum':
       let opts = entry.options.map(x => `<option value="${x.value}">${x.label}</option>`).join('');
       e.innerHTML = `<select name="${entry.name}" id="${entry.name}">${opts}</select>`;
+      break;
+    case 'alarmfile':
+      e.innerHTML = `<label><input id="${entry.name}" type="file"><label for="${entry.name}"><div></div></label><div>${entry.label}</div></label>`;
+      let fileInput = e.querySelector('input[type="file"]');
       break;
     case 'number': {
       e.innerHTML = `<div id="${entry.name}Slider"></div><div><input type="text" id="${entry.name}"></div>`;

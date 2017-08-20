@@ -717,3 +717,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 });
+
+
+ipcRenderer.on('redirect-url', function(event, url) {
+    remote.getCurrentWebContents().loadURL(url);
+});

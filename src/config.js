@@ -12,7 +12,7 @@ module.exports = {
     twColorHashtag: '#2b7bb9',
     twColorURL: '#a84dba',
     customizeColumnSize: '310',
-    customFontSize: '12px',
+    customFontSize: '',
     quoteServer: 'https://quote.sapphire.sh',
     altImageViewer: 'off',
     tivClickForNextImage: 'on',

@@ -96,9 +96,6 @@ ipcRenderer.on('apply-config', event => {
     document.body.style = style;
 
     let fontsize = config.customFontSize;
-    if (fontsize === '') {
-      fontsize = '12px';
-    }
     if (/^\d+$/.test(fontsize)) {
       fontsize = fontsize.toString() + 'px';
     }

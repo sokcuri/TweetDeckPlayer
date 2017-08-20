@@ -78,7 +78,7 @@ var autoReload = () => {
         remote.getCurrentWindow().reload();
     break;
   }
-  setTimeout(autoReload, 1000);
+  setTimeout(autoReload, 60000);
 }
 autoReload();
 

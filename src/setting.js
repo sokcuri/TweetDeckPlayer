@@ -57,40 +57,39 @@ function onload () {
         value = value.trim();
       }
       if (elem.type === 'file') {
-        if (elem.files && elem.files.length > 0) {
-          if (elem.id === 'notiAlarmSoundSource') {
-            // check to valid sound file
-            try {
-              let blobUrl = URL.createObjectURL(document.querySelector('input[type="file"]').files[0]);
-              let audio = new Audio(blobUrl);
-              audio.addEventListener('canplaythrough', () => {
-                URL.revokeObjectURL(blobUrl);
-                audio.remove();
-                let ext = elem.files[0].name.substr(elem.files[0].name.lastIndexOf('.'));
-                fs.createReadStream(elem.files[0].path).pipe(fs.createWriteStream(path.join(Util.getUserDataPath(), "alarmfile")))
-                  .on('error', function (e) {
-                    alert('Cannot copy audio file');
-                  });
-                alert('Successfully registered alarm file');
-                config['notiAlarmSoundExt'] = ext;
-                elem.value = '';
+        if (!(elem.files && elem.files.length > 0)) continue;
+        if (elem.id !== 'notiAlarmSoundSource') {
+          console.info(elem.files[0].path);
+          config[elem.id] = elem.files[0];
+          continue;
+        }
+        // check to valid sound file
+        try {
+          const blobUrl = URL.createObjectURL(document.querySelector('input[type="file"]').files[0]);
+          const audio = new Audio(blobUrl);
+          audio.addEventListener('canplaythrough', () => {
+            URL.revokeObjectURL(blobUrl);
+            audio.remove();
+            const ext = elem.files[0].name.substr(elem.files[0].name.lastIndexOf('.'));
+            fs.createReadStream(elem.files[0].path).pipe(fs.createWriteStream(path.join(Util.getUserDataPath(), 'alarmfile')))
+              .on('error', function (e) {
+                alert('Cannot copy audio file');
               });
-              audio.addEventListener('error', e => {
-                alert('Invalid or not supported audio file');
-                URL.revokeObjectURL(blobUrl);
-                audio.remove();
-                elem.value = '';
-              });
-            } catch (e) {
-              /* eslint-disable quotes */
-              alert("Can't load file");
-              URL.revokeObjectURL(blobUrl);
-              elem.value = '';
-            }
-          } else {
-            console.info(elem.files[0].path);
-            config[id] = elem.files[0];
-          }
+            alert('Successfully registered alarm file');
+            config['notiAlarmSoundExt'] = ext;
+            elem.value = '';
+          });
+          audio.addEventListener('error', e => {
+            alert('Invalid or not supported audio file');
+            URL.revokeObjectURL(blobUrl);
+            audio.remove();
+            elem.value = '';
+          });
+        } catch (e) {
+          /* eslint-disable quotes */
+          alert("Can't load file");
+          URL.revokeObjectURL(blobUrl);
+          elem.value = '';
         }
       } else if (elem.type === 'checkbox') {
         config[elem.id] = elem.checked ? value : null;

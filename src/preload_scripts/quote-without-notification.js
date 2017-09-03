@@ -5,19 +5,15 @@ function MakeQuoteWithoutNotification (ipcRenderer, id) {
   var host = Config.data.quoteServer;
   var apiUrl = `${host}/api?id=${id}&host=${encodeURIComponent(host)}`;
 
-  function status (response) {
-    if (response.status >= 200 && response.status < 300) {
-      return Promise.resolve(response);
-    } else if (response.status === 400) {
-      return Promise.resolve(response);
-    } else {
-      return Promise.reject(new Error(response.statusText));
-    }
-  }
-
   function showLog (response) {
     console.log((new Date).toUTCString(), '>', ['Quote API', id, response.status]);
     return response;
+  }
+
+  function status (response) {
+    return (response.status >= 200 && response.status < 300) ? Promise.resolve(response)
+      : (response.status === 400) ? Promise.resolve(response)
+      : Promise.reject(new Error(response.statusText));
   }
 
   function json (response) {
@@ -25,14 +21,10 @@ function MakeQuoteWithoutNotification (ipcRenderer, id) {
   }
 
   function handleErrors (data) {
-    if (data.hasOwnProperty('err')) {
-      var errMsg = data.err;
-      var msg = `Quote Without Notification Fail: ${errMsg}`;
-      return Promise.reject(new Error(msg));
-
-    } else {
-      return data;
-    }
+    if (!data.hasOwnProperty('err')) return data;
+    var errMsg = data.err;
+    var msg = `Quote Without Notification Fail: ${errMsg}`;
+    return Promise.reject(new Error(msg));
   }
 
   fetch(apiUrl)

@@ -29,11 +29,11 @@ module.exports = {
     // 파일 경로에서 파일 이름을 가져옴
     var filename = this.getFileName(_href);
 
-    // 확장자가 없는 경우 공백 반환
-    if (filename.lastIndexOf('.') === -1) return '';
-
-    // 확장자를 반환
-    return filename.substr(filename.lastIndexOf('.') + 1);
+    return (filename.lastIndexOf('.') === -1)
+      // 확장자가 없는 경우 공백 반환
+      ? ''
+      // 확장자를 반환
+      : filename.substr(filename.lastIndexOf('.') + 1);
   },
 
   // 유저 데이터 폴더를 리턴함

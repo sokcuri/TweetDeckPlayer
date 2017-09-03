@@ -21,6 +21,7 @@ module.exports = {
     useSquareProfileImage: false,
     useCounterClear: false,
     autoReloadCycle: 12,
+    enableUserNotes: false,
   },
   data: {},
   load () {

@@ -1,6 +1,5 @@
-const electron = require('electron');
+const {ipcRenderer} = require('electron');
 const noUiSlider = require('nouislider');
-const {ipcRenderer} = electron;
 
 const schema = require('./config-schema');
 const path = require('path');
@@ -62,42 +61,39 @@ function onload () {
         if (elem.files && elem.files.length > 0) {
           if (elem.id === 'notiAlarmSoundSource') {
             // check to valid sound file
-            if (elem.files && elem.files.length > 0) {
-              try {
-                let blobUrl = URL.createObjectURL(document.querySelector('input[type="file"]').files[0]);
-                let audio = new Audio(blobUrl);
-                audio.addEventListener('canplaythrough', () => {
-                  URL.revokeObjectURL(blobUrl);
-                  audio.remove();
-                  let ext = elem.files[0].name.substr(elem.files[0].name.lastIndexOf('.'));
-                  fs.createReadStream(elem.files[0].path).pipe(fs.createWriteStream(path.join(Util.getUserDataPath(), "alarmfile")))
-                    .on('error', function(e) {
-                      alert("Cannot copy audio file");
-                    });
-                    alert("Successfully registered alarm file");
-                    config['notiAlarmSoundExt'] = ext;
-                    elem.value = '';
-                });
-                audio.addEventListener('error', e => {
-                  alert("Invalid or not supported audio file");
-                  URL.revokeObjectURL(blobUrl);
-                  audio.remove();
-                  elem.value = '';
-                })
-              } catch(e) {
-                alert("Can't load file");
+            try {
+              let blobUrl = URL.createObjectURL(document.querySelector('input[type="file"]').files[0]);
+              let audio = new Audio(blobUrl);
+              audio.addEventListener('canplaythrough', () => {
                 URL.revokeObjectURL(blobUrl);
+                audio.remove();
+                let ext = elem.files[0].name.substr(elem.files[0].name.lastIndexOf('.'));
+                fs.createReadStream(elem.files[0].path).pipe(fs.createWriteStream(path.join(Util.getUserDataPath(), "alarmfile")))
+                  .on('error', function (e) {
+                    alert('Cannot copy audio file');
+                  });
+                alert('Successfully registered alarm file');
+                config['notiAlarmSoundExt'] = ext;
                 elem.value = '';
-              }
+              });
+              audio.addEventListener('error', e => {
+                alert('Invalid or not supported audio file');
+                URL.revokeObjectURL(blobUrl);
+                audio.remove();
+                elem.value = '';
+              });
+            } catch (e) {
+              /* eslint-disable quotes */
+              alert("Can't load file");
+              URL.revokeObjectURL(blobUrl);
+              elem.value = '';
             }
-
           } else {
             console.info(elem.files[0].path);
             config[id] = elem.files[0];
           }
         }
-      }
-      else if (elem.type === 'checkbox') {
+      } else if (elem.type === 'checkbox') {
         config[id] = elem.checked ? value : null;
       } else {
         config[id] = value;
@@ -112,9 +108,7 @@ function onload () {
 }
 
 document.addEventListener('DOMContentLoaded', onload);
-window.addEventListener('beforeunload', () => {
-  saveConfig(config);
-});
+window.addEventListener('beforeunload', () => saveConfig(config));
 
 function initializeComponents () {
   let form = document.querySelector('#settingform > section');

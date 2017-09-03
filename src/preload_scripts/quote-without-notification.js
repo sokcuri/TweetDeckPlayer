@@ -33,12 +33,10 @@ function MakeQuoteWithoutNotification (ipcRenderer, id) {
   .then(json)
   .then(handleErrors)
   .then(function (data) {
-    let jq = window.$;
-    var quoteUrl = data.url;
+    const quoteUrl = data.url;
     ipcRenderer.send('twtlib-send-text', quoteUrl);
-    jq(document).trigger('uiComposeTweet', { type: 'tweet' });
+    window.$(document).trigger('uiComposeTweet', { type: 'tweet' });
     window.toastMessage('Quote link generated');
-
   }).catch(function (err) {
     window.toastErrorMessage(err);
   });

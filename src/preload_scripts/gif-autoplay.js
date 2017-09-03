@@ -3,9 +3,7 @@ const Config = require('../config');
 const config = Config.load();
 
 function Autoplay () {
-  if (config.gifAutoplay === 'default') {
-    return;
-  }
+  if (config.gifAutoplay === 'default') return;
   const $body = $(document.body);
   $body
     .on('play', 'video.js-media-gif', event => {

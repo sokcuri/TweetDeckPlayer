@@ -18,7 +18,7 @@ function GM_xmlhttpRequest (params) {
       onerror(new Error(`Response code isn\'t HTTP 200 (got ${response.statusCode})`));
       return;
     }
-    let gmResponse = {
+    const gmResponse = {
       finalUrl: response.request.uri.href,
       response: body,
       responseHeaders: response.headers,

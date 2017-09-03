@@ -14,29 +14,29 @@ function loadConfig () {
   return ipcRenderer.sendSync('load-config');
 }
 
-var config;
+let config;
 
 function onload () {
   initializeComponents();
 
   config = loadConfig();
-  var wrapper = document.getElementById('wrapper');
+  const wrapper = document.getElementById('wrapper');
   // 트윗덱 테마를 바탕으로 설정창 테마 변경.
-  var theme = ipcRenderer.sendSync('request-theme');
+  const theme = ipcRenderer.sendSync('request-theme');
   if (theme === 'dark') {
     wrapper.classList.add('dark');
   }
 
-  var settingsTop = wrapper.getElementsByClassName('top')[0];
-  var settingsMain = wrapper.getElementsByTagName('main')[0];
-  var topHeight = window.getComputedStyle(settingsTop).height;
+  const settingsTop = wrapper.getElementsByClassName('top')[0];
+  const settingsMain = wrapper.getElementsByTagName('main')[0];
+  const topHeight = window.getComputedStyle(settingsTop).height;
   settingsMain.style.marginTop = topHeight;
   settingsMain.style.height = `calc(100% - ${topHeight})`;
 
   // 로딩한 config를 바탕으로 input/textarea의 값을 세팅한다.
-  for (let key of Object.keys(config)) {
-    let value = config[key];
-    let elem = document.getElementById(key);
+  for (const key of Object.keys(config)) {
+    const value = config[key];
+    const elem = document.getElementById(key);
     if (!elem) continue;
     if (elem.type === 'checkbox') {
       elem.checked = Boolean(value);
@@ -46,14 +46,13 @@ function onload () {
       elem.value = value;
     }
   }
-  let settingForm = document.getElementById('settingform');
+  const settingForm = document.getElementById('settingform');
 
-  var save = event => {
-    let settingElements = settingForm.querySelectorAll('input, textarea, select');
-    for (let elem of settingElements) {
-      let id = elem.id;
+  const save = event => {
+    const settingElements = settingForm.querySelectorAll('input, textarea, select');
+    for (const elem of settingElements) {
       let value = elem.value;
-      if (id === '') continue;
+      if (elem.id === '') continue;
       if (typeof value === 'string') {
         value = value.trim();
       }
@@ -94,9 +93,9 @@ function onload () {
           }
         }
       } else if (elem.type === 'checkbox') {
-        config[id] = elem.checked ? value : null;
+        config[elem.id] = elem.checked ? value : null;
       } else {
-        config[id] = value;
+        config[elem.id] = value;
       }
     }
     saveConfig(config);
@@ -111,8 +110,8 @@ document.addEventListener('DOMContentLoaded', onload);
 window.addEventListener('beforeunload', () => saveConfig(config));
 
 function initializeComponents () {
-  let form = document.querySelector('#settingform > section');
-  for (let obj of schema) {
+  const form = document.querySelector('#settingform > section');
+  for (const obj of schema) {
     switch (obj._type) {
       case 'section':
         var e = document.createElement('header');
@@ -136,7 +135,7 @@ function initializeComponents () {
 }
 
 function initializeEntries (entry, form) {
-  let e = document.createElement('div');
+  const e = document.createElement('div');
   e.className = 'settings-item';
 
   switch (entry.valueType) {
@@ -150,17 +149,17 @@ function initializeEntries (entry, form) {
       e.innerHTML = `<textarea id="${entry.name}" rows="5"></textarea>`;
       break;
     case 'enum':
-      let opts = entry.options.map(x => `<option value="${x.value}">${x.label}</option>`).join('');
+      const opts = entry.options.map(x => `<option value="${x.value}">${x.label}</option>`).join('');
       e.innerHTML = `<select name="${entry.name}" id="${entry.name}">${opts}</select>`;
       break;
     case 'alarmfile':
       e.innerHTML = `<label><input id="${entry.name}" type="file"><label for="${entry.name}"><div></div></label><div>${entry.label}</div></label>`;
-      let fileInput = e.querySelector('input[type="file"]');
+      // const fileInput = e.querySelector('input[type="file"]');
       break;
     case 'number': {
       e.innerHTML = `<div id="${entry.name}Slider"></div><div><input type="text" id="${entry.name}"></div>`;
-      let slider = e.querySelector(`#${entry.name}Slider`);
-      let text = e.querySelector(`#${entry.name}`);
+      const slider = e.querySelector(`#${entry.name}Slider`);
+      const text = e.querySelector(`#${entry.name}`);
       createSlider(entry, slider, text);
     } break;
     default:
@@ -170,7 +169,7 @@ function initializeEntries (entry, form) {
   form.appendChild(e);
 
   if (entry.description) {
-    let e = document.createElement('div');
+    const e = document.createElement('div');
     e.className = 'settings-item description' + (entry.valueType === 'bool' ? ' for-checkbox' : '');
     e.innerHTML = entry.description;
     form.appendChild(e);
@@ -194,12 +193,12 @@ function createSlider (entry, slider, text) {
       },
     },
   });
-  var tTime;
+  let tTime;
   slider.noUiSlider.on('update', (values, handle) => {
     text.value = values[handle];
     if (!tTime || tTime + 100 < new Date().getTime()) {
-      var event = new Event('change');
-      var settingForm = document.getElementById('settingform');
+      const event = new Event('change');
+      const settingForm = document.getElementById('settingform');
       settingForm.dispatchEvent(event);
       tTime = new Date().getTime();
     }

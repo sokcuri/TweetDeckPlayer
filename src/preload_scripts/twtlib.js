@@ -3,10 +3,10 @@ const electron = require('electron');
 const {ipcRenderer} = electron;
 
 function makeButton (text, clickEventHandler) {
-  let jq = window.$;
-  let btn = jq('<div>')
+  const $ = window.$;
+  const btn = $('<div>')
     .addClass('needsclick btn btn-on-blue full-width txt-left margin-b--12 padding-v--9');
-  let btnLabel = jq('<span>')
+  const btnLabel = $('<span>')
     .addClass('label padding-ls')
     .text(text)
     .appendTo(btn);
@@ -22,13 +22,13 @@ function clickHandler (event) {
 }
 
 function main () {
-  let jq = window.$;
-  let btn = makeButton('Tweet library™', clickHandler);
+  makeButton('Tweet library™', clickHandler);
+  const $ = window.$;
   ipcRenderer.on('twtlib-add-text', (event, arg) => {
-    if (!jq('.app-content').hasClass('is-open')) {
-      jq(document).trigger('uiComposeTweet', { type: 'tweet' });
+    if (!$('.app-content').hasClass('is-open')) {
+      $(document).trigger('uiComposeTweet', { type: 'tweet' });
     }
-    let textarea = jq('textarea.compose-text')
+    const textarea = $('textarea.compose-text')
       .val(arg)
       .trigger('change');
   });

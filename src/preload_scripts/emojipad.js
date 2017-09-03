@@ -14,7 +14,7 @@ module.exports = (function (win, doc, undefined) {
   rootElement.innerHTML = '<header class="emoji-category"></header><div class="emoji-container"></div><div class="emoji-tabs"></div>';
   rootElement.onclick = e => e.stopPropagation();
 
-  var me = {
+  const me = {
     element: rootElement,
     show: (x, y) => {
       rootElement.style.display = 'inline-block';
@@ -31,37 +31,37 @@ module.exports = (function (win, doc, undefined) {
     },
   };
 
-  for (let d of data) {
+  for (const d of data) {
     d.data = d.data.map(x => {
-      let chr = x.map(y => twemoji.convert.fromCodePoint(y)).join('');
+      const chr = x.map(y => twemoji.convert.fromCodePoint(y)).join('');
       return twemoji.parse(chr);
     });
   }
   buildUI();
 
   function buildUI () {
-    var container = rootElement.getElementsByClassName('emoji-container')[0];
-    var tabContainer = rootElement.getElementsByClassName('emoji-tabs')[0];
+    const container = rootElement.getElementsByClassName('emoji-container')[0];
+    const tabContainer = rootElement.getElementsByClassName('emoji-tabs')[0];
 
     for (let i = 0; i < data.length; i++) {
-      var divPage = doc.createElement('div');
-      var divInner = doc.createElement('div');
+      const divPage = doc.createElement('div');
+      const divInner = doc.createElement('div');
       divPage.className = 'emoji-page';
       divPage.setAttribute('data-page-index', i);
       divPage.appendChild(divInner);
       container.appendChild(divPage);
 
-      for (let e of data[i].data) {
-        var divCell = doc.createElement('div');
+      for (const e of data[i].data) {
+        const divCell = doc.createElement('div');
         divCell.className = 'emoji-item';
         divCell.innerHTML = e;
-        var img = divCell.getElementsByTagName('img')[0];
         if (img) img.onclick = onEmojiClicked;
+        const img = divCell.getElementsByTagName('img')[0];
         divCell.setAttribute('data-emoji', img && img.alt || '');
         divInner.appendChild(divCell);
       }
 
-      var btnTab = doc.createElement('button');
+      const btnTab = doc.createElement('button');
       btnTab.className = 'emoji-tab';
       btnTab.innerHTML = twemoji.parse(data[i].icon);
       btnTab.onclick = e => activateTab(i);
@@ -73,17 +73,17 @@ module.exports = (function (win, doc, undefined) {
   }
 
   function activateTab (index) {
-    var header = rootElement.getElementsByClassName('emoji-category')[0];
-    var pages = rootElement.getElementsByClassName('emoji-page');
-    var tabs = rootElement.getElementsByClassName('emoji-tab');
+    const header = rootElement.getElementsByClassName('emoji-category')[0];
+    const pages = rootElement.getElementsByClassName('emoji-page');
+    const tabs = rootElement.getElementsByClassName('emoji-tab');
 
     header.innerHTML = data[index].name;
-    for (let page of pages) page.classList.remove('active');
-    for (let tab of tabs)   tab.classList.remove('active');
+    for (const page of pages) page.classList.remove('active');
+    for (const tab of tabs) tab.classList.remove('active');
     pages[index].classList.add('active');
     tabs[index].classList.add('active');
 
-    var container = rootElement.getElementsByClassName('emoji-container')[0];
+    const container = rootElement.getElementsByClassName('emoji-container')[0];
     container.className = 'emoji-container';
     if (index === 0) container.classList.add('first-tab');
     else if (index === data.length - 1) container.classList.add('last-tab');

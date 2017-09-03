@@ -27,7 +27,7 @@ const GifAutoplay = require('./preload_scripts/gif-autoplay');
 const ImageViewer = require('./preload_scripts/image-viewer');
 const SwitchAccount = require('./preload_scripts/switch-account');
 const WikiLinkFixer = require('./preload_scripts/wikilinkfix');
-const CounterClear = require('./preload_scripts/counterclear.js');
+const CounterClear = require('./preload_scripts/counterclear');
 
 // 설정 파일 읽기
 var config = Config.load();

@@ -24,7 +24,7 @@ function download (url, filename) {
       return;
     }
   }
-  let filepath = path.join(savepath, filename);
+  const filepath = path.join(savepath, filename);
   try {
     request(url).pipe(fs.createWriteStream(filepath));
   } catch (e) {
@@ -33,13 +33,13 @@ function download (url, filename) {
 }
 
 function generateFilename (imgurl, index) {
-  let splitted = imgurl.split('.');
-  let ext = splitted[splitted.length - 1];
-  ext = ext.replace(/:\w+/, '');
+  const splitted = imgurl.split('.');
+  const ext = splitted[splitted.length - 1]
+    .replace(/:\w+/, '');
   const now = new Date();
   let [date, time, zone] = now.toISOString().split(/T|Z/);
   time = time.replace(/:/g, '');
-  let result = `${date} ${time}.${ext}`;
+  const result = `${date} ${time}.${ext}`;
   return result;
 }
 
@@ -48,7 +48,7 @@ function favoriteAutoSave (tweet) {
   // if (tweet.hasClass('is-favorite')) return;
 
   // in detail view
-  let images = tweet.find('img.media-img');
+  const images = tweet.find('img.media-img');
   if (images.length > 0) {
     let index = 1;
     images.each((i, elem) => {
@@ -58,7 +58,7 @@ function favoriteAutoSave (tweet) {
     });
   } else {
     // in timeline
-    images = tweet.find('a.js-media-image-link');
+    const images = tweet.find('a.js-media-image-link');
     let index = 1;
     images.each((i, elem) => {
       let match = elem.style.backgroundImage.match(/url\("(.+)"\)/);
@@ -69,11 +69,10 @@ function favoriteAutoSave (tweet) {
     });
   }
   // find GIF
-  let video = tweet.find('video.js-media-gif');
+  const video = tweet.find('video.js-media-gif');
   if (video.length > 0) {
-    video = video[0];
-    let src = video.currentSrc;
-    let filename = generateFilename(src);
+    const src = video[0].currentSrc;
+    const filename = generateFilename(src);
     download(src, filename);
   }
 }

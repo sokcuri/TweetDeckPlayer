@@ -9,18 +9,16 @@ try {
 const fs = require('fs');
 const Util = require('./util');
 
-const Config = require('./config');
+// 설정 파일 읽기
+const config = require('./config').load();
 const VERSION = require('./version');
 const Unlinkis = require('./preload_scripts/unlinkis');
 
 // 로딩 프로그레스 바 모듈 로드
 require('./pace.min.js');
 
-// 설정 파일 읽기
-var config = Config.load();
-
 // 우클릭시 임시 저장하는 이미지 주소와 링크 주소를 담는 변수
-var Addr = {
+const Addr = {
   img: '',
   link: '',
 };
@@ -36,7 +34,7 @@ ipcRenderer.on('no-pointer', (event, opt) => {
 
 // 메인 스레드에서 렌더러로 요청하는 커맨드
 ipcRenderer.on('command', (event, cmd) => {
-  var href;
+  let href;
   switch (cmd) {
     case 'cut':
       document.execCommand('cut');
@@ -110,19 +108,16 @@ ipcRenderer.on('command', (event, cmd) => {
 
 // 컨텍스트 메뉴 이벤트 리스너
 window.addEventListener('contextmenu', e => {
-  var target;
+  let target;
 
   // 기존 메뉴 이벤트를 무시
   e.preventDefault();
 
   // 현재 활성화된 element
-  var el = document.activeElement;
-
-  // 현재 마우스가 가리키고 있는 elements
-  var hover = document.querySelectorAll(':hover');
+  const el = document.activeElement;
 
   // 선택 영역이 있는지 여부
-  var is_range = document.getSelection().type === 'Range';
+  const is_range = document.getSelection().type === 'Range';
 
   // input=text 또는 textarea를 가리킴
   if (el
@@ -171,15 +166,14 @@ document.addEventListener('dragstart', evt => {
 
   // 이미지인 경우
   if (imageSrc) {
-    imageOrgSrc = imageSrc;
-    var image = Util.getOrigPath(imageSrc);
-    var ext = image.substr(image.lastIndexOf('.') + 1);
-    var filename = image.substr(image.lastIndexOf('/') + 1);
+    const image = Util.getOrigPath(imageSrc);
+    let ext = image.substr(image.lastIndexOf('.') + 1);
+    let filename = image.substr(image.lastIndexOf('/') + 1);
     if (filename.lastIndexOf(':') !== -1) {
       ext = ext.substr(0, ext.lastIndexOf(':'));
       filename = filename.substr(0, filename.lastIndexOf(':'));
     }
-    var detail = `image/${ext}:${filename}:${image}`;
+    const detail = `image/${ext}:${filename}:${image}`;
     evt.dataTransfer.setData('DownloadURL', detail);
     console.log(detail);
   }

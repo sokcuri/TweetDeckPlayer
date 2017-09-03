@@ -50,14 +50,14 @@
     const TEXTS = new Set(config.commonTexts || []);
     const wrapper = document.getElementById('wrapper');
 
-    var theme = ipcRenderer.sendSync('request-theme');
+    const theme = ipcRenderer.sendSync('request-theme');
     if (theme === 'dark') {
       wrapper.classList.add('dark');
     }
 
-    var settingsTop = wrapper.getElementsByClassName('top')[0];
-    var settingsMain = wrapper.getElementsByTagName('main')[0];
-    var topHeight = window.getComputedStyle(settingsTop).height;
+    const settingsTop = wrapper.getElementsByClassName('top')[0];
+    const settingsMain = wrapper.getElementsByTagName('main')[0];
+    const topHeight = window.getComputedStyle(settingsTop).height;
     settingsMain.style.marginTop = topHeight;
     settingsMain.style.height = `calc(100% - ${topHeight})`;
 

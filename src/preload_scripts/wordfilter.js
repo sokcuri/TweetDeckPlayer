@@ -19,7 +19,6 @@ module.exports = () => {
       return word;
     }
   });
-  let myID;
   // maskTweet - 트윗의 내용을 가린다.
   // 단, 클릭시에는 원래 트윗을 보여준다.
   function maskTweet (tweet) {
@@ -64,6 +63,7 @@ module.exports = () => {
   }
   // "Completely hide tweet" 옵션에 따라 결정한다.
   const action = config.hideFilteredTweet ? hideTweet : maskTweet;
+  let myID;
   function filterTweet (tweet) {
     if (!myID) {
       myID = document.querySelector('.js-account-summary .username');
@@ -79,7 +79,7 @@ module.exports = () => {
     if (config.stripWhitespace) {
       text = text.replace(/\s+/g, '');
     }
-    for (let word of words) {
+    for (const word of words) {
       if (typeof word === 'string' && text.indexOf(word.toLowerCase()) > -1) {
         action(tweet);
         return;
@@ -90,9 +90,9 @@ module.exports = () => {
       }
     }
     if (config.filterUserName) {
-      let userName = tweet.querySelector('.fullname');
-      userName = userName.textContent.toLowerCase();
-      for (let word of words) {
+      const userName = tweet.querySelector('.fullname')
+        .textContent.toLowerCase();
+      for (const word of words) {
         if (typeof word === 'string' && userName.indexOf(word.toLowerCase()) > -1) {
           action(tweet);
           return;
@@ -105,9 +105,9 @@ module.exports = () => {
     }
   }
   const wordFilterObserver = new MutationObserver(mutations => {
-    for (let mut of mutations) {
+    for (const mut of mutations) {
       let added = mut.addedNodes;
-      for (let node of added) {
+      for (const node of added) {
         if (!node.matches) continue;
         if (!node.matches('article.stream-item')) continue;
         // DM은 필터링하지 않는다. .tweet-message 요소가 있으면 DM으로 간주

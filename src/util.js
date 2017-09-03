@@ -27,23 +27,17 @@ module.exports = {
   // 파일의 확장자를 반환
   getFileExtension (_href) {
     // 파일 경로에서 파일 이름을 가져옴
-    var filename = this.getFileName(_href);
-
+    const filename = this.getFileName(_href);
+     // 확장자가 없는 경우 공백 반환
     return (filename.lastIndexOf('.') === -1)
-      // 확장자가 없는 경우 공백 반환
       ? ''
-      // 확장자를 반환
-      : filename.substr(filename.lastIndexOf('.') + 1);
+      : filename.substr(filename.lastIndexOf('.') + 1); 
   },
 
   // 유저 데이터 폴더를 리턴함
   // 일반적인 환경 : __dirname/data/
   // MacOS 패키징 : __dirname/<package-name> (ex. /TweetDeckPlayer.app -> /TweetDeckPlayer)
   getUserDataPath () {
-    var a = __dirname.substr(0, __dirname.lastIndexOf('/'));
-    var b = __dirname.substr(0, __dirname.lastIndexOf('\\'));
-    var c = __dirname.lastIndexOf('.asar');
-    var d = __dirname.lastIndexOf('.app/Contents/Resources/app');
     if (d !== -1) {
       return __dirname.substr(0, d) + '/data/';
     } else if (c !== -1) {
@@ -55,12 +49,12 @@ module.exports = {
     } else {
       return path.join(__dirname, '../data');
     }
+    const a = __dirname.substr(0, __dirname.lastIndexOf('/'));
+    const b = __dirname.substr(0, __dirname.lastIndexOf('\\'));
+    const c = __dirname.lastIndexOf('.asar');
+    const d = __dirname.lastIndexOf('.app/Contents/Resources/app');
   },
   getWritableRootPath () {
-    var a = __dirname.substr(0, __dirname.lastIndexOf('/'));
-    var b = __dirname.substr(0, __dirname.lastIndexOf('\\'));
-    var c = __dirname.lastIndexOf('.asar');
-    var d = __dirname.lastIndexOf('.app/Contents/Resources/app');
     if (d !== -1) {
       return __dirname.substr(0, d) + '/';
     } else if (c !== -1) {
@@ -72,5 +66,9 @@ module.exports = {
     } else {
       return path.join(__dirname, '..');
     }
+    const a = __dirname.substr(0, __dirname.lastIndexOf('/'));
+    const b = __dirname.substr(0, __dirname.lastIndexOf('\\'));
+    const c = __dirname.lastIndexOf('.asar');
+    const d = __dirname.lastIndexOf('.app/Contents/Resources/app');
   },
 };

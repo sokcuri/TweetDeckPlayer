@@ -2,8 +2,10 @@ const fs = require('mz/fs');
 const path = require('path');
 const _ = require('lodash');
 const Util = require('../util');
+const Config = require('../config');
 const insertStyle = require('./playermonkey').GM_addStyle;
 
+const config = Config.load();
 const dataPath = Util.getUserDataPath();
 
 const UserNote = {
@@ -111,6 +113,9 @@ module.exports = () => {
   window.TD_mustaches['twitter_profile.mustache'] += TEMPLATE_HACK_HTML;
   const observeMe = document.querySelector('.js-modals-container');
   const observer = new MutationObserver(mutations => {
+    if (!config.enableUserNotes) {
+      return;
+    }
     for (const mut of mutations) {
       for (const node of mut.addedNodes) {
         if (!node.className) continue;

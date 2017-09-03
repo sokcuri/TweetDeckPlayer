@@ -209,6 +209,12 @@ module.exports = [
     label: 'Clear notification counter periodically',
     description: '<b>Requires reload to apply.</b>',
   },
+  {
+    _type: 'entry',
+    name: 'enableUserNotes',
+    valueType: 'bool',
+    label: 'Enable User note',
+  },
   { _type: 'subsection', label: 'Privacy' },
   {
     _type: 'entry',

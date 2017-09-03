@@ -12,17 +12,16 @@ remote.getCurrentWebContents().on('did-finish-load', () => {
   }, 3000);
 
   document.body.style = 'display: none';
-  var tick = true;
-  var check = () => {
+  let tick = true;
+  const check = () => {
     if (!document.querySelector('.feature-status-list').childElementCount) {
       setTimeout(check, 100);
     } else {
       tick = false;
-      if (document.body.innerText.search(HW_ACCEL_ERROR) !== -1) {
-        ipcRenderer.send('nogpu-relaunch');
-      } else {
-        ipcRenderer.send('run');
-      }
+      const command = (document.body.innerText.search(HW_ACCEL_ERROR) !== -1)
+        ? 'nogpu-relaunch'
+        : 'run';
+      ipcRenderer.send(command);
     }
   };
   check();

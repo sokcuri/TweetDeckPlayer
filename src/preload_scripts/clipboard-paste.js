@@ -11,10 +11,9 @@ module.exports = function enablePaste () {
       event.preventDefault();
       for (const image of images) {
         const files = [ image.getAsFile() ];
-        if (!$('.app-content').hasClass('is-open')) {
-          $(document).trigger('uiComposeTweet', { type: 'tweet' });
-        }
-        $(document).trigger('uiFilesAdded', { files });
+        ($('.app-content').hasClass('is-open'))
+          ? $(document).trigger('uiFilesAdded', { files })
+          : $(document).trigger('uiComposeTweet', { type: 'tweet' });
       }
     }
   });

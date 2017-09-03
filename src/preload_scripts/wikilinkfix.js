@@ -3,9 +3,8 @@ const Config = require('../config');
 
 module.exports = () => {
   const linkFixObserver = new MutationObserver(mutations => {
-    for (const mut of mutations) {
-      const added = mut.addedNodes;
-      for (const node of added) {
+    for (const { addedNodes } of mutations) {
+      for (const node of addedNodes) {
         if (!node.querySelectorAll) continue;
         const links = node.querySelectorAll('a.url-ext');
         for (const link of links) {

@@ -155,25 +155,19 @@ module.exports = function imageViewer () {
           event.stopImmediatePropagation();
           viewer.close();
         }
-      } else {
-        if (code === 'Space') {
-          event.preventDefault();
-          const preview = $('.is-selected-tweet a[rel=mediaPreview]');
-          if (preview.length > 0) {
-            preview.eq(0).click();
-          }
+      } else if (code === 'Space') {
+        event.preventDefault();
+        const preview = $('.is-selected-tweet a[rel=mediaPreview]');
+        if (preview.length > 0) {
+          preview.eq(0).click();
         }
       }
     });
   $(document.body).on('click', 'a[rel=mediaPreview]', event => {
-    if (!config.altImageViewer) {
-      return;
-    }
+    if (!config.altImageViewer) return;
     const target = $(event.currentTarget);
     const videoOverlay = target.has('.video-overlay');
-    if (videoOverlay.length !== 0) {
-      return;
-    }
+    if (videoOverlay.length !== 0) return;
     event.preventDefault();
     event.stopImmediatePropagation();
     const container = target.parents('.js-media');
@@ -186,12 +180,9 @@ module.exports = function imageViewer () {
     images.each((index, image) => {
       image = $(image);
       const img = image.find('img.media-img');
-      let url = '';
-      if (img.length !== 0) {
-        url = img.attr('src');
-      } else {
-        url = extractURL(image);
-      }
+      let url = (img.length === 0)
+        ? img.attr('src')
+        : extractURL(img);
       if (url === targetImage) {
         parameter.index = index;
       }

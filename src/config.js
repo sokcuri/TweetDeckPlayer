@@ -25,9 +25,9 @@ module.exports = {
   },
   data: {},
   load () {
-    var config = this._defaultConfig;
-    var userConfig = {};
-    var fc = fs.constants; // shortcut
+    let config = this._defaultConfig;
+    let userConfig = {};
+    const fc = fs.constants; // shortcut
     try {
       fs.accessSync(this._filePath, (fc.F_OK | fc.R_OK | fc.W_OK));
       userConfig = JSON.parse(fs.readFileSync(this._filePath, 'utf8'));

@@ -27,7 +27,7 @@ const GifAutoplay = require('./preload_scripts/gif-autoplay');
 const ImageViewer = require('./preload_scripts/image-viewer');
 const SwitchAccount = require('./preload_scripts/switch-account');
 const WikiLinkFixer = require('./preload_scripts/wikilinkfix');
-const CounterClear = require('./preload_scripts/counterclear.js');
+const CounterClear = require('./preload_scripts/counterclear');
 const UserNotes = require('./preload_scripts/user-note.js');
 
 // 설정 파일 읽기
@@ -48,17 +48,17 @@ var updateSound_backup;
 var autoReload = () => {
 
   config = Config.load();
-  if (!config.applyAutoReload || config.autoReloadCycle != configReloadCycle) {
+  if (!config.applyAutoReload || config.autoReloadCycle !== configReloadCycle) {
     loadTimeStamp = new Date().getTime();
     configReloadCycle = config.autoReloadCycle * 1;
     autoReload_alermed = 0;
   }
 
-  var checkTime = (milliseconds) => {
-    return (loadTimeStamp + 60000 * 60 * configReloadCycle + milliseconds <= new Date().getTime())
-  }
+  var checkTime = milliseconds => {
+    return (loadTimeStamp + 60000 * 60 * configReloadCycle + milliseconds <= new Date().getTime());
+  };
 
-  switch(autoReload_alermed) {
+  switch (autoReload_alermed) {
     case 0:
       if (window.toastMessage && checkTime(0)) {
         window.toastMessage('Automatically reload in one minute');
@@ -75,15 +75,16 @@ var autoReload = () => {
         window.toastMessage('Automatically reload in a few seconds');
         autoReload_alermed++;
       }
-    break;
+      break;
 
     case 2:
-      if (checkTime(60000))
+      if (checkTime(60000)) {
         remote.getCurrentWindow().reload();
-    break;
+      }
+      break;
   }
   setTimeout(autoReload, 5000);
-}
+};
 autoReload();
 
 ipcRenderer.on('apply-config', event => {
@@ -174,16 +175,16 @@ ipcRenderer.on('apply-config', event => {
 
     if (config.applyNotiAlarmSound) {
       var base64_encode = file => {
-          var bitmap = fs.readFileSync(file);
-          return new Buffer(bitmap).toString('base64');
+        var bitmap = fs.readFileSync(file);
+        return new Buffer(bitmap).toString('base64');
       };
 
       var base64_decode = (base64str, file) => {
-          // create buffer object from base64 encoded string, it is important to tell the constructor that the string is base64 encoded
-          var bitmap = new Buffer(base64str, 'base64');
-          // write buffer to file
-          fs.writeFileSync(file, bitmap);
-          console.log('******** File created from base64 encoded string ********');
+        // create buffer object from base64 encoded string, it is important to tell the constructor that the string is base64 encoded
+        var bitmap = new Buffer(base64str, 'base64');
+        // write buffer to file
+        fs.writeFileSync(file, bitmap);
+        console.log('******** File created from base64 encoded string ********');
       };
 
       var convertDataURIToBinary = dataURI => {
@@ -194,17 +195,17 @@ ipcRenderer.on('apply-config', event => {
         var rawLength = raw.length;
         var array = new Uint8Array(new ArrayBuffer(rawLength));
 
-        for(i = 0; i < rawLength; i++) {
+        for (var i = 0; i < rawLength; i++) {
           array[i] = raw.charCodeAt(i);
         }
         return array;
-      }
+      };
 
       var ext = config.notiAlarmSoundExt;
-      data = `data:audio/${ext};base64,${base64_encode(path.join(Util.getUserDataPath(), 'alarmfile'))}`;
+      var data = `data:audio/${ext};base64,${base64_encode(path.join(Util.getUserDataPath(), 'alarmfile'))}`;
 
       var binary = convertDataURIToBinary(data);
-      var blob =new Blob([binary], {type : `audio/${ext}`});
+      var blob = new Blob([binary], {type : `audio/${ext}`});
       var blobUrl = URL.createObjectURL(blob);
 
       document.getElementById("update-sound").innerHTML = `<source src="${blobUrl}">`;
@@ -722,6 +723,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-ipcRenderer.on('redirect-url', function(event, url) {
-    remote.getCurrentWebContents().loadURL(url);
+ipcRenderer.on('redirect-url', function (event, url) {
+  remote.getCurrentWebContents().loadURL(url);
 });

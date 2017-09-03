@@ -10,10 +10,10 @@ function makeButton (text, clickEventHandler) {
     .addClass('label padding-ls')
     .text(text)
     .appendTo(btn);
-  btn.on('click', clickEventHandler);
-  let btnContainer = jq('.js-add-image-button').parent();
-  btn.appendTo(btnContainer);
-  return btn;
+  const btnContainer = $('.js-add-image-button').parent();
+  return btn
+    .on('click', clickEventHandler)
+    .appendTo(btnContainer);
 }
 
 function clickHandler (event) {

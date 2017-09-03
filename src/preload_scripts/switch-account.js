@@ -5,15 +5,13 @@ function SwitchAccount () {
     if (!/Digit\d/.test(event.code)) return;
     let key = parseInt(event.keyCode, 10) - 48;
     if (Number.isNaN(key)) return;
-    key = (key === 0 ? 10 : (key - 1));
+    key = (key === 0) ? 10 : key - 1;
     const accounts = $('.js-account-list .js-account-item');
     const defaultAccount = accounts.eq(key);
     if (defaultAccount.length !== 1) return;
     const accountKey = defaultAccount.data('account-key');
-    let name = defaultAccount.attr('title');
-    if (name === '') {
-      name = defaultAccount.data('original-title');
-    }
+    const name = defaultAccount.attr('title')
+      || defaultAccount.data('original-title');
     TD.storage.accountController.setDefault(accountKey);
     const drawer = $('.js-drawer[data-drawer=compose]');
     drawer.trigger('uiAccountsSelected', {

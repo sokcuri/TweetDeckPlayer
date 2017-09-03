@@ -8,16 +8,11 @@ module.exports = () => {
   words = words.map(word => {
     // /로 감싼 단어는 정규식으로 변환한다.
     let match = word.match(/^\/(.+)\/$/);
-    if (match) {
-      // global flag 붙이지 말것
-      // see: http://stackoverflow.com/a/2630538
-      return new RegExp(match[1], 'i');
-    } else {
-      if (config.stripWhitespace) {
-        word = word.replace(/\s+/g, '');
-      }
-      return word;
-    }
+    // global flag 붙이지 말것
+    // see: http://stackoverflow.com/a/2630538
+    return (match) ? new RegExp(match[1], 'i')
+      : (config.stripWhitespace) ? word.replace(/\s+/g, '')
+      : word;
   });
   // maskTweet - 트윗의 내용을 가린다.
   // 단, 클릭시에는 원래 트윗을 보여준다.
@@ -66,8 +61,8 @@ module.exports = () => {
   let myID;
   function filterTweet (tweet) {
     if (!myID) {
-      myID = document.querySelector('.js-account-summary .username');
-      myID = myID.textContent.trim();
+      myID = document.querySelector('.js-account-summary .username')
+        .textContent.trim();
     }
     let userID = tweet.querySelector('.username');
     if (!userID) return;

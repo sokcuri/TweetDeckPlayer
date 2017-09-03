@@ -120,8 +120,7 @@ window.addEventListener('contextmenu', e => {
   const is_range = document.getSelection().type === 'Range';
 
   // input=text 또는 textarea를 가리킴
-  if (el
-    && (el.tagName.toLowerCase() === 'input' && el.type === 'text')
+  if (el && (el.tagName.toLowerCase() === 'input' && el.type === 'text')
     || (el.tagName.toLowerCase() === 'textarea')) {
     target = (is_range ? 'text_sel' : 'text');
   } else if (document.querySelector('img:hover')) {
@@ -154,15 +153,12 @@ if (config.enableUnlinkis) {
 
 // 트윗에 첨부된 이미지를 드래그해서 저장할 수 있도록 함
 document.addEventListener('dragstart', evt => {
-  var imageSrc = '';
-  var imageOrgSrc = '';
-  if (evt.srcElement.classList.contains('js-media-image-link')) {
-    // 트윗 미디어 이미지
-    imageSrc = evt.srcElement.style.backgroundImage.slice(5, -2);
-  } else if (typeof evt.srcElement.currentSrc !== 'undefined' && evt.srcElement.currentSrc !== '') {
-    // 일반 이미지
-    imageSrc = evt.srcElement.currentSrc;
-  }
+  const isTweetImage = evt.srcElement.classList.contains('js-media-image-link');
+  const isNormageImage = typeof evt.srcElement.currentSrc !== 'undefined' && evt.srcElement.currentSrc !== '';
+
+  const imageSrc = isTweetImage ? evt.srcElement.style.backgroundImage.slice(5, -2)
+    : isNormageImage ? evt.srcElement.currentSrc
+    : false;
 
   // 이미지인 경우
   if (imageSrc) {
@@ -186,7 +182,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.activeElement === document.body && e.key >= 'ㄱ' && e.key <= 'ㅣ') {
       e.preventDefault();
       e.stopPropagation();
-      window.$(document.activeElement).trigger(window.$.Event('keypress', {which: e.which}));
+      window.$(document.activeElement)
+        .trigger(window.$.Event('keypress', {
+          which: e.which,
+        }));
     }
   });
 });

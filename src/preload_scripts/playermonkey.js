@@ -10,13 +10,9 @@ function GM_xmlhttpRequest (params) {
     throw new Error('Unknown HTTP Method!');
   }
   request[method](url, (error, response, body) => {
-    if (error) {
-      onerror(error);
-      return;
-    }
+    if (error) return onerror(error);
     if (response.statusCode !== 200) {
-      onerror(new Error(`Response code isn\'t HTTP 200 (got ${response.statusCode})`));
-      return;
+      return onerror(new Error(`Response code isn\'t HTTP 200 (got ${response.statusCode})`));
     }
     const gmResponse = {
       finalUrl: response.request.uri.href,

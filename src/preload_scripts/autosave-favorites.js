@@ -12,10 +12,8 @@ function download (url, filename) {
   if (config.autoSaveFavUrlName) {
     filename = Util.getFileName(url);
   }
-  let savepath = (config.autoSavePath || '').trim();
-  if (!savepath) {
-    savepath = path.join(Util.getWritableRootPath(), 'Favorited Images');
-  }
+  const savepath = (config.autoSavePath || '').trim()
+    || path.join(Util.getWritableRootPath(), 'Favorited Images');
   try {
     fs.mkdirSync(savepath);
   } catch (error) {
@@ -78,12 +76,14 @@ function favoriteAutoSave (tweet) {
 }
 
 function tossElement (e) {
-  if (typeof e !== 'undefined') {
-    if (process.platform === 'darwin' ? remote.getGlobal('keyState').alt : remote.getGlobal('keyState').ctrl) {
-      return;
-    } else if (config.enableAutoSaveFav) {
-      favoriteAutoSave(window.$(`[data-key="${e}"]`));
-    }
+  if (typeof e === 'undefined') return;
+  if (process.platform === 'darwin'
+    ? remote.getGlobal('keyState').alt
+    : remote.getGlobal('keyState').ctrl
+  ) {
+    return;
+  } else if (config.enableAutoSaveFav) {
+    favoriteAutoSave(window.$(`[data-key="${e}"]`));
   }
 }
 

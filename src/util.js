@@ -5,23 +5,17 @@ module.exports = {
 
   // 트위터 이미지의 원본 크기를 가리키는 링크를 반환
   getOrigPath (url) {
-    let result = url;
-    if (url.includes('pbs.twimg.com')) {
-      result = url.replace(/:small$/, ':orig');
-    } else if (url.includes('ton/data/dm')) {
-      result = url.replace(/:small$/, ':large');
-    }
-    return result;
+    return (url.includes('pbs.twimg.com')) ? url.replace(/:small$/, ':orig')
+      : (url.includes('ton/data/dm')) ? url.replace(/:small$/, ':large')
+      : url;
   },
 
   // 주어진 링크의 파일 이름을 반환
   getFileName (_href) {
-    var href = _href;
-    href = href.substr(_href.lastIndexOf('/') + 1);
-    if (href.search(':') !== -1) {
-      href = href.substr(0, href.search(':'));
-    }
-    return href;
+    const href = _href.substr(_href.lastIndexOf('/') + 1);
+    return (href.search(':') !== -1)
+      ? href.substr(0, href.search(':'))
+      : href;
   },
 
   // 파일의 확장자를 반환
@@ -38,37 +32,25 @@ module.exports = {
   // 일반적인 환경 : __dirname/data/
   // MacOS 패키징 : __dirname/<package-name> (ex. /TweetDeckPlayer.app -> /TweetDeckPlayer)
   getUserDataPath () {
-    if (d !== -1) {
-      return __dirname.substr(0, d) + '/data/';
-    } else if (c !== -1) {
-      if (a.length > b.length) {
-        return a.substr(0, a.lastIndexOf('/')) + '/data/';
-      } else {
-        return b.substr(0, b.lastIndexOf('\\')) + '\\data\\';
-      }
-    } else {
-      return path.join(__dirname, '../data');
-    }
     const a = __dirname.substr(0, __dirname.lastIndexOf('/'));
     const b = __dirname.substr(0, __dirname.lastIndexOf('\\'));
     const c = __dirname.lastIndexOf('.asar');
     const d = __dirname.lastIndexOf('.app/Contents/Resources/app');
+    return (d !== -1) ? __dirname.substr(0, d) + '/data/'
+      : (c !== -1) ? (a.length > b.length)
+        ? a.substr(0, a.lastIndexOf('/')) + '/data/'
+        : b.substr(0, b.lastIndexOf('\\')) + '\\data\\'
+      : path.join(__dirname, '../data');
   },
   getWritableRootPath () {
-    if (d !== -1) {
-      return __dirname.substr(0, d) + '/';
-    } else if (c !== -1) {
-      if (a.length > b.length) {
-        return a.substr(0, a.lastIndexOf('/'));
-      } else {
-        return b.substr(0, b.lastIndexOf('\\'));
-      }
-    } else {
-      return path.join(__dirname, '..');
-    }
     const a = __dirname.substr(0, __dirname.lastIndexOf('/'));
     const b = __dirname.substr(0, __dirname.lastIndexOf('\\'));
     const c = __dirname.lastIndexOf('.asar');
     const d = __dirname.lastIndexOf('.app/Contents/Resources/app');
+    return (d !== -1) ? __dirname.substr(0, d) + '/'
+      : (c !== -1) ? (a.length > b.length)
+        ? a.substr(0, a.lastIndexOf('/'))
+        : b.substr(0, b.lastIndexOf('\\'))
+      : path.join(__dirname, '..');
   },
 };

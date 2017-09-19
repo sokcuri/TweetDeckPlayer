@@ -215,6 +215,12 @@ module.exports = [
     valueType: 'bool',
     label: 'Enable User note',
   },
+  {
+    _type: 'entry',
+    name: 'detectUpdate',
+    valueType: 'bool',
+    label: 'Check latest version on startup',
+  },
   { _type: 'subsection', label: 'Privacy' },
   {
     _type: 'entry',

@@ -7,6 +7,7 @@ const mkdirp = require('mkdirp');
 const request = require('request');
 const child_process = require('child_process');
 const Util = require('./util');
+const updateCheck = require('./update-check');
 
 // set to userdata folder
 app.setPath('userData', Util.getUserDataPath());
@@ -950,6 +951,23 @@ var run = chk_win => {
   });
 
   ipcMain.on('page-ready-tdp', (event, arg) => {
+    // 업데이트 체크
+    if (Config.data.detectUpdate) {
+      setTimeout(updateCheck, 0, (err, latest) => {
+        if (err) {
+          // error check
+          win.webContents.send('toast-message', "Update check failed");
+        }
+
+        const current = require('./version').value;
+        if (versionCompare(current, latest) < 0) {
+          win.webContents.send('toast-message', "Update required: newest version is " + latest);
+        } else {
+          win.webContents.send('toast-message', require('./version').message);
+        }
+      });
+    }
+
     // destroyed contents when loading
     let emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
     win.webContents.insertCSS(emojipadCSS);

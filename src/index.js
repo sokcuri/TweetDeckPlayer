@@ -1239,4 +1239,4 @@ ipcMain.on('twtlib-send-text', (event, arg) => {
 ipcMain.on('open-google-translator', (event, arg) => {
   let { text } = arg;
   openGoogleTranslatorWindow(text);
-})
+});

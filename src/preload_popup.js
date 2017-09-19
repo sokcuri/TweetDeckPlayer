@@ -11,7 +11,6 @@ const Util = require('./util');
 
 // 설정 파일 읽기
 const config = require('./config').load();
-const VERSION = require('./version');
 const Unlinkis = require('./preload_scripts/unlinkis');
 
 // 로딩 프로그레스 바 모듈 로드

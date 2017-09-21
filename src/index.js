@@ -958,6 +958,7 @@ var run = chk_win => {
         if (err) {
           // error check
           win.webContents.send('toast-message', "Update check failed");
+          return ;
         }
 
         const current = VERSION.value;

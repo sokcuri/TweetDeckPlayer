@@ -7,6 +7,8 @@ const mkdirp = require('mkdirp');
 const request = require('request');
 const child_process = require('child_process');
 const Util = require('./util');
+const VERSION = require('./version');
+const updateCheck = require('./update-check');
 
 // set to userdata folder
 app.setPath('userData', Util.getUserDataPath());
@@ -950,6 +952,24 @@ var run = chk_win => {
   });
 
   ipcMain.on('page-ready-tdp', (event, arg) => {
+    // 업데이트 체크
+    if (Config.data.detectUpdate) {
+      setTimeout(updateCheck, 0, (err, latest) => {
+        if (err) {
+          // error check
+          win.webContents.send('toast-message', "Update check failed");
+          return ;
+        }
+
+        const current = VERSION.value;
+        if (versionCompare(current, latest) < 0) {
+          win.webContents.send('toast-message', "Update required: newest version is " + latest);
+        } else {
+          win.webContents.send('toast-message', VERSION.message);
+        }
+      });
+    }
+
     // destroyed contents when loading
     let emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
     win.webContents.insertCSS(emojipadCSS);
@@ -1221,4 +1241,4 @@ ipcMain.on('twtlib-send-text', (event, arg) => {
 ipcMain.on('open-google-translator', (event, arg) => {
   let { text } = arg;
   openGoogleTranslatorWindow(text);
-})
+});

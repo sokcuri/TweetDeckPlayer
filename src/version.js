@@ -1,1 +1,2 @@
-module.exports = 'TweetDeck Player v2.30 by @sokcuri @d57_kr @gaeulbyul';
+const version = module.exports.value = '2.30';
+module.exports.message = `TweetDeck Player v${version} by @sokcuri @d57_kr @gaeulbyul`;

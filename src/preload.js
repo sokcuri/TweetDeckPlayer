@@ -12,7 +12,7 @@ const twitter = require('twitter-text');
 const twemoji = require('twemoji');
 
 const Config = require('./config');
-const VERSION = require('./version');
+const VERSION = require('./version').message;
 const Util = require('./util');
 
 const PlayerMonkey = require('./preload_scripts/playermonkey');
@@ -668,7 +668,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // TweetDeck Ready Check
   $(document).on('TD.ready', () => {
     ipcRenderer.send('page-ready-tdp', this);
-    window.toastMessage(TD.i(VERSION));
+    if (!Config.data.detectUpdate) window.toastMessage(TD.i(VERSION));
     setTimeout(() => {
       TD.settings.setUseStream(TD.settings.getUseStream());
       patchContentEditable();
@@ -722,7 +722,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-
 ipcRenderer.on('redirect-url', function (event, url) {
   remote.getCurrentWebContents().loadURL(url);
+});
+
+ipcRenderer.on('toast-message', function (event, message) {
+  window.toastMessage(message);
 });

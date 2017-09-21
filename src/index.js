@@ -7,6 +7,7 @@ const mkdirp = require('mkdirp');
 const request = require('request');
 const child_process = require('child_process');
 const Util = require('./util');
+const VERSION = require('./version');
 const updateCheck = require('./update-check');
 
 // set to userdata folder
@@ -959,11 +960,11 @@ var run = chk_win => {
           win.webContents.send('toast-message', "Update check failed");
         }
 
-        const current = require('./version').value;
+        const current = VERSION.value;
         if (versionCompare(current, latest) < 0) {
           win.webContents.send('toast-message', "Update required: newest version is " + latest);
         } else {
-          win.webContents.send('toast-message', require('./version').message);
+          win.webContents.send('toast-message', VERSION.message);
         }
       });
     }

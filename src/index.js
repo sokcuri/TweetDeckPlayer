@@ -18,17 +18,8 @@ const Config = require('./config');
 
 let win, popup, settingsWin, twtlibWin, accessibilityWin, gTranslatorWin;
 
-function getSamePos (x, y) {
-  for (var i = 0; i < Math.max(x.length, y.length); i++) {
-    if (i === x.length || i === y.length || x[i] !== y[i]) {
-      return i;
-    }
-  }
-}
-
 ipcMain.on('load-config', (event, arg) => {
-  var config = Config.load();
-  event.returnValue = config;
+  event.returnValue = Config.load();
 });
 
 ipcMain.on('save-config', (event, config) => {
@@ -44,13 +35,8 @@ ipcMain.on('apply-config', (event, config) => {
 
 ipcMain.on('request-theme', event => {
   try {
-    win.webContents.executeJavaScript(
-      '(()=>{var x=document.querySelector("meta[http-equiv=Default-Style]");return x&&x.content||"light";})()',
-      false,
-      theme => {
-        event.returnValue = theme;
-      }
-    );
+    const script = '(()=>{var x=document.querySelector("meta[http-equiv=Default-Style]");return x&&x.content||"light";})()';
+    win.webContents.executeJavaScript(script, false, (theme) => event.returnValue = theme);
   } catch (e) { }
 });
 
@@ -83,21 +69,19 @@ if (existInst) {
 }
 
 // 렌더러 프로세스가 죽었을때 이벤트
-app.on('gpu-process-crashed', () => {
-
-});
+app.on('gpu-process-crashed', () => {});
 
 // setting window
-var openSetting = window => {
+const openSetting = (window) => {
   if (settingsWin) {
     settingsWin.focus();
     return;
   }
-  var width = 500;
-  var height = 620;
-  var b = win.getBounds();
-  var x = Math.floor(b.x + (b.width - width) / 2);
-  var y = Math.floor(b.y + (b.height - height) / 2);
+  const width = 500;
+  const height = 620;
+  const b = win.getBounds();
+  const x = Math.floor(b.x + (b.width - width) / 2);
+  const y = Math.floor(b.y + (b.height - height) / 2);
   settingsWin = new BrowserWindow({
     width, height, x, y,
     parent: win,
@@ -115,8 +99,8 @@ var openSetting = window => {
   settingsWin.loadURL('file:///' + path.join(__dirname, 'setting.html'));
 };
 
-var openPopup = url => {
-  var preference = (Config.data && Config.data.popup_bounds) ? Config.data.popup_bounds : {};
+const openPopup = url => {
+  const preference = (Config.data && Config.data.popup_bounds) ? Config.data.popup_bounds : {};
   preference.icon = path.join(__dirname, 'tweetdeck.ico');
   preference.modal = false;
   preference.show = true;
@@ -137,7 +121,6 @@ var openPopup = url => {
       if (e.sender.isFullScreen()){
         e.sender.setFullScreen(false);
       }
-
       Config.data.popup_bounds = popup.getBounds();
     }
     Config.save();
@@ -171,99 +154,83 @@ function openGoogleTranslatorWindow (text) {
 //
 // edit
 //
-var sub_cut = webContents => ({
+
+const sub_cut = webContents => ({
   label: 'Cut',
-  click () {
-    webContents.send('command', 'cut');
-  },
+  click: () => webContents.send('command', 'cut'),
 });
-var sub_copy = webContents => ({
+const sub_copy = webContents => ({
   label: 'Copy',
-  click () {
-    webContents.send('command', 'copy');
-  },
+  click: () => webContents.send('command', 'copy'),
 });
-var sub_paste = webContents => ({
+const sub_paste = webContents => ({
   label: 'Paste',
-  click () {
-    webContents.send('command', 'paste');
-  },
+  click: () => webContents.send('command', 'paste'),
 });
-var sub_delete = webContents => ({
+const sub_delete = webContents => ({
   label: 'Delete',
-  click () {
-    webContents.send('command', 'delete');
-  },
+  click: () => webContents.send('command', 'delete'),
 });
-var sub_selectall = webContents => ({
+const sub_selectall = webContents => ({
   label: 'Select All',
-  click () {
-    webContents.send('command', 'selectall');
-  },
+  click: () => webContents.send('command', 'selectall'),
 });
 
 //
 // page control
 //
 
-var sub_back_page = webContents => ({
+const sub_back_page = webContents => ({
   label: 'Back',
-  click () {
-    webContents.send('command', 'back');
-  },
+  click: () => webContents.send('command', 'back'),
   enabled: webContents.canGoBack(),
 });
-var sub_forward_page = webContents => ({
+const sub_forward_page = webContents => ({
   label: 'Forward',
-  click () {
-    webContents.send('command', 'forward');
-  },
+  click: () => webContents.send('command', 'forward'),
   enabled: webContents.canGoForward(),
 });
-var sub_reload = webContents => ({
+const sub_reload = webContents => ({
   label: 'Reload',
-  click () {
-    webContents.send('command', 'reload');
-  },
+  click: () => webContents.send('command', 'reload'),
 });
+
 //
 // setting
 //
-var sub_alwaystop = window => ({
+
+const sub_alwaystop = window => ({
   label: 'Always on top',
   type: 'checkbox',
   checked: window.isAlwaysOnTop(),
   click () {
-    var flag = !window.isAlwaysOnTop();
+    const flag = !window.isAlwaysOnTop();
     window.setAlwaysOnTop(flag);
     if (popup) popup.setAlwaysOnTop(flag);
   },
 });
 
-var sub_setting = window => ({
+const sub_setting = window => ({
   label: 'Setting',
-  click () {
-    openSetting();
-  },
+  click: () => openSetting(),
 });
 
 //
 // image
 //
-var sub_copy_img = webContents => ({
+
+const sub_copy_img = webContents => ({
   label: 'Copy image',
-  click () {
-    webContents.send('command', 'copyimage');
-  },
+  click: () => webContents.send('command', 'copyimage'),
 });
-var sub_save_img = (webContents, Addr) => ({
+const sub_save_img = (webContents, Addr) => ({
   label: 'Save image as..',
   click () {
     // 원본 해상도 이미지 경로를 가져온다
-    var path = Util.getOrigPath(Addr.img);
-    var filename = Util.getFileName(path);
-    var ext = Util.getFileExtension(path);
-    var filters = [];
+    const path = Util.getOrigPath(Addr.img);
+    const filename = Util.getFileName(path);
+    const ext = Util.getFileExtension(path);
+    const filters = [];
 
     // Save dialog에 들어갈 파일 필터 정의
     switch (ext) {
@@ -285,9 +252,9 @@ var sub_save_img = (webContents, Addr) => ({
     webContents.send('no-pointer', true);
 
     // Save Dialog를 띄운다
-    var savepath = dialog.showSaveDialog({
+    const savepath = dialog.showSaveDialog({
       defaultPath: filename,
-      filters: filters,
+      filters,
     });
 
     // 포인터 이벤트를 되살린다
@@ -299,11 +266,7 @@ var sub_save_img = (webContents, Addr) => ({
     session.defaultSession.cookies.get({url: 'https://twitter.com'}, (error, cookies) => {
       const jar = request.jar();
       cookies.forEach(cookie => {
-        let cookieString = '';
-        cookieString += cookie.name;
-        cookieString += '=';
-        cookieString += cookie.value;
-        cookieString += ';';
+        const cookieString = `${cookie.name}=${cookie.value};`;
         jar.setCookie(request.cookie(cookieString), 'https://ton.twitter.com');
       });
       // http 요청을 보내고 저장
@@ -314,59 +277,47 @@ var sub_save_img = (webContents, Addr) => ({
     });
   },
 });
-var sub_copy_img_url = webContents => ({
+const sub_copy_img_url = webContents => ({
   label: 'Copy image URL',
-  click () {
-    webContents.send('command', 'copyimageurl');
-  },
+  click: () => webContents.send('command', 'copyimageurl'),
 });
-var sub_open_img = webContents => ({
+const sub_open_img = webContents => ({
   label: 'Open image in browser',
-  click () {
-    webContents.send('command', 'openimage');
-  },
+  click: () => webContents.send('command', 'openimage'),
 });
-var sub_open_img_popup = webContents => ({
+const sub_open_img_popup = webContents => ({
   label: 'Open image in popup',
-  click () {
-    webContents.send('command', 'openimagepopup');
-  },
+  click: () => webContents.send('command', 'openimagepopup'),
 });
-var sub_search_img_google = webContents => ({
+const sub_search_img_google = webContents => ({
   label: 'Search image with Google',
-  click () {
-    webContents.send('command', 'googleimage');
-  },
+  click: () => webContents.send('command', 'googleimage'),
 });
 
 //
 // link
 //
-var sub_open_link = webContents => ({
+const sub_open_link = webContents => ({
   label: 'Open link',
-  click () {
-    webContents.send('command', 'openlink');
-  },
+  click: () => webContents.send('command', 'openlink'),
 });
 
-var sub_open_link_popup = webContents => ({
+const sub_open_link_popup = webContents => ({
   label: 'Open link in Popup',
-  click () {
-    webContents.send('command', 'openlinkpopup');
-  },
+  click: () => webContents.send('command', 'openlinkpopup'),
 });
 
-var sub_save_link = (webContents, Addr) => ({
+const sub_save_link = (webContents, Addr) => ({
   label: 'Save link as..',
   click () {
     // 될 수 있으면 원본 화질의 이미지를 가져온다
-    var path = Util.getOrigPath(Addr.link);
-    var filename = Util.getFileName(path);
-    var ext = Util.getFileExtension(path);
-    var filters = [];
+    const path = Util.getOrigPath(Addr.link);
+    const filename = Util.getFileName(path);
+    const ext = Util.getFileExtension(path);
+    const filters = [];
 
     // 리퀘스트를 때려서 해당 링크의 MIME TYPE을 얻어온다
-    let reqOption = {
+    const reqOption = {
       method: 'HEAD',
       followAllRedirects: true, // 리다이렉트 따라가기 켬
       url: path,
@@ -392,9 +343,9 @@ var sub_save_link = (webContents, Addr) => ({
       webContents.send('no-pointer', true);
 
         // 저장 다이얼로그를 띄운다
-      var savepath = dialog.showSaveDialog({
+      const savepath = dialog.showSaveDialog({
         defaultPath: filename,
-        filters: filters,
+        filters,
       });
 
         // 포인터 이벤트를 되살린다
@@ -403,68 +354,54 @@ var sub_save_link = (webContents, Addr) => ({
       if (typeof savepath === 'undefined') return;
 
         // http 요청해서 링크를 저장
-      var req_url = response.request.uri.href;
+      const req_url = response.request.uri.href;
       request(req_url).pipe(fs.createWriteStream(savepath));
     });
   },
 });
 
-var sub_copy_link = webContents => ({
+const sub_copy_link = webContents => ({
   label: 'Copy link URL',
-  click () {
-    webContents.send('command', 'copylink');
-  },
+  click: () => webContents.send('command', 'copylink'),
 });
 
 // popup
-var sub_copy_page_url = webContents => ({
+const sub_copy_page_url = webContents => ({
   label: 'Copy Page URL',
-  click () {
-    webContents.send('command', 'copypageurl');
-  },
+  click: () => webContents.send('command', 'copypageurl'),
 });
-var sub_open_page_external = webContents => ({
+const sub_open_page_external = webContents => ({
   label: 'Open Page in Browser',
-  click () {
-    webContents.send('command', 'openpageexternal');
-  },
+  click: () => webContents.send('command', 'openpageexternal'),
 });
 
 // quote
-var sub_quote_without_notification = webContents => ({
+const sub_quote_without_notification = webContents => ({
   label: 'Quote without notification',
-  click () {
-    webContents.send('command', 'quotewithoutnotification');
-  },
+  click: () => webContents.send('command', 'quotewithoutnotification'),
 });
 
-var sub_copy_tweet = webContents => ({
+const sub_copy_tweet = webContents => ({
   label: 'Copy Tweet',
-  click () {
-    webContents.send('command', 'copy-tweet');
-  },
+  click: () => webContents.send('command', 'copy-tweet'),
 });
 
-var sub_copy_tweet_with_author = webContents => ({
+const sub_copy_tweet_with_author = webContents => ({
   label: 'Copy Tweet (with @author)',
-  click () {
-    webContents.send('command', 'copy-tweet-with-author');
-  },
+  click: () => webContents.send('command', 'copy-tweet-with-author'),
 });
 
-var sub_open_google_translator = webContents => ({
+const sub_open_google_translator = webContents => ({
   label: 'Translate Tweet via Google Translator',
-  click () {
-    webContents.send('command', 'open-google-translator');
-  },
+  click: () => webContents.send('command', 'open-google-translator'),
 });
 
 app.on('ready', () => {
     // 리눅스 일부 환경에서 검은색으로 화면이 뜨는 문제 해결을 위한 코드
     // chrome://gpu/ 를 확인해 Canvas Hardware acceleration이 사용 불가면 disable-gpu를 달아준다
     // --
-  var chk_win;
-  var is_relaunch = false;
+  let chk_win;
+  let is_relaunch = false;
 
     // process.argv를 확인해 --relaunch 인자가 있는지 확인
   for (var e of process.argv) {
@@ -473,8 +410,11 @@ app.on('ready', () => {
     }
   }
 
+  if (is_relaunch) {
+    // --relaunch 인자가 있다면 바로 run
+    run();
+  } else {
     // --relaunch 인자가 없다면 pre_check
-  if (!is_relaunch) {
     chk_win = new BrowserWindow({
       show: false,
       width: 0,
@@ -484,9 +424,6 @@ app.on('ready', () => {
       },
     });
     chk_win.loadURL('chrome://gpu/');
-  } else {
-    // --relaunch 인자가 있다면 바로 run
-    run();
   }
 
   // 렌더러 프로세스에서 run 명령을 받으면 실행
@@ -609,7 +546,7 @@ app.on('ready', () => {
 ipcMain.on('nogpu-relaunch', () => {
   app.releaseSingleInstance();
   existInst = null;
-  var x = `${process.execPath} ${process.argv[1]} --disable-gpu --relaunch`;
+  const x = `${process.execPath} ${process.argv[1]} --disable-gpu --relaunch`;
   child_process.exec(x);
   setTimeout(() => app.quit(), 100);
 });
@@ -617,19 +554,20 @@ ipcMain.on('nogpu-relaunch', () => {
 // JS version number compare
 // electron 버전 비교를 위해서 삽입
 // http://stackoverflow.com/questions/6832596/how-to-compare-software-version-number-using-js-only-number
-var versionCompare = (v1, v2, options) => {
-  var lexicographical = options && options.lexicographical,
-    zeroExtend = options && options.zeroExtend,
-    v1parts = v1.split('.'),
-    v2parts = v2.split('.');
+const versionCompare = (v1, v2, options) => {
+  const lexicographical = options && options.lexicographical;
+  const zeroExtend = options && options.zeroExtend;
+  let v1parts = v1.split('.');
+  let v2parts = v2.split('.');
 
-  var isValidPart = x => {
-    return (lexicographical ? /^\d+[A-Za-z]*$/ : /^\d+$/).test(x);
+  const isValidPart = x => {
+    return (lexicographical)
+      ? /^\d+[A-Za-z]*$/
+      : /^\d+$/.test(x);
   };
 
-  if (!v1parts.every(isValidPart) || !v2parts.every(isValidPart)) {
-    return NaN;
-  }
+  const isUnvalid = v1parts.every(isValidPart) && v2parts.every(isValidPart);
+  if (isUnvalid) return NaN;
 
   if (zeroExtend) {
     while (v1parts.length < v2parts.length) v1parts.push('0');
@@ -641,18 +579,16 @@ var versionCompare = (v1, v2, options) => {
     v2parts = v2parts.map(Number);
   }
 
-  for (var i = 0; i < v1parts.length; ++i) {
+  for (let i = 0; i < v1parts.length; ++i) {
     if (v2parts.length === i) {
       return 1;
     }
 
     if (v1parts[i] === v2parts[i]) {
       continue;
-    } else if (v1parts[i] > v2parts[i]) {
-      return 1;
-    } else {
-      return -1;
-    }
+    } 
+
+    return (v1parts[i] > v2parts[i]) ? 1 : -1;
   }
 
   if (v1parts.length !== v2parts.length) {
@@ -667,48 +603,50 @@ var versionCompare = (v1, v2, options) => {
 // accessibility mode 일때 chrome://accessibility의 global setting을 off시킨다
 // accessibility mode 여부는 app.isAccessibilitySupportEnabled()로 확인
 // 1.3.7 버전 이하의 electron에서만 해당되는 문제.
-var hotfix_accessibility_mode = () => {
-  if (versionCompare(process.versions.electron, '1.3.8') < 0) {
-    if (app.isAccessibilitySupportEnabled()) {
-      if (accessibilityWin) accessibilityWin.close();
-      accessibilityWin = new BrowserWindow({
-        show: false,
-        width: 0,
-        height: 0,
-        webPreferences: {
-          preload: path.join(__dirname, 'pre_check.js'),
-        },
-      });
-      accessibilityWin.loadURL('chrome://accessibility');
-      accessibilityWin.webContents.on('did-finish-load', () => {
-        if (app.isAccessibilitySupportEnabled()) {
-          accessibilityWin.webContents.executeJavaScript(
-            `if (document.querySelector('#toggle_global').text == 'on')
-            document.querySelector('#toggle_global').click();`);
-          setTimeout(() => {
-            try {
-              accessibilityWin.close();
-              accessibilityWin = null;
-            } catch (e) {
-
-            }
-            setTimeout(hotfix_accessibility_mode, 1000);
-          }, 1000);
-        }
-      });
-    } else {
-      setTimeout(hotfix_accessibility_mode, 1000);
-    }
+const hotfix_accessibility_mode = () => {
+  if (versionCompare(process.versions.electron, '1.3.8') >= 0) {
+    return;
   }
+
+  if (!app.isAccessibilitySupportEnabled()) {
+    setTimeout(hotfix_accessibility_mode, 1000);
+
+    return;
+  }
+
+  if (accessibilityWin) accessibilityWin.close();
+  accessibilityWin = new BrowserWindow({
+    show: false,
+    width: 0,
+    height: 0,
+    webPreferences: {
+      preload: path.join(__dirname, 'pre_check.js'),
+    },
+  });
+  accessibilityWin.loadURL('chrome://accessibility');
+  accessibilityWin.webContents.on('did-finish-load', () => {
+    if (app.isAccessibilitySupportEnabled()) {
+      const script = 'if (document.querySelector("#toggle_global").text == "on")'
+        + 'document.querySelector("#toggle_global").click();';
+      accessibilityWin.webContents.executeJavaScript(script);
+      setTimeout(() => {
+        try {
+          accessibilityWin.close();
+          accessibilityWin = null;
+        } catch (e) {}
+        setTimeout(hotfix_accessibility_mode, 1000);
+      }, 1000);
+    }
+  });
 };
 // 시현님 기여어
 // Special Thanks for @uto_correction, @Gar_ella
 
 // 트윗덱 플레이어 실행 프로시저
-var run = chk_win => {
+const run = chk_win => {
   hotfix_accessibility_mode();
 
-  var preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
+  const preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
   preference.icon = path.join(__dirname, 'tweetdeck.ico');
   preference.autoHideMenuBar = true;
   preference.webPreferences = {
@@ -717,7 +655,6 @@ var run = chk_win => {
   };
   win = new BrowserWindow(preference);
   win.loadURL('https://tweetdeck.twitter.com');
-
   win.setAlwaysOnTop(Config.data.defaultTopmost && true || false);
 
   if (Config.data.isMaximized) {
@@ -864,7 +801,7 @@ var run = chk_win => {
   win.webContents.on('did-finish-load', () => {
     //let paceCSS = fs.readFileSync(path.join(__dirname, 'css/pace.css'), 'utf8');
     //win.webContents.insertCSS(paceCSS);
-    let extraCSS = fs.readFileSync(path.join(__dirname, 'css/extra.css'), 'utf8');
+    const extraCSS = fs.readFileSync(path.join(__dirname, 'css/extra.css'), 'utf8');
     win.webContents.insertCSS(extraCSS);
     win.webContents.insertCSS(`
       .no-pointer {
@@ -890,13 +827,13 @@ var run = chk_win => {
       setTimeout(updateCheck, 0, (err, latest) => {
         if (err) {
           // error check
-          win.webContents.send('toast-message', "Update check failed");
+          win.webContents.send('toast-message', 'Update check failed');
           return ;
         }
 
         const current = VERSION.value;
         if (versionCompare(current, latest) < 0) {
-          win.webContents.send('toast-message', "Update required: newest version is " + latest);
+          win.webContents.send('toast-message', 'Update required: newest version is ' + latest);
         } else {
           win.webContents.send('toast-message', VERSION.message);
         }
@@ -904,7 +841,7 @@ var run = chk_win => {
     }
 
     // destroyed contents when loading
-    let emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
+    const emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
     win.webContents.insertCSS(emojipadCSS);
     win.webContents.insertCSS(`
       .list-account .emoji {
@@ -990,8 +927,8 @@ var run = chk_win => {
 // 컨텍스트 메뉴
 ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
 
-  var template = [];
-  var separator = { type: 'separator' };
+  const template = [];
+  const separator = { type: 'separator' };
 
   switch (menu) {
     case 'main':
@@ -1001,10 +938,10 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       } else if (isPopup) {
         template.push(sub_back_page(event.sender));
         template.push(sub_forward_page(event.sender));
-        template.push(sub_reload(event.sender));
+        template.const(sub_reload(event.sender));
       }
       if (!isPopup) {
-        template.push(sub_reload(event.sender));
+        template.const(sub_reload(event.sender));
       }
       break;
 
@@ -1036,18 +973,18 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       template.push(sub_alwaystop(win));
       template.push(sub_setting(win));
       template.push(separator);
-      template.push(sub_reload(event.sender));
+      template.const(sub_reload(event.sender));
       break;
 
     case 'selection':
       template.push(sub_copy(event.sender));
       template.push(separator);
-      template.push(sub_reload(event.sender));
+      template.const(sub_reload(event.sender));
       break;
 
     case 'image':
       template.push(sub_copy_img(event.sender));
-      template.push(sub_save_img(event.sender, Addr));
+      template.const(sub_save_img(event.sender, Addr));
       template.push(sub_copy_img_url(event.sender));
       if (Config.data.enableOpenImageinPopup) {
         template.push(separator);
@@ -1059,7 +996,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       }
       template.push(sub_search_img_google(event.sender));
       template.push(separator);
-      template.push(sub_reload(event.sender));
+      template.const(sub_reload(event.sender));
       break;
 
     case 'link':
@@ -1077,7 +1014,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
         template.push(sub_copy(event.sender));
         template.push(separator);
       }
-      template.push(sub_reload(event.sender));
+      template.const(sub_reload(event.sender));
       break;
 
     case 'linkandimage':
@@ -1093,7 +1030,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       }
 
       template.push(sub_copy_img(event.sender));
-      template.push(sub_save_img(event.sender, Addr));
+      template.const(sub_save_img(event.sender, Addr));
       template.push(sub_copy_img_url(event.sender));
       if (Config.data.enableOpenImageinPopup) {
         template.push(separator);
@@ -1105,7 +1042,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       }
       template.push(sub_search_img_google(event.sender));
       template.push(separator);
-      template.push(sub_reload(event.sender));
+      template.const(sub_reload(event.sender));
       break;
 
     case 'tweet':
@@ -1120,7 +1057,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
         template.push(sub_open_google_translator(event.sender));
         template.push(separator);
       }
-      template.push(sub_reload(event.sender));
+      template.const(sub_reload(event.sender));
       break;
   }
 
@@ -1130,7 +1067,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
     template.push(sub_open_page_external(event.sender));
   }
 
-  var contextMenu = Menu.buildFromTemplate(template);
+  const contextMenu = Menu.buildFromTemplate(template);
   if (!isPopup) contextMenu.popup(win);
   else if (popup) contextMenu.popup(popup);
   return;
@@ -1145,11 +1082,11 @@ ipcMain.on('twtlib-open', (event, arg) => {
     twtlibWin.focus();
     return;
   }
-  let width = 500;
-  let height = 480;
-  let b = win.getBounds();
-  let x = Math.floor(b.x + (b.width - width) / 2);
-  let y = Math.floor(b.y + (b.height - height) / 2);
+  const width = 500;
+  const height = 480;
+  const b = win.getBounds();
+  const x = Math.floor(b.x + (b.width - width) / 2);
+  const y = Math.floor(b.y + (b.height - height) / 2);
   twtlibWin = new BrowserWindow({
     width, height, x, y,
     parent: win,
@@ -1172,6 +1109,5 @@ ipcMain.on('twtlib-send-text', (event, arg) => {
 });
 
 ipcMain.on('open-google-translator', (event, arg) => {
-  let { text } = arg;
-  openGoogleTranslatorWindow(text);
+  openGoogleTranslatorWindow(arg.text);
 });

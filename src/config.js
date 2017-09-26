@@ -26,8 +26,8 @@ module.exports = {
   },
   data: {},
   load () {
-    let config = this._defaultConfig;
-    let userConfig = {};
+    const config = this._defaultConfig;
+    let userConfig;
     const fc = fs.constants; // shortcut
     try {
       fs.accessSync(this._filePath, (fc.F_OK | fc.R_OK | fc.W_OK));

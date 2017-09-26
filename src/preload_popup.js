@@ -118,24 +118,31 @@ window.addEventListener('contextmenu', e => {
   // 선택 영역이 있는지 여부
   const is_range = document.getSelection().type === 'Range';
 
+  const image = document.querySelector('img:hover');
+  const link = document.querySelector('a:hover');
+
   // input=text 또는 textarea를 가리킴
-  if (el && (el.tagName.toLowerCase() === 'input' && el.type === 'text')
-    || (el.tagName.toLowerCase() === 'textarea')) {
-    target = (is_range ? 'text_sel' : 'text');
-  } else if (document.querySelector('img:hover')) {
+  const isText = (el.tagName.toLowerCase() === 'input') && (el.type === 'text');
+  const isTextArea = (el.tagName.toLowerCase() === 'textarea');
+  const isImage = !!image;
+  const isLinked = !!link;
+
+  if (isText || isTextArea) {
+    target = (is_range) ? 'text_sel' : 'text';
+  } else if (isImage) {
     // 이미지
-    Addr.img = document.querySelector('img:hover').src;
+    Addr.img = image.src;
 
     // 링크가 포함되어 있는 경우
-    if (document.querySelector('a:hover')) {
-      Addr.link = document.querySelector('a:hover').href;
+    if (isLinked) {
+      Addr.link = link.href;
       target = 'linkandimage';
     } else {
       target = 'image';
     }
-  } else if (document.querySelector('a:hover') && document.querySelector('a:hover').href) {
+  } else if (isLinked) {
     // 링크
-    Addr.link = document.querySelector('a:hover').href;
+    Addr.link = link.href;
     target = 'link';
   } else {
     // 기본 컨텍스트

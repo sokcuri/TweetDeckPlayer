@@ -20,7 +20,7 @@ module.exports = () => {
     const userID = tweet.querySelector('.username').textContent;
     const name = tweet.querySelector('.fullname').textContent;
     const text = tweet.querySelector('.js-tweet-text').textContent;
-    let rt_by = '';
+    let rt_by;
     let nbfc = tweet.querySelector('.nbfc');
     if (nbfc) {
       let nbfc_txt = nbfc.textContent.trim();
@@ -76,12 +76,10 @@ module.exports = () => {
     }
     for (const word of words) {
       if (typeof word === 'string' && text.indexOf(word.toLowerCase()) > -1) {
-        action(tweet);
-        return;
+        return action(tweet);
       }
       if (word instanceof RegExp && word.test(text)) {
-        action(tweet);
-        return;
+        return action(tweet);
       }
     }
     if (config.filterUserName) {
@@ -89,12 +87,10 @@ module.exports = () => {
         .textContent.toLowerCase();
       for (const word of words) {
         if (typeof word === 'string' && userName.indexOf(word.toLowerCase()) > -1) {
-          action(tweet);
-          return;
+          return action(tweet);
         }
         if (word instanceof RegExp && word.test(userName)) {
-          action(tweet);
-          return;
+          return action(tweet);
         }
       }
     }

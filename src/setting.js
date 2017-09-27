@@ -52,7 +52,9 @@ function onload () {
     const settingElements = settingForm.querySelectorAll('input, textarea, select');
     for (const elem of settingElements) {
       let value = elem.value;
-      if (elem.id === '') continue;
+
+      const isNotId = (elem.id === '');
+      if (isNotId) continue;
       if (typeof value === 'string') {
         value = value.trim();
       }
@@ -137,28 +139,30 @@ function initializeEntries (entry, form) {
   const e = document.createElement('div');
   e.className = 'settings-item';
 
+  const { name, label } = entry;
+
   switch (entry.valueType) {
     case 'bool':
-      e.innerHTML = `<label><input type="checkbox" id="${entry.name}"><label for="${entry.name}"><div></div></label>${entry.label}</label>`;
+      e.innerHTML = `<label><input type="checkbox" id="${name}"><label for="${name}"><div></div></label>${label}</label>`;
       break;
     case 'text':
-      e.innerHTML = `<input type="text" id="${entry.name}">`;
+      e.innerHTML = `<input type="text" id="${name}">`;
       break;
     case 'longtext':
-      e.innerHTML = `<textarea id="${entry.name}" rows="5"></textarea>`;
+      e.innerHTML = `<textarea id="${name}" rows="5"></textarea>`;
       break;
     case 'enum':
       const opts = entry.options.map(x => `<option value="${x.value}">${x.label}</option>`).join('');
-      e.innerHTML = `<select name="${entry.name}" id="${entry.name}">${opts}</select>`;
+      e.innerHTML = `<select name="${name}" id="${name}">${opts}</select>`;
       break;
     case 'alarmfile':
-      e.innerHTML = `<label><input id="${entry.name}" type="file"><label for="${entry.name}"><div></div></label><div>${entry.label}</div></label>`;
+      e.innerHTML = `<label><input id="${name}" type="file"><label for="${name}"><div></div></label><div>${label}</div></label>`;
       // const fileInput = e.querySelector('input[type="file"]');
       break;
     case 'number': {
-      e.innerHTML = `<div id="${entry.name}Slider"></div><div><input type="text" id="${entry.name}"></div>`;
-      const slider = e.querySelector(`#${entry.name}Slider`);
-      const text = e.querySelector(`#${entry.name}`);
+      e.innerHTML = `<div id="${name}Slider"></div><div><input type="text" id="${name}"></div>`;
+      const slider = e.querySelector(`#${name}Slider`);
+      const text = e.querySelector(`#${name}`);
       createSlider(entry, slider, text);
     } break;
     default:
@@ -168,8 +172,9 @@ function initializeEntries (entry, form) {
   form.appendChild(e);
 
   if (entry.description) {
+    const description = (entry.valueType === 'bool') ? ' for-checkbox' : '';
     const e = document.createElement('div');
-    e.className = 'settings-item description' + (entry.valueType === 'bool' ? ' for-checkbox' : '');
+    e.className = 'settings-item description' + description;
     e.innerHTML = entry.description;
     form.appendChild(e);
   }

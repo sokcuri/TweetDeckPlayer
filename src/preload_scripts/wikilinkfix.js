@@ -12,26 +12,29 @@ module.exports = () => {
           const namuwiki = /^https?:\/\/namu\.wiki\/w\/$/.test(fullurl);
           const rigvedawiki = /https?:\/\/rigvedawiki\.net\/w\/$/.test(fullurl);
           const wikipedia = /^https?:\/\/\w+\.wikipedia\.org\/wiki\/$/.test(fullurl);
-          if (namuwiki || rigvedawiki || wikipedia) {
+
+          const isWiki = (namuwiki || rigvedawiki || wikipedia);
+          if (isWiki) {
             const postfix = link.nextSibling;
-            if (postfix) {
-              let querystring = postfix.textContent;
-              if (/^\s/.test(querystring)) continue;
-              querystring = querystring.split(' ')[0];
-              postfix.textContent = postfix.textContent.replace(querystring, ' ');
-              querystring = decodeURI(querystring);
-              let fixedURL = `${fullurl}${encodeURI(querystring)}`;
-              link.setAttribute('href', fixedURL);
-              link.setAttribute('data-full-url', fixedURL);
-              link.setAttribute('title', `${fixedURL}\n(fixed from "${querystring}")`);
-              link.style.color = '#35d4c7';
-              link.textContent = fixedURL;
-            }
+            if (!postfix) continue;
+
+            const querystring = postfix.textContent;
+            if (/^\s/.test(querystring)) continue;
+            querystring = querystring.split(' ')[0];
+            postfix.textContent = postfix.textContent.replace(querystring, ' ');
+            querystring = decodeURI(querystring);
+            const fixedURL = `${fullurl}${encodeURI(querystring)}`;
+            link.setAttribute('href', fixedURL);
+            link.setAttribute('data-full-url', fixedURL);
+            link.setAttribute('title', `${fixedURL}\n(fixed from "${querystring}")`);
+            link.style.color = '#35d4c7';
+            link.textContent = fixedURL;
           }
         }
       }
     }
   });
+
   linkFixObserver.observe(document.body, {
     //attributes: true,
     childList: true,

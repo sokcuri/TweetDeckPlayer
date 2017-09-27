@@ -1,23 +1,23 @@
 const https = require('https');
 
-module.exports = (callback) => {
-  callback = callback || (() =>{});
+const initCallback = () => {};
 
+module.exports = (callback = initCallback) => {
   const option = {
     hostname: 'api.github.com',
     path: '/repos/sokcuri/TweetDeckPlayer/releases/latest',
-    headers: {"User-Agent": "TweetDeckPlayer"}
+    headers: { 'User-Agent': 'TweetDeckPlayer' },
   };
 
   https.get(option, (res) => {
     if (res.statusCode !== 200) {
-      return callback(new Error("Response returns " + res.statusCode));
+      return callback(new Error('Response returns ' + res.statusCode));
     }
 
     res.setEncoding('utf8');
 
     let rawdata = '';
-    res.on('data', (chunk) => { rawdata += chunk; });
+    res.on('data', (chunk) => rawdata += chunk);
 
     res.on('end', () => {
       try {

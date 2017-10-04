@@ -180,9 +180,11 @@ module.exports = function imageViewer () {
     images.each((index, image) => {
       image = $(image);
       const img = image.find('img.media-img');
-      let url = (img.length === 0)
-        ? img.attr('src')
-        : extractURL(img);
+      if (img.length !== 0) {
+        url = img.attr('src');
+      } else {
+        url = extractURL(image);
+      }
       if (url === targetImage) {
         parameter.index = index;
       }

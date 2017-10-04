@@ -938,10 +938,10 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       } else if (isPopup) {
         template.push(sub_back_page(event.sender));
         template.push(sub_forward_page(event.sender));
-        template.const(sub_reload(event.sender));
+        template.push(sub_reload(event.sender));
       }
       if (!isPopup) {
-        template.const(sub_reload(event.sender));
+        template.push(sub_reload(event.sender));
       }
       break;
 
@@ -973,18 +973,18 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       template.push(sub_alwaystop(win));
       template.push(sub_setting(win));
       template.push(separator);
-      template.const(sub_reload(event.sender));
+      template.push(sub_reload(event.sender));
       break;
 
     case 'selection':
       template.push(sub_copy(event.sender));
       template.push(separator);
-      template.const(sub_reload(event.sender));
+      template.push(sub_reload(event.sender));
       break;
 
     case 'image':
       template.push(sub_copy_img(event.sender));
-      template.const(sub_save_img(event.sender, Addr));
+      template.push(sub_save_img(event.sender, Addr));
       template.push(sub_copy_img_url(event.sender));
       if (Config.data.enableOpenImageinPopup) {
         template.push(separator);
@@ -996,7 +996,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       }
       template.push(sub_search_img_google(event.sender));
       template.push(separator);
-      template.const(sub_reload(event.sender));
+      template.push(sub_reload(event.sender));
       break;
 
     case 'link':
@@ -1014,7 +1014,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
         template.push(sub_copy(event.sender));
         template.push(separator);
       }
-      template.const(sub_reload(event.sender));
+      template.push(sub_reload(event.sender));
       break;
 
     case 'linkandimage':
@@ -1030,7 +1030,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       }
 
       template.push(sub_copy_img(event.sender));
-      template.const(sub_save_img(event.sender, Addr));
+      template.push(sub_save_img(event.sender, Addr));
       template.push(sub_copy_img_url(event.sender));
       if (Config.data.enableOpenImageinPopup) {
         template.push(separator);
@@ -1042,7 +1042,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
       }
       template.push(sub_search_img_google(event.sender));
       template.push(separator);
-      template.const(sub_reload(event.sender));
+      template.push(sub_reload(event.sender));
       break;
 
     case 'tweet':
@@ -1057,7 +1057,7 @@ ipcMain.on('context-menu', (event, menu, isRange, Addr, isPopup) => {
         template.push(sub_open_google_translator(event.sender));
         template.push(separator);
       }
-      template.const(sub_reload(event.sender));
+      template.push(sub_reload(event.sender));
       break;
   }
 

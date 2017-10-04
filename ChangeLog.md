@@ -1,6 +1,15 @@
 # 트윗덱 플레이어 ChangeLog
 http://github.com/sokcuri/TweetDeckPlayer/releases
 
+트윗덱 플레이어 v2.31
+-----------------------------
+* **트윗덱 플레이어의 작동불능 버그 긴급패치입니다.** (#121)
+* 트윗덱 플레이어의 업데이트 알림 기능이 추가되었습니다. (#118)
+* 사용자 노트 기능이 추가되었습니다.
+* Electron에 보안 취약점이 발견되어 이를 수정한 버전 1.7.8로 업데이트했습니다. (참고: https://electron.atom.io/blog/2017/09/27/chromium-rce-vulnerability-fix )
+
+작동불능 버그 패치를 제공해주신 [joshua-qa](https://github.com/joshua-qa) 님과 업데이트 알림 기능을 추가해주신 [ikasty](https://github.com/ikasty) 님께 감사드립니다.
+
 트윗덱 플레이어 v2.30
 -----------------------------
 ## 기능 추가

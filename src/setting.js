@@ -15,6 +15,7 @@ function loadConfig () {
 }
 
 let config;
+let cloudSaveFlag = false;
 
 function onload () {
   initializeComponents();
@@ -49,6 +50,9 @@ function onload () {
   const settingForm = document.getElementById('settingform');
 
   const save = event => {
+    if (cloudSaveFlag) {
+      return;
+    }
     const settingElements = settingForm.querySelectorAll('input, textarea, select');
     for (const elem of settingElements) {
       let value = elem.value;
@@ -176,6 +180,7 @@ function initializeEntries (entry, form) {
           const result = JSON.parse(c);
           if (result && Array.prototype.toString.call(result) === '[object Object]') {
             if (confirm(`The settings are restored to the backup saved in the cloud storage.\n\n${result.timestamp}\n\n** WARNING : ALL SETTINGS INCLUDING REGULAR EXPRESSION MUTE SETTINGS WILL BE CHANGED.\nTHIS ACTION CAN'T REVERT, BECAFULLY.`) === true) {
+              cloudSaveFlag = true;
               config = result;
               saveConfig(config);
               ipcRenderer.send('apply-config');
@@ -198,7 +203,8 @@ function initializeEntries (entry, form) {
           }
 
           if (confirm(`Do you really want to save the settings?\n\nIf you have already stored settings,\nyou will be overwritten.${r.timestamp}`) === true) {
-            saveConfig(config)
+            save();
+            saveConfig(config);
             const c2 = ipcRenderer.sendSync('cloud-save-config');
             const result = JSON.parse(c2);
             if (result && Array.prototype.toString.call(result) === '[object Object]') {

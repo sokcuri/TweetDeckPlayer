@@ -783,23 +783,18 @@ document.addEventListener('DOMContentLoaded', () => {
     window.twttrTxt.getTweetLength2 = window.twttrTxt.getTweetLength;
     window.twttrTxt.getTweetLength = function (t) {
       const len = window.twttrTxt.getTweetLength2.apply(this, arguments);
-      return (len === 0) ? 999999 : len - 140;
+      return (len === 0) ? NaN : len - 140;
+      correct_charlen_calc();
     };
 
     const correct_charlen_calc = function (e) {
       let js_count = document.querySelectorAll('.js-character-count');
       if (js_count === null) return false;
       js_count.forEach(elm => {
-        const value = Number.parseInt(elm.value);
-        if (value <= -900000) {
-          elm.classList.remove('inline-block-force');
+        if (elm.value.trim() === 'NaN') {
+          elm.classList.remove('tdp-show');
         } else {
-          elm.classList.add('inline-block-force');
-        }
-        if (value < 0) {
-          elm.parentElement.querySelector('.js-send-button').classList.add('is-disabled');
-        } else {
-          elm.parentElement.querySelector('.js-send-button').classList.remove('is-disabled');
+          elm.classList.add('tdp-show');
         }
       });
       return true;

@@ -906,10 +906,10 @@ const run = chk_win => {
     // character-count default to hidden
     win.webContents.insertCSS(`
     .js-character-count {
-      display: none !important;
+      opacity: 0;
     }
-    .inline-block-force {
-      display: inline-block !important;
+    .tdp-show {
+      opacity: 1;
     }`);
 
     // 유저 스크립트 로딩

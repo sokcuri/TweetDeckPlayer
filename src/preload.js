@@ -797,6 +797,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           elm.classList.add('tdp-show');
         }
+        if (elm.value.trim() === 'NaN' || Number.parseInt(elm.value) < 0) {
+          elm.parentElement.querySelector('.js-send-button').classList.add('is-disabled');
+        } else {
+          elm.parentElement.querySelector('.js-send-button').classList.remove('is-disabled');
+        }
       });
       return true;
     };

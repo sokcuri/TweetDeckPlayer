@@ -87,6 +87,39 @@ var autoReload = () => {
 };
 autoReload();
 
+ipcRenderer.on('cloud-load-config', (event, uuid) => {
+  const c = TD.storage.clientController.getAll();
+  if (c && c[0].state && c[0].state.settings) {
+    const settings = c[0].state.settings['TDPSettings'];
+    if (settings.timestamp) {
+      event.sender.send(uuid, JSON.stringify(settings));
+      return;
+    }
+  }
+  event.sender.send(uuid, false);
+  return;
+});
+
+ipcRenderer.on('cloud-save-config', (event, uuid) => {
+  const config = Config.load();
+  config.timestamp = new Date();
+  if (config.bounds)
+    delete config.bounds;
+  if (TD && TD.settings) {
+    TD.settings.set('TDPSettings', config);
+  }
+  const c = TD.storage.clientController.getAll();
+  if (c && c[0].state && c[0].state.settings) {
+    const settings = c[0].state.settings['TDPSettings'];
+    if (settings.timestamp) {
+      event.sender.send(uuid, JSON.stringify(settings));
+      return;
+    }
+  }
+  event.sender.send(uuid, false);
+  return;
+});
+
 ipcRenderer.on('apply-config', event => {
   var style = '';
   try {

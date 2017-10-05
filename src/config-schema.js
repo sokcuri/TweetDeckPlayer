@@ -244,7 +244,7 @@ module.exports = [
     max: 168,
     step: 1,
   },
-  { _type: 'section', label: 'Cloud' },
+  { _type: 'section', label: 'Cloud Backup/Restore' },
   { _type: 'subsection', label: 'Config' },
   {
     _type: 'entry',

@@ -16,8 +16,14 @@ app.setPath('userData', Util.getUserDataPath());
 // 설정
 const Config = require('./config');
 
-let win, popup, settingsWin, twtlibWin, accessibilityWin, gTranslatorWin;
+const createUUIDv4 = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
+let win, popup, settingsWin, twtlibWin, accessibilityWin, gTranslatorWin;
 ipcMain.on('load-config', (event, arg) => {
   event.returnValue = Config.load();
 });
@@ -31,6 +37,34 @@ ipcMain.on('apply-config', (event, config) => {
   try {
     win.webContents.send('apply-config');
   } catch (e) { }
+});
+
+ipcMain.on('cloud-load-config', (event) => {
+  let uuid = createUUIDv4();
+  try {
+    ipcMain.once(uuid, (e, p) => {
+      event.returnValue = p;
+    });
+    const r = win.webContents.send('cloud-load-config', uuid);
+    return;
+  } catch (e) { console.error(e); }
+  ipcMain.removeAllListeners(uuid);
+  event.returnValue = null;
+  return;
+});
+
+ipcMain.on('cloud-save-config', (event) => {
+  let uuid = createUUIDv4();
+  try {
+    ipcMain.once(uuid, (e, p) => {
+      event.returnValue = p;
+    });
+    const r = win.webContents.send('cloud-save-config', uuid);
+    return;
+  } catch (e) { console.error(e); }
+  ipcMain.removeAllListeners(uuid);
+  event.returnValue = null;
+  return;
 });
 
 ipcMain.on('request-theme', event => {

@@ -16,6 +16,7 @@ function loadConfig () {
 
 let config;
 let cloudSaveFlag = false;
+let saveFunction;
 
 function onload () {
   initializeComponents();
@@ -109,6 +110,7 @@ function onload () {
 
   window.addEventListener('beforeunload', save);
   settingForm.addEventListener('change', save);
+  saveFunction = save;
 }
 
 document.addEventListener('DOMContentLoaded', onload);
@@ -203,7 +205,7 @@ function initializeEntries (entry, form) {
           }
 
           if (confirm(`Do you really want to save the settings?\n\nIf you have already stored settings,\nyou will be overwritten.${r.timestamp}`) === true) {
-            save();
+            saveFunction();
             saveConfig(config);
             const c2 = ipcRenderer.sendSync('cloud-save-config');
             const result = JSON.parse(c2);

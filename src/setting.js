@@ -176,10 +176,10 @@ function initializeEntries (entry, form) {
           const result = JSON.parse(c);
           if (result && Array.prototype.toString.call(result) === '[object Object]') {
             if (confirm(`The settings are restored to the backup saved in the cloud storage.\n\n${result.timestamp}\n\n** WARNING : ALL SETTINGS INCLUDING REGULAR EXPRESSION MUTE SETTINGS WILL BE CHANGED.\nTHIS ACTION CAN'T REVERT, BECAFULLY.`) === true) {
-              saveConfig(result);
+              config = result;
+              saveConfig(config);
               ipcRenderer.send('apply-config');
               alert('Loaded');
-              remote.getCurrentWindow().reload();
             }
             console.info(result);
           } else {
@@ -198,6 +198,7 @@ function initializeEntries (entry, form) {
           }
 
           if (confirm(`Do you really want to save the settings?\n\nIf you have already stored settings,\nyou will be overwritten.${r.timestamp}`) === true) {
+            saveConfig(config)
             const c2 = ipcRenderer.sendSync('cloud-save-config');
             const result = JSON.parse(c2);
             if (result && Array.prototype.toString.call(result) === '[object Object]') {

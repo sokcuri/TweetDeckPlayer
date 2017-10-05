@@ -39,7 +39,9 @@
     "nouislider": "^8.5.1",
     "request": "^2.74.0",
     "twemoji": "^2.2.5",
-    "twitter-text": "^1.14.0"
+    "twitter-text": "^1.14.0",
+    "vex-dialog": "^1.0.7",
+    "vex-js": "^4.0.1"
   },
   "devDependencies": {
     "csscomb": "^3.1.8",

@@ -87,7 +87,7 @@ var autoReload = () => {
 };
 autoReload();
 
-const callBlackBirdAPI = (callback) => {
+const loadBlackBird = (callback) => {
   var oReq = new XMLHttpRequest();
   oReq.addEventListener("load", function () {
     const res = JSON.parse(this.responseText);
@@ -96,17 +96,42 @@ const callBlackBirdAPI = (callback) => {
       callback(tdp_settings);
     }
   });
+  oReq.addEventListener('error', function () {
+    callback({error: true});
+  })
   oReq.open('GET', 'https://api.twitter.com/1.1/tweetdeck/clients/blackbird/all');
   oReq.withCredentials = true;
+  oReq.setRequestHeader('Content-Type', 'application/json');
   oReq.setRequestHeader('Authorization', 'Bearer ' + TD.config.bearer_token);
   oReq.setRequestHeader('x-csrf-token', TD.util.getCsrfTokenHeader());
   //oReq.setRequestHeader('User-Agent', TD.util.getTweetDeckUserAgentString());
   oReq.send();
 }
 
+const saveBlackBird = (callback, params) => {
+  var oReq = new XMLHttpRequest();
+  oReq.addEventListener("load", function () {
+    const res = JSON.parse(this.responseText);
+    if (res.client && res.client.settings && res.client.settings) {
+      const tdp_settings = res.client.settings.settings.TDPSettings || {};
+      callback(tdp_settings);
+    }
+  });
+  oReq.addEventListener('error', function () {
+    callback({error: true});
+  })
+  oReq.open('POST', 'https://api.twitter.com/1.1/tweetdeck/clients/blackbird');
+  oReq.withCredentials = true;
+  oReq.setRequestHeader('Content-Type', 'application/json');
+  oReq.setRequestHeader('Authorization', 'Bearer ' + TD.config.bearer_token);
+  oReq.setRequestHeader('x-csrf-token', TD.util.getCsrfTokenHeader());
+  //oReq.setRequestHeader('User-Agent', TD.util.getTweetDeckUserAgentString());
+  oReq.send(JSON.stringify(params));
+}
+
 ipcRenderer.on('cloud-load-config', (event, uuid) => {
-  callBlackBirdAPI((TDPSettings) => {
-    if (TDPSettings.timestamp) {
+  loadBlackBird((TDPSettings) => {
+    if (TDPSettings.saved_timestamp) {
       event.sender.send(uuid, JSON.stringify(TDPSettings));
       return;
     }
@@ -114,23 +139,52 @@ ipcRenderer.on('cloud-load-config', (event, uuid) => {
     return;
   });
 });
-
-ipcRenderer.on('cloud-save-config', (event, uuid) => {
+/*
+ipcRenderer.on('cloud-save-config', (event, uuid, title) => {
   const config = Config.load();
-  config.timestamp = new Date();
+  config.saved_timestamp = new Date();
+  config.saved_title = title || '';
+  if (config.bounds)
+    delete config.bounds;
+  let blackbird_acc = TD.storage.clientController.getAll()[0];
+  blackbird_acc.settings.settings.TDPSettings = config;
+  saveBlackBird(() => {
+    loadBlackBird((TDPSettings) => {
+      if (TDPSettings.saved_timestamp) {
+        event.sender.send(uuid, JSON.stringify(TDPSettings));
+        return;
+      }
+      event.sender.send(uuid, false);
+      return;
+    });
+  }, blackbird_acc);
+});
+*/
+
+ipcRenderer.on('cloud-save-config', (event, uuid, title) => {
+  const config = Config.load();
+  config.saved_timestamp = new Date();
+  config.saved_title = title || '';
   if (config.bounds)
     delete config.bounds;
   if (TD && TD.settings) {
     TD.settings.set('TDPSettings', config);
   }
-  callBlackBirdAPI((TDPSettings) => {
-    if (TDPSettings.timestamp) {
-      event.sender.send(uuid, JSON.stringify(TDPSettings));
-      return;
-    }
-    event.sender.send(uuid, false);
-    return;
-  });
+  TD.storage.clientController.getAll();
+  event.sender.send(uuid, true);
+});
+
+ipcRenderer.on('cloud-remove-config', (event, uuid, title) => {
+  const config = Config.load();
+  config.saved_timestamp = new Date();
+  config.saved_title = title || '';
+  if (config.bounds)
+    delete config.bounds;
+  if (TD && TD.settings) {
+    TD.settings.set('TDPSettings', undefined);
+  }
+  TD.storage.clientController.getAll();
+  event.sender.send(uuid, true);
 });
 
 ipcRenderer.on('apply-config', event => {

@@ -6,6 +6,10 @@ const path = require('path');
 const fs = require('fs');
 const Util = require('./util');
 
+const vex = require('vex-js');
+vex.registerPlugin(require('vex-dialog'));
+vex.defaultOptions.className = 'vex-theme-os';
+
 function saveConfig (config) {
   ipcRenderer.send('save-config', config);
 }
@@ -80,21 +84,21 @@ function onload () {
             const ext = elem.files[0].name.substr(elem.files[0].name.lastIndexOf('.'));
             fs.createReadStream(elem.files[0].path).pipe(fs.createWriteStream(path.join(Util.getUserDataPath(), 'alarmfile')))
               .on('error', function (e) {
-                alert('Cannot copy audio file');
+                vex.dialog.alert({ message: 'Cannot copy audio file'} );
               });
-            alert('Successfully registered alarm file');
+            vex.dialog.alert({ message: 'Successfully registered alarm file'} );
             config['notiAlarmSoundExt'] = ext;
             elem.value = '';
           });
           audio.addEventListener('error', e => {
-            alert('Invalid or not supported audio file');
+            vex.dialog.alert({ message: 'Invalid or not supported audio file'} );
             URL.revokeObjectURL(blobUrl);
             audio.remove();
             elem.value = '';
           });
         } catch (e) {
           /* eslint-disable quotes */
-          alert("Can't load file");
+          vex.dialog.alert({ message: 'Can\'t load file'} );
           URL.revokeObjectURL(blobUrl);
           elem.value = '';
         }
@@ -179,18 +183,24 @@ function initializeEntries (entry, form) {
         e.addEventListener('click', (e) => {
           e.preventDefault();
           const c = ipcRenderer.sendSync('cloud-load-config');
-          const result = JSON.parse(c);
-          if (result && Array.prototype.toString.call(result) === '[object Object]') {
-            if (confirm(`The settings are restored to the backup saved in the cloud storage.\n\n${result.timestamp}\n\n** WARNING : ALL SETTINGS INCLUDING REGULAR EXPRESSION MUTE SETTINGS WILL BE CHANGED.\nTHIS ACTION CAN'T REVERT, BECAFULLY.`) === true) {
-              cloudSaveFlag = true;
-              config = result;
-              saveConfig(config);
-              ipcRenderer.send('apply-config');
-              alert('Loaded');
-            }
-            console.info(result);
+          const r = JSON.parse(c) || {};
+          if (r && Array.prototype.toString.call(r) === '[object Object]' && r.saved_timestamp) {
+            vex.dialog.confirm({
+              unsafeMessage: `The settings are restored to the backup saved in the cloud storage.<br /><br />WARNING : ALL SETTINGS INCLUDING REGULAR EXPRESSION MUTE SETTINGS WILL BE CHANGED.<br />THIS ACTION CAN'T REVERT, TAKE CARE.${r.saved_timestamp ? `<br /><br />Latest saved: ${new Date(r.saved_timestamp)} ${(r.saved_title) ? `(${r.saved_title})` : ''}` : ``}`,
+              callback: function (value) {
+                if (value) { // yes
+                  cloudSaveFlag = true;
+                  config = r;
+                  saveConfig(config);
+                  ipcRenderer.send('apply-config');
+                  vex.dialog.alert({ message: 'Config Restored.', callback: function () { remote.getCurrentWindow().reload(); }} );
+                } else { // no
+                  //vex.dialog.alert({ message: 'User canceled.'} );
+                }
+              }
+            });
           } else {
-            alert('No setting stored. Notting changed.');
+            vex.dialog.alert({ message: 'No setting stored. Notting changed.'} );
           }
         });
       } else if (name === 'cloudSaveConfig') {
@@ -200,22 +210,57 @@ function initializeEntries (entry, form) {
           const c = ipcRenderer.sendSync('cloud-load-config');
           const r = JSON.parse(c) || {};
           let timestamp = '';
-          if (r.timestamp) {
-            timestamp = '\n\n' + r.timestamp;
+          if (r.saved_timestamp) {
+            timestamp = '<br /><br />' + r.saved_timestamp;
           }
 
-          if (confirm(`Do you really want to save the settings?\n\nIf you have already stored settings,\nyou will be overwritten.${r.timestamp}`) === true) {
-            saveFunction();
-            saveConfig(config);
-            const c2 = ipcRenderer.sendSync('cloud-save-config');
-            const result = JSON.parse(c2);
-            if (result && Array.prototype.toString.call(result) === '[object Object]') {
-              alert('Saved');
-              console.info(result);
+          vex.dialog.prompt({
+            unsafeMessage: `Do you really want to save the settings?<br />If you have already stored settings, it will be overwritten.${r.saved_timestamp ? `<br /><br />Latest saved: ${new Date(r.saved_timestamp)} ${(r.saved_title) ? `(${r.saved_title})` : ''}` : ``}`,
+            callback: function (value) {
+              if (value !== false) { // yes
+                saveFunction();
+                saveConfig(config);
+                const result = ipcRenderer.sendSync('cloud-save-config', value);
+                if (result) {
+                  vex.dialog.alert({ message: 'Successfully saved on cloud.'} );
+                } else {
+                  vex.dialog.alert({ message: 'Config Save failed.'} );
+                }
+              } else { // no
+                //vex.dialog.alert({ message: 'User canceled.'} );
+              }
             }
+          });
+
+        });
+      } else if (name === 'cloudRemoveConfig') {
+        e.addEventListener('click', (e) => {
+          e.preventDefault();
+          const c = ipcRenderer.sendSync('cloud-load-config');
+          const r = JSON.parse(c) || {};
+          if (r && Array.prototype.toString.call(r) === '[object Object]' && r.saved_timestamp) {
+            vex.dialog.confirm({
+              unsafeMessage: `Are you sure you want to delete the data on cloud storage? Deleting data will not delete local settings.${r.saved_timestamp ? `<br /><br />Latest saved: ${new Date(r.saved_timestamp)} ${(r.saved_title) ? `(${r.saved_title})` : ''}` : ``}`,
+              callback: function (value) {
+                if (value) { // yes
+                  saveFunction();
+                  saveConfig(config);
+                  const result = ipcRenderer.sendSync('cloud-remove-config', value)
+                  if (result) {
+                    vex.dialog.alert({ message: 'Successfully removed data on cloud.'} );
+                  } else {
+                    vex.dialog.alert({ message: 'Remove failed.'} );
+                  }
+                } else { // no
+                  //vex.dialog.alert({ message: 'User canceled.'} );
+                }
+              }
+            });
+          } else {
+            vex.dialog.alert({ message: 'No setting stored. Notting changed.'} );
           }
         });
-      }
+      } 
     }
     break;
     default:

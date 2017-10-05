@@ -39,7 +39,7 @@ ipcMain.on('apply-config', (event, config) => {
   } catch (e) { }
 });
 
-ipcMain.on('cloud-load-config', (event) => {
+ipcMain.on('cloud-load-config', (event, title) => {
   let uuid = createUUIDv4();
   try {
     ipcMain.once(uuid, (e, p) => {
@@ -53,13 +53,27 @@ ipcMain.on('cloud-load-config', (event) => {
   return;
 });
 
-ipcMain.on('cloud-save-config', (event) => {
+ipcMain.on('cloud-save-config', (event, title) => {
   let uuid = createUUIDv4();
   try {
     ipcMain.once(uuid, (e, p) => {
       event.returnValue = p;
     });
-    const r = win.webContents.send('cloud-save-config', uuid);
+    const r = win.webContents.send('cloud-save-config', uuid, title);
+    return;
+  } catch (e) { console.error(e); }
+  ipcMain.removeAllListeners(uuid);
+  event.returnValue = null;
+  return;
+});
+
+ipcMain.on('cloud-remove-config', (event, title) => {
+  let uuid = createUUIDv4();
+  try {
+    ipcMain.once(uuid, (e, p) => {
+      event.returnValue = p;
+    });
+    const r = win.webContents.send('cloud-remove-config', uuid, title);
     return;
   } catch (e) { console.error(e); }
   ipcMain.removeAllListeners(uuid);

@@ -258,4 +258,10 @@ module.exports = [
     valueType: 'button',
     label: 'Save Config',
   },
+  {
+    _type: 'entry',
+    name: 'cloudRemoveConfig',
+    valueType: 'button',
+    label: 'Remove Config',
+  },
 ];

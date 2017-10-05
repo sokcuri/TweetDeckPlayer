@@ -176,7 +176,7 @@ function initializeEntries (entry, form) {
           const result = JSON.parse(c);
           if (result && Array.prototype.toString.call(result) === '[object Object]') {
             if (confirm(`The settings are restored to the backup saved in the cloud storage.\n\n${result.timestamp}\n\n** WARNING : ALL SETTINGS INCLUDING REGULAR EXPRESSION MUTE SETTINGS WILL BE CHANGED.\nTHIS ACTION CAN'T REVERT, BECAFULLY.`) === true) {
-              saveConfig(config);
+              saveConfig(result);
               ipcRenderer.send('apply-config');
               alert('Loaded');
               remote.getCurrentWindow().reload();

@@ -785,7 +785,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const len = window.twttrTxt.getTweetLength2.apply(this, arguments);
       correct_charlen_calc();
       setTimeout(() => correct_charlen_calc(), 10);
-      return (len === 0) ? NaN : (len === 140) ? 139 : len - 140;
+      return (len === 0) ? NaN : (len === 140) ? 1 : len - 140;
     };
 
     const correct_charlen_calc = function (e) {

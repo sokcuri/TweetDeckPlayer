@@ -785,7 +785,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const len = window.twttrTxt.getTweetLength2.apply(this, arguments);
       correct_charlen_calc();
       setTimeout(() => correct_charlen_calc(), 10);
-      return (len === 0) ? NaN : len - 140;
+      return (len === 0) ? NaN : (len === 140) ? 139 : len - 140;
     };
 
     const correct_charlen_calc = function (e) {
@@ -796,11 +796,6 @@ document.addEventListener('DOMContentLoaded', () => {
           elm.classList.remove('tdp-show');
         } else {
           elm.classList.add('tdp-show');
-        }
-        if (elm.value.trim() === 'NaN' || Number.parseInt(elm.value) < 0) {
-          elm.parentElement.querySelector('.js-send-button').classList.add('is-disabled');
-        } else {
-          elm.parentElement.querySelector('.js-send-button').classList.remove('is-disabled');
         }
       });
       return true;

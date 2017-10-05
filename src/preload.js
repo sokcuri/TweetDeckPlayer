@@ -771,37 +771,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // TweetDeck Ready Check
   $(document).on('TD.ready', () => {
     ipcRenderer.send('page-ready-tdp', this);
-
-    // 280자 활성화 스크립트
-    TD.net.ajax.request2 = TD.net.ajax.request;
-    TD.net.ajax.request = function (e, t) {
-      if (e === 'https://api.twitter.com/1.1/statuses/update.json') {
-        t.params.weighted_character_count = !0;
-      };
-      return TD.net.ajax.request2.apply(this, arguments);
-    };
-    window.twttrTxt.getTweetLength2 = window.twttrTxt.getTweetLength;
-    window.twttrTxt.getTweetLength = function (t) {
-      const len = window.twttrTxt.getTweetLength2.apply(this, arguments);
-      correct_charlen_calc();
-      setTimeout(() => correct_charlen_calc(), 10);
-      return (len === 0) ? NaN : (len === 140) ? 1 : len - 140;
-    };
-
-    const correct_charlen_calc = function (e) {
-      let js_count = document.querySelectorAll('.js-character-count');
-      if (js_count === null) return false;
-      js_count.forEach(elm => {
-        if (elm.value.trim() === 'NaN') {
-          elm.classList.remove('tdp-show');
-        } else {
-          elm.classList.add('tdp-show');
-        }
-      });
-      return true;
-    };
-    document.addEventListener('input', correct_charlen_calc);
-    
+        
     if (!Config.data.detectUpdate) window.toastMessage(TD.i(VERSION));
     setTimeout(() => {
       TD.settings.setUseStream(TD.settings.getUseStream());

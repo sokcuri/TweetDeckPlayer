@@ -7,6 +7,7 @@ try {
   console.warn('remote error : ' + e);
 };
 const path = require('path');
+const os = require('os');
 const fs = require('fs');
 const twitter = require('twitter-text');
 const twemoji = require('twemoji');
@@ -626,23 +627,25 @@ document.addEventListener('DOMContentLoaded', () => {
   $(document).on({change: handleChange});
 
   // 맥용 한글 기본 입력기 이슈 해결
-  $(document).on('keydown', e => {
-    if (document.activeElement === document.body && e.key >= 'ㄱ' && e.key <= 'ㅣ') {
-      e.preventDefault();
-      e.stopPropagation();
-      $(document.activeElement).trigger($.Event('keypress', {which: e.which}));
-    } else if (!e.rep && e.which === 13) {
-      // 엔터키로 트윗하기
-      var el = document.activeElement;
-      if (e.ctrlKey || config.enterKeyTweet === 'on' && el && el.classList.contains('js-compose-text') && e.shiftKey !== true &&
-         ((el.tagName.toLowerCase() === 'input' && el.type === 'text') ||
-         (el.tagName.toLowerCase() === 'textarea'))) {
+  if (os.platform === 'darwin') {
+    $(document).on('keydown', e => {
+      if (document.activeElement === document.body && e.key >= 'ㄱ' && e.key <= 'ㅣ') {
         e.preventDefault();
         e.stopPropagation();
-        $(document.activeElement).trigger($.Event('keypress', {which: e.which, keyCode: e.which, ctrlKey: true, rep: true}));
+        $(document.activeElement).trigger($.Event('keypress', {which: e.which}));
+      } else if (!e.rep && e.which === 13) {
+        // 엔터키로 트윗하기
+        var el = document.activeElement;
+        if (e.ctrlKey || config.enterKeyTweet === 'on' && el && el.classList.contains('js-compose-text') && e.shiftKey !== true &&
+          ((el.tagName.toLowerCase() === 'input' && el.type === 'text') ||
+          (el.tagName.toLowerCase() === 'textarea'))) {
+          e.preventDefault();
+          e.stopPropagation();
+          $(document.activeElement).trigger($.Event('keypress', {which: e.which, keyCode: e.which, ctrlKey: true, rep: true}));
+        }
       }
-    }
-  });
+    });
+  }
 
   $(document).on('mouseover', '.tweet-timestamp', e => {
     const target = e.currentTarget;
@@ -768,6 +771,41 @@ document.addEventListener('DOMContentLoaded', () => {
   // TweetDeck Ready Check
   $(document).on('TD.ready', () => {
     ipcRenderer.send('page-ready-tdp', this);
+
+    // 280자 활성화 스크립트
+    TD.net.ajax.request2 = TD.net.ajax.request;
+    TD.net.ajax.request = function (e, t) {
+      if (e === 'https://api.twitter.com/1.1/statuses/update.json') {
+        t.params.weighted_character_count = !0;
+      };
+      return TD.net.ajax.request2.apply(this, arguments);
+    };
+    window.twttrTxt.getTweetLength2 = window.twttrTxt.getTweetLength;
+    window.twttrTxt.getTweetLength = function (t) {
+      const len = window.twttrTxt.getTweetLength2.apply(this, arguments);
+      return (len === 0) ? 999999 : len - 140;
+    };
+
+    const correct_charlen_calc = function (e) {
+      let js_count = document.querySelectorAll('.js-character-count');
+      if (js_count === null) return false;
+      js_count.forEach(elm => {
+        const value = Number.parseInt(elm.value);
+        if (value <= -900000) {
+          elm.classList.remove('inline-block-force');
+        } else {
+          elm.classList.add('inline-block-force');
+        }
+        if (value < 0) {
+          elm.parentElement.querySelector('.js-send-button').classList.add('is-disabled');
+        } else {
+          elm.parentElement.querySelector('.js-send-button').classList.remove('is-disabled');
+        }
+      });
+      return true;
+    };
+    document.addEventListener('input', correct_charlen_calc);
+    
     if (!Config.data.detectUpdate) window.toastMessage(TD.i(VERSION));
     setTimeout(() => {
       TD.settings.setUseStream(TD.settings.getUseStream());

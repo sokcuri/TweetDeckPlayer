@@ -87,17 +87,32 @@ var autoReload = () => {
 };
 autoReload();
 
+const callBlackBirdAPI = (callback) => {
+  var oReq = new XMLHttpRequest();
+  oReq.addEventListener("load", function () {
+    const res = JSON.parse(this.responseText);
+    if (res.client && res.client.settings && res.client.settings) {
+      const tdp_settings = res.client.settings.settings.TDPSettings || {};
+      callback(tdp_settings);
+    }
+  });
+  oReq.open('GET', 'https://api.twitter.com/1.1/tweetdeck/clients/blackbird/all');
+  oReq.withCredentials = true;
+  oReq.setRequestHeader('Authorization', 'Bearer ' + TD.config.bearer_token);
+  oReq.setRequestHeader('x-csrf-token', TD.util.getCsrfTokenHeader());
+  //oReq.setRequestHeader('User-Agent', TD.util.getTweetDeckUserAgentString());
+  oReq.send();
+}
+
 ipcRenderer.on('cloud-load-config', (event, uuid) => {
-  const c = TD.storage.clientController.getAll();
-  if (c && c[0].state && c[0].state.settings) {
-    const settings = c[0].state.settings['TDPSettings'];
-    if (settings.timestamp) {
-      event.sender.send(uuid, JSON.stringify(settings));
+  callBlackBirdAPI((TDPSettings) => {
+    if (TDPSettings.timestamp) {
+      event.sender.send(uuid, JSON.stringify(TDPSettings));
       return;
     }
-  }
-  event.sender.send(uuid, false);
-  return;
+    event.sender.send(uuid, false);
+    return;
+  });
 });
 
 ipcRenderer.on('cloud-save-config', (event, uuid) => {
@@ -108,16 +123,14 @@ ipcRenderer.on('cloud-save-config', (event, uuid) => {
   if (TD && TD.settings) {
     TD.settings.set('TDPSettings', config);
   }
-  const c = TD.storage.clientController.getAll();
-  if (c && c[0].state && c[0].state.settings) {
-    const settings = c[0].state.settings['TDPSettings'];
-    if (settings.timestamp) {
-      event.sender.send(uuid, JSON.stringify(settings));
+  callBlackBirdAPI((TDPSettings) => {
+    if (TDPSettings.timestamp) {
+      event.sender.send(uuid, JSON.stringify(TDPSettings));
       return;
     }
-  }
-  event.sender.send(uuid, false);
-  return;
+    event.sender.send(uuid, false);
+    return;
+  });
 });
 
 ipcRenderer.on('apply-config', event => {

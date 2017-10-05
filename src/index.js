@@ -478,7 +478,74 @@ app.on('ready', () => {
   ipcMain.on('run', event => run(chk_win));
 
   // MacOS Application menu
-  const template = require('./MacAppMenu');
+  const template = [
+    {
+      label: 'Edit',
+      submenu: [
+        {
+          role: 'undo',
+        },
+        {
+          role: 'redo',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          role: 'cut',
+        },
+        {
+          role: 'copy',
+        },
+        {
+          role: 'paste',
+        },
+        {
+          role: 'selectall',
+        },
+        {
+          role: 'delete',
+        },
+      ],
+    },
+    {
+      label: 'View',
+      submenu: [
+        {
+          label: 'Reload',
+          accelerator: 'CmdOrCtrl+R',
+          click (item, focusedWindow) {
+            if (focusedWindow) focusedWindow.reload();
+          },
+        },
+        {
+          role: 'togglefullscreen',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          role: 'resetzoom',
+        },
+        {
+          role: 'zoomin',
+        },
+        {
+          role: 'zoomout',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: 'Toggle Developer Tools',
+          accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+          click (item, focusedWindow) {
+            if (focusedWindow) focusedWindow.webContents.toggleDevTools();
+          },
+        },
+      ],
+    },
+  ];
 
   if (process.platform === 'darwin') {
     template.unshift({
@@ -646,54 +713,11 @@ const versionCompare = (v1, v2, options) => {
   return 0;
 };
 
-// accessibility mode issue (CPU 100% with touch device)
-// https://github.com/sokcuri/TweetDeckPlayer/issues/29
-// accessibility mode 일때 chrome://accessibility의 global setting을 off시킨다
-// accessibility mode 여부는 app.isAccessibilitySupportEnabled()로 확인
-// 1.3.7 버전 이하의 electron에서만 해당되는 문제.
-const hotfix_accessibility_mode = () => {
-  if (versionCompare(process.versions.electron, '1.3.8') >= 0) {
-    return;
-  }
-
-  if (!app.isAccessibilitySupportEnabled()) {
-    setTimeout(hotfix_accessibility_mode, 1000);
-
-    return;
-  }
-
-  if (accessibilityWin) accessibilityWin.close();
-  accessibilityWin = new BrowserWindow({
-    show: false,
-    width: 0,
-    height: 0,
-    webPreferences: {
-      preload: path.join(__dirname, 'pre_check.js'),
-    },
-  });
-  accessibilityWin.loadURL('chrome://accessibility');
-  accessibilityWin.webContents.on('did-finish-load', () => {
-    if (app.isAccessibilitySupportEnabled()) {
-      const script = 'if (document.querySelector("#toggle_global").text == "on")'
-        + 'document.querySelector("#toggle_global").click();';
-      accessibilityWin.webContents.executeJavaScript(script);
-      setTimeout(() => {
-        try {
-          accessibilityWin.close();
-          accessibilityWin = null;
-        } catch (e) {}
-        setTimeout(hotfix_accessibility_mode, 1000);
-      }, 1000);
-    }
-  });
-};
 // 시현님 기여어
 // Special Thanks for @uto_correction, @Gar_ella
 
 // 트윗덱 플레이어 실행 프로시저
 const run = chk_win => {
-  hotfix_accessibility_mode();
-
   const preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
   preference.icon = path.join(__dirname, 'tweetdeck.ico');
   preference.autoHideMenuBar = true;

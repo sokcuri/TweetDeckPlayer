@@ -903,15 +903,6 @@ const run = chk_win => {
     `);
     win.webContents.send('apply-config');
 
-    // character-count default to hidden
-    win.webContents.insertCSS(`
-    .js-character-count {
-      opacity: 0;
-    }
-    .tdp-show {
-      opacity: 1;
-    }`);
-
     // 유저 스크립트 로딩
     const noop = () => {};
     const loadUserAssets = async () => {

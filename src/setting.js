@@ -178,89 +178,7 @@ function initializeEntries (entry, form) {
     case 'button':
     {
       e.innerHTML = `<label><input id="${name}" type="button"><label for="${name}"><div></div></label><div>${label}</div></label>`;
-
-      if (name === 'cloudLoadConfig') {
-        e.addEventListener('click', (e) => {
-          e.preventDefault();
-          const c = ipcRenderer.sendSync('cloud-load-config');
-          const r = JSON.parse(c) || {};
-          if (r && Array.prototype.toString.call(r) === '[object Object]' && r.saved_timestamp) {
-            vex.dialog.confirm({
-              unsafeMessage: `The settings will be restored from the backup saved in the cloud storage.<br /><br /><strong>WARNING: All settings including regular expression mute settings will be overwritten.<br />This action cannot be undone. Proceed with caution.</strong>${r.saved_timestamp ? `<br /><br />Latest saved: ${new Date(r.saved_timestamp)} ${(r.saved_title) ? `(${r.saved_title})` : ''}` : ``}`,
-              callback: function (value) {
-                if (value) { // yes
-                  cloudSaveFlag = true;
-                  config = r;
-                  saveConfig(config);
-                  ipcRenderer.send('apply-config');
-                  vex.dialog.alert({ message: 'Config restored.', callback: function () { remote.getCurrentWindow().reload(); }} );
-                } else { // no
-                  //vex.dialog.alert({ message: 'User canceled.'} );
-                }
-              }
-            });
-          } else {
-            vex.dialog.alert({ message: 'No data on the cloud. Nothing changed.'} );
-          }
-        });
-      } else if (name === 'cloudSaveConfig') {
-        e.addEventListener('click', (e) => {
-          e.preventDefault();
-
-          const c = ipcRenderer.sendSync('cloud-load-config');
-          const r = JSON.parse(c) || {};
-          let timestamp = '';
-          if (r.saved_timestamp) {
-            timestamp = '<br /><br />' + r.saved_timestamp;
-          }
-
-          vex.dialog.prompt({
-            unsafeMessage: `Do you really want to save the settings?<br />Existing settings on the cloud storage will be overwritten.${r.saved_timestamp ? `<br /><br />Latest saved: ${new Date(r.saved_timestamp)} ${(r.saved_title) ? `(${r.saved_title})` : ''}` : ``}`,
-            callback: function (value) {
-              if (value !== false) { // yes
-                saveFunction();
-                saveConfig(config);
-                const result = ipcRenderer.sendSync('cloud-save-config', value);
-                if (result) {
-                  vex.dialog.alert({ message: 'Successfully saved on cloud.'} );
-                } else {
-                  vex.dialog.alert({ message: 'Failed to save the settings.'} );
-                }
-              } else { // no
-                //vex.dialog.alert({ message: 'User canceled.'} );
-              }
-            }
-          });
-
-        });
-      } else if (name === 'cloudRemoveConfig') {
-        e.addEventListener('click', (e) => {
-          e.preventDefault();
-          const c = ipcRenderer.sendSync('cloud-load-config');
-          const r = JSON.parse(c) || {};
-          if (r && Array.prototype.toString.call(r) === '[object Object]' && r.saved_timestamp) {
-            vex.dialog.confirm({
-              unsafeMessage: `Are you sure you want to delete the data on cloud storage? Deleting data will not delete local settings.${r.saved_timestamp ? `<br /><br />Latest saved: ${new Date(r.saved_timestamp)} ${(r.saved_title) ? `(${r.saved_title})` : ''}` : ``}`,
-              callback: function (value) {
-                if (value) { // yes
-                  saveFunction();
-                  saveConfig(config);
-                  const result = ipcRenderer.sendSync('cloud-remove-config', value)
-                  if (result) {
-                    vex.dialog.alert({ message: 'Successfully removed data on cloud.'} );
-                  } else {
-                    vex.dialog.alert({ message: 'Remove failed.'} );
-                  }
-                } else { // no
-                  //vex.dialog.alert({ message: 'User canceled.'} );
-                }
-              }
-            });
-          } else {
-            vex.dialog.alert({ message: 'No data on the cloud. Nothing changed.'} );
-          }
-        });
-      }
+      e.addEventListener('click', buttonHandlers[name]);
     }
     break;
     default:
@@ -277,6 +195,89 @@ function initializeEntries (entry, form) {
     form.appendChild(e);
   }
 }
+
+const buttonHandlers = {
+  /*
+   * Cloud Storage
+   */
+  'cloudLoadConfig': (e) => {
+    e.preventDefault();
+    const c = ipcRenderer.sendSync('cloud-load-config');
+    const r = JSON.parse(c) || {};
+    if (r && Array.prototype.toString.call(r) === '[object Object]' && r.saved_timestamp) {
+      vex.dialog.confirm({
+        unsafeMessage: `The settings will be restored from the backup saved in the cloud storage.<br /><br /><strong>WARNING: All settings including regular expression mute settings will be overwritten.<br />This action cannot be undone. Proceed with caution.</strong>${r.saved_timestamp ? `<br /><br />Latest saved: ${new Date(r.saved_timestamp)} ${(r.saved_title) ? `(${r.saved_title})` : ''}` : ``}`,
+        callback: function (value) {
+          if (value) { // yes
+            cloudSaveFlag = true;
+            config = r;
+            saveConfig(config);
+            ipcRenderer.send('apply-config');
+            vex.dialog.alert({ message: 'Config restored.', callback: function () { remote.getCurrentWindow().reload(); }} );
+          } else { // no
+            //vex.dialog.alert({ message: 'User canceled.'} );
+          }
+        }
+      });
+    } else {
+      vex.dialog.alert({ message: 'No data on the cloud. Nothing changed.'} );
+    }
+  },
+  'cloudSaveConfig': (e) => {
+    e.preventDefault();
+
+    const c = ipcRenderer.sendSync('cloud-load-config');
+    const r = JSON.parse(c) || {};
+    let timestamp = '';
+    if (r.saved_timestamp) {
+      timestamp = '<br /><br />' + r.saved_timestamp;
+    }
+
+    vex.dialog.prompt({
+      unsafeMessage: `Do you really want to save the settings?<br />Existing settings on the cloud storage will be overwritten.${r.saved_timestamp ? `<br /><br />Latest saved: ${new Date(r.saved_timestamp)} ${(r.saved_title) ? `(${r.saved_title})` : ''}` : ``}`,
+      callback: function (value) {
+        if (value !== false) { // yes
+          saveFunction();
+          saveConfig(config);
+          const result = ipcRenderer.sendSync('cloud-save-config', value);
+          if (result) {
+            vex.dialog.alert({ message: 'Successfully saved on cloud.'} );
+          } else {
+            vex.dialog.alert({ message: 'Failed to save the settings.'} );
+          }
+        } else { // no
+          //vex.dialog.alert({ message: 'User canceled.'} );
+        }
+      }
+    });
+  },
+  'cloudRemoveConfig': (e) => {
+    e.preventDefault();
+    const c = ipcRenderer.sendSync('cloud-load-config');
+    const r = JSON.parse(c) || {};
+    if (r && Array.prototype.toString.call(r) === '[object Object]' && r.saved_timestamp) {
+      vex.dialog.confirm({
+        unsafeMessage: `Are you sure you want to delete the data on cloud storage? Deleting data will not delete local settings.${r.saved_timestamp ? `<br /><br />Latest saved: ${new Date(r.saved_timestamp)} ${(r.saved_title) ? `(${r.saved_title})` : ''}` : ``}`,
+        callback: function (value) {
+          if (value) { // yes
+            saveFunction();
+            saveConfig(config);
+            const result = ipcRenderer.sendSync('cloud-remove-config', value)
+            if (result) {
+              vex.dialog.alert({ message: 'Successfully removed data on cloud.'} );
+            } else {
+              vex.dialog.alert({ message: 'Remove failed.'} );
+            }
+          } else { // no
+            //vex.dialog.alert({ message: 'User canceled.'} );
+          }
+        }
+      });
+    } else {
+      vex.dialog.alert({ message: 'No data on the cloud. Nothing changed.'} );
+    }
+  }
+};
 
 function createSlider (entry, slider, text) {
   noUiSlider.create(slider, {

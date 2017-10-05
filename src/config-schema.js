@@ -244,4 +244,18 @@ module.exports = [
     max: 168,
     step: 1,
   },
+  { _type: 'section', label: 'Cloud' },
+  { _type: 'subsection', label: 'Config' },
+  {
+    _type: 'entry',
+    name: 'cloudLoadConfig',
+    valueType: 'button',
+    label: 'Load Config',
+  },
+  {
+    _type: 'entry',
+    name: 'cloudSaveConfig',
+    valueType: 'button',
+    label: 'Save Config',
+  },
 ];

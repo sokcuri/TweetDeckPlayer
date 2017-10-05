@@ -210,6 +210,52 @@ section .multicolumn > div {
   background-color: #fff;
 }
 
+.settings-item input[type='file'] {
+  display: none;
+}
+
+.settings-item input[type='file'] + label + div {
+  display: block;
+  background: rgba(255,255,255,0.02);
+  background: #fff;
+  color: #333;
+  border: 1px solid #606060;
+  border-radius: 3px;
+  font-size: 1em;
+  resize: none;
+  padding: 4px 10px;
+}
+
+.settings-item input[type='file'] + label + div:hover {
+  background: #eee;
+}
+
+.settings-item input[type='file'] + label + div:active {
+  background: #f5f5f5;
+}
+
+.settings-item input[type='button'] {
+  display: none;
+}
+
+.settings-item input[type='button'] + label + div {
+  display: block;
+  background: #fff;
+  color: #333;
+  border: 1px solid #606060;
+  border-radius: 3px;
+  font-size: 1em;
+  resize: none;
+  padding: 4px 10px;
+}
+
+.settings-item input[type='button'] + label + div:hover {
+  background: #eee;
+}
+
+.settings-item input[type='button'] + label + div:active {
+  background: #f5f5f5;
+}
 .settings-item button {
   position: relative;
   top: 0;

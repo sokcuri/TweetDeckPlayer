@@ -165,6 +165,25 @@ function initializeEntries (entry, form) {
       const text = e.querySelector(`#${name}`);
       createSlider(entry, slider, text);
     } break;
+    case 'button':
+    {
+      e.innerHTML = `<label><input id="${name}" type="button"><label for="${name}"><div></div></label><div>${label}</div></label>`;
+
+      if (name === 'cloudLoadConfig') {
+        e.addEventListener('click', (e) => {
+          e.preventDefault();
+          const c = ipcRenderer.sendSync('cloud-load-config');
+          console.info(c);
+        });
+      } else if (name === 'cloudSaveConfig') {
+        e.addEventListener('click', (e) => {
+          e.preventDefault();
+          const c = ipcRenderer.sendSync('cloud-save-config');
+          console.info(c);
+        });
+      }
+    }
+    break;
     default:
       console.warn(`Unrecognized entry value type: '${entry.valueType}'`);
       break;

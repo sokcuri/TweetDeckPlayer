@@ -34,14 +34,14 @@ module.exports = {
     const x = __dirname.lastIndexOf('.asar');
     const y = __dirname.lastIndexOf('.app/Contents/Resources/app');
     const z = (x === -1 ? __dirname : __dirname.substring(0, __dirname.lastIndexOf('.asar')));
-    return (y !== -1) ? __dirname.substr(0, y) + '/data/'
-      : path.join(z, '..', '..', 'data');
+    return (y !== -1) ? path.join(__dirname.substr(0, y), '..') + '/data/'
+      : path.join(z, '..', 'data');
   },
   getWritableRootPath () {
     const x = __dirname.lastIndexOf('.asar');
     const y = __dirname.lastIndexOf('.app/Contents/Resources/app');
     const z = (x === -1 ? __dirname : __dirname.substring(0, __dirname.lastIndexOf('.asar')));
-    return (y !== -1) ? __dirname.substr(0, y) + '/'
-        : path.join(z, '..', '..');
+    return (y !== -1) ? path.join(__dirname.substr(0, y), '..') + '/'
+        : path.join(z, '..');
   },
 };

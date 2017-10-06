@@ -10,9 +10,6 @@ const Util = require('./util');
 const VERSION = require('./version');
 const updateCheck = require('./update-check');
 
-// set to userdata folder
-app.setPath('userData', Util.getUserDataPath());
-
 // 설정
 const Config = require('./config');
 

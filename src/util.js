@@ -35,13 +35,13 @@ module.exports = {
     const y = __dirname.lastIndexOf('.app/Contents/Resources/app');
     const z = (x === -1 ? __dirname : __dirname.substring(0, __dirname.lastIndexOf('.asar')));
     return (y !== -1) ? __dirname.substr(0, y) + '/data/'
-      : path.join(z, '..', 'data');
+      : path.join(z, '..', '..', 'data');
   },
   getWritableRootPath () {
     const x = __dirname.lastIndexOf('.asar');
     const y = __dirname.lastIndexOf('.app/Contents/Resources/app');
     const z = (x === -1 ? __dirname : __dirname.substring(0, __dirname.lastIndexOf('.asar')));
     return (y !== -1) ? __dirname.substr(0, y) + '/'
-        : path.join(z, '..');
+        : path.join(z, '..', '..');
   },
 };

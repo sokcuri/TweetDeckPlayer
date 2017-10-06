@@ -627,9 +627,8 @@ app.on('ready', () => {
         const current = VERSION.value;
         if (versionCompare(current, latest) < 0) {
           win.webContents.send('toast-message', 'Update required: newest version is ' + latest);
-        } else {
-          win.webContents.send('toast-message', VERSION.message);
         }
+        win.webContents.send('toast-message', VERSION.message);
       });
     }
 

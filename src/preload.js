@@ -627,25 +627,24 @@ document.addEventListener('DOMContentLoaded', () => {
   $(document).on({change: handleChange});
 
   // 맥용 한글 기본 입력기 이슈 해결
-  if (os.platform === 'darwin') {
-    $(document).on('keydown', e => {
-      if (document.activeElement === document.body && e.key >= 'ㄱ' && e.key <= 'ㅣ') {
+  // 엔터키로 트윗하기
+  $(document).on('keydown', e => {
+    if (!e.rep && e.which === 13) {
+      // 엔터키로 트윗하기
+      var el = document.activeElement;
+      if (e.ctrlKey || config.enterKeyTweet === 'on' && el && el.classList.contains('js-compose-text') && e.shiftKey !== true &&
+        ((el.tagName.toLowerCase() === 'input' && el.type === 'text') ||
+        (el.tagName.toLowerCase() === 'textarea'))) {
         e.preventDefault();
         e.stopPropagation();
-        $(document.activeElement).trigger($.Event('keypress', {which: e.which}));
-      } else if (!e.rep && e.which === 13) {
-        // 엔터키로 트윗하기
-        var el = document.activeElement;
-        if (e.ctrlKey || config.enterKeyTweet === 'on' && el && el.classList.contains('js-compose-text') && e.shiftKey !== true &&
-          ((el.tagName.toLowerCase() === 'input' && el.type === 'text') ||
-          (el.tagName.toLowerCase() === 'textarea'))) {
-          e.preventDefault();
-          e.stopPropagation();
-          $(document.activeElement).trigger($.Event('keypress', {which: e.which, keyCode: e.which, ctrlKey: true, rep: true}));
-        }
+        $(document.activeElement).trigger($.Event('keypress', {which: e.which, keyCode: e.which, ctrlKey: true, rep: true}));
       }
-    });
-  }
+    } else if (os.platform === 'darwin' && document.activeElement === document.body && e.key >= 'ㄱ' && e.key <= 'ㅣ') {
+      e.preventDefault();
+      e.stopPropagation();
+      $(document.activeElement).trigger($.Event('keypress', {which: e.which}));
+    } 
+  });
 
   $(document).on('mouseover', '.tweet-timestamp', e => {
     const target = e.currentTarget;

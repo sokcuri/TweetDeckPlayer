@@ -27,30 +27,21 @@ module.exports = {
       ? ''
       : filename.substr(filename.lastIndexOf('.') + 1); 
   },
-
   // 유저 데이터 폴더를 리턴함
   // 일반적인 환경 : __dirname/data/
   // MacOS 패키징 : __dirname/<package-name> (ex. /TweetDeckPlayer.app -> /TweetDeckPlayer)
-  getUserDataPath () {
-    const a = __dirname.substr(0, __dirname.lastIndexOf('/'));
-    const b = __dirname.substr(0, __dirname.lastIndexOf('\\'));
-    const c = __dirname.lastIndexOf('.asar');
-    const d = __dirname.lastIndexOf('.app/Contents/Resources/app');
-    return (d !== -1) ? __dirname.substr(0, d) + '/data/'
-      : (c !== -1) ? (a.length > b.length)
-        ? a.substr(0, a.lastIndexOf('/')) + '/data/'
-        : b.substr(0, b.lastIndexOf('\\')) + '\\data\\'
-      : path.join(__dirname, '../data');
+  get userDataPath () {
+    const x = __dirname.lastIndexOf('.asar');
+    const y = __dirname.lastIndexOf('.app/Contents/Resources/app');
+    const z = (x === -1 ? __dirname : __dirname.substring(0, __dirname.lastIndexOf('.asar')));
+    return (y !== -1) ? __dirname.substr(0, y) + '/data/'
+      : path.join(z, '..', 'data');
   },
-  getWritableRootPath () {
-    const a = __dirname.substr(0, __dirname.lastIndexOf('/'));
-    const b = __dirname.substr(0, __dirname.lastIndexOf('\\'));
-    const c = __dirname.lastIndexOf('.asar');
-    const d = __dirname.lastIndexOf('.app/Contents/Resources/app');
-    return (d !== -1) ? __dirname.substr(0, d) + '/'
-      : (c !== -1) ? (a.length > b.length)
-        ? a.substr(0, a.lastIndexOf('/'))
-        : b.substr(0, b.lastIndexOf('\\'))
-      : path.join(__dirname, '..');
+  get writableRootPath () {
+    const x = __dirname.lastIndexOf('.asar');
+    const y = __dirname.lastIndexOf('.app/Contents/Resources/app');
+    const z = (x === -1 ? __dirname : __dirname.substring(0, __dirname.lastIndexOf('.asar')));
+    return (y !== -1) ? __dirname.substr(0, y) + '/'
+        : path.join(z, '..');
   },
 };

@@ -30,14 +30,14 @@ module.exports = {
   // 유저 데이터 폴더를 리턴함
   // 일반적인 환경 : __dirname/data/
   // MacOS 패키징 : __dirname/<package-name> (ex. /TweetDeckPlayer.app -> /TweetDeckPlayer)
-  get userDataPath () {
+  getUserDataPath () {
     const x = __dirname.lastIndexOf('.asar');
     const y = __dirname.lastIndexOf('.app/Contents/Resources/app');
     const z = (x === -1 ? __dirname : __dirname.substring(0, __dirname.lastIndexOf('.asar')));
     return (y !== -1) ? __dirname.substr(0, y) + '/data/'
       : path.join(z, '..', 'data');
   },
-  get writableRootPath () {
+  getWritableRootPath () {
     const x = __dirname.lastIndexOf('.asar');
     const y = __dirname.lastIndexOf('.app/Contents/Resources/app');
     const z = (x === -1 ? __dirname : __dirname.substring(0, __dirname.lastIndexOf('.asar')));

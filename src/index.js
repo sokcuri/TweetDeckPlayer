@@ -621,11 +621,10 @@ app.on('ready', () => {
         if (err) {
           // error check
           win.webContents.send('toast-message', 'Update check failed');
-          return ;
         }
 
         const current = VERSION.value;
-        if (versionCompare(current, latest) < 0) {
+        if (!err && versionCompare(current, latest) < 0) {
           win.webContents.send('toast-message', 'Update required: newest version is ' + latest);
         }
         win.webContents.send('toast-message', VERSION.message);

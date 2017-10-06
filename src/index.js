@@ -445,40 +445,279 @@ const sub_open_google_translator = webContents => ({
 });
 
 app.on('ready', () => {
-    // 리눅스 일부 환경에서 검은색으로 화면이 뜨는 문제 해결을 위한 코드
-    // chrome://gpu/ 를 확인해 Canvas Hardware acceleration이 사용 불가면 disable-gpu를 달아준다
-    // --
-  let chk_win;
-  let is_relaunch = false;
+  const preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
+  preference.icon = path.join(__dirname, 'tweetdeck.ico');
+  preference.autoHideMenuBar = true;
+  preference.webPreferences = {
+    nodeIntegration: false,
+    preload: path.join(__dirname, 'preload.js'),
+  };
+  win = new BrowserWindow(preference);
+  win.loadURL('https://tweetdeck.twitter.com');
+  win.setAlwaysOnTop(Config.data.defaultTopmost && true || false);
 
-    // process.argv를 확인해 --relaunch 인자가 있는지 확인
-  for (var e of process.argv) {
-    if ('--relaunch'.search(e) !== -1) {
-      is_relaunch = true;
+  if (Config.data.isMaximized) {
+    win.maximize();
+  }
+
+  if (Config.data.isFullScreen) {
+    win.setFullScreen(true);
+  }
+
+  // application menu
+  let template = [
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'Setting...',
+          click () {
+            openSetting(win);
+          },
+        },
+        {
+          role: 'quit',
+        },
+      ],
+    },
+    {
+      label: 'Edit',
+      submenu: [
+        {
+          role: 'undo',
+        },
+        {
+          role: 'redo',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          role: 'cut',
+        },
+        {
+          role: 'copy',
+        },
+        {
+          role: 'paste',
+        },
+        {
+          role: 'selectall',
+        },
+        {
+          role: 'delete',
+        },
+      ],
+    },
+    {
+      label: 'View',
+      submenu: [
+        {
+          label: 'Reload',
+          accelerator: 'CmdOrCtrl+R',
+          click (item, focusedWindow) {
+            if (focusedWindow) focusedWindow.reload();
+          },
+        },
+        {
+          role: 'togglefullscreen',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          role: 'resetzoom',
+        },
+        {
+          role: 'zoomin',
+        },
+        {
+          role: 'zoomout',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: 'Toggle Developer Tools',
+          accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+          click (item, focusedWindow) {
+            if (focusedWindow) focusedWindow.webContents.toggleDevTools();
+          },
+        },
+      ],
+    },
+    {
+      role: 'window',
+      submenu: [
+        {
+          label: 'Always on top',
+          type: 'checkbox',
+          checked: win.isAlwaysOnTop(),
+          click () {
+            var flag = !win.isAlwaysOnTop();
+            win.setAlwaysOnTop(flag);
+            if (popup) popup.setAlwaysOnTop(flag);
+          },
+        },
+        {
+          role: 'minimize',
+        },
+      ],
+    },
+    {
+      role: 'help',
+      submenu: [
+        {
+          label: 'About TweetDeck Player...',
+          click () {
+            require('electron').shell.openExternal('https://github.com/sokcuri/TweetDeckPlayer');
+          },
+        },
+      ],
+    },
+  ];
+
+  let menu = Menu.buildFromTemplate(template);
+  win.setMenu(menu);
+
+  // devtool 열기
+  //win.webContents.openDevTools()
+
+  // electron post 리다이렉트 문제 해결 코드
+  win.webContents.on('did-get-redirect-request', (e, oldURL, newURL, isMainFrame) => {
+    if (isMainFrame) {
+      setTimeout(() => win.webContents.send('redirect-url', newURL), 100);
+      e.preventDefault();
     }
-  }
+  });
 
-  if (is_relaunch) {
-    // --relaunch 인자가 있다면 바로 run
-    run();
-  } else {
-    // --relaunch 인자가 없다면 pre_check
-    chk_win = new BrowserWindow({
-      show: false,
-      width: 0,
-      height: 0,
-      webPreferences: {
-        preload: path.join(__dirname, 'pre_check.js'),
-      },
-    });
-    chk_win.loadURL('chrome://gpu/');
-  }
+  win.webContents.on('did-finish-load', () => {
+    //let paceCSS = fs.readFileSync(path.join(__dirname, 'css/pace.css'), 'utf8');
+    //win.webContents.insertCSS(paceCSS);
+    const extraCSS = fs.readFileSync(path.join(__dirname, 'css/extra.css'), 'utf8');
+    win.webContents.insertCSS(extraCSS);
+    win.webContents.insertCSS(`
+      .no-pointer {
+        pointer-events: none;
+      }
+    `);
+    if (Config.data.blockGoogleAnalytics) {
+      const gaurl = ['*://*.google-analytics.com'];
+      const ses = win.webContents.session;
+      ses.webRequest.onBeforeRequest(gaurl, (details, callback) => {
+        const block = /google-analytics/i.test(details.url);
+        callback({
+          cancel: block,
+          requestHeaders: details.requestHeaders,
+        });
+      });
+    }
+  });
 
-  // 렌더러 프로세스에서 run 명령을 받으면 실행
-  ipcMain.on('run', event => run(chk_win));
+  ipcMain.on('page-ready-tdp', (event, arg) => {
+    // 업데이트 체크
+    if (Config.data.detectUpdate) {
+      setTimeout(updateCheck, 0, (err, latest) => {
+        if (err) {
+          // error check
+          win.webContents.send('toast-message', 'Update check failed');
+          return ;
+        }
+
+        const current = VERSION.value;
+        if (versionCompare(current, latest) < 0) {
+          win.webContents.send('toast-message', 'Update required: newest version is ' + latest);
+        } else {
+          win.webContents.send('toast-message', VERSION.message);
+        }
+      });
+    }
+
+    // destroyed contents when loading
+    const emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
+    win.webContents.insertCSS(emojipadCSS);
+    win.webContents.insertCSS(`
+      .list-account .emoji {
+        width: 1em;
+        height: 1em;
+      }
+      .customize-columns .column {
+        width: var(--column-size) !important;
+        margin-right: 6px;
+      }
+    `);
+    win.webContents.send('apply-config');
+
+    // 유저 스크립트 로딩
+    const noop = () => {};
+    const loadUserAssets = async () => {
+      const rootPath = Util.getWritableRootPath();
+      const userScriptsPath = path.join(rootPath, 'scripts');
+      const userStylesPath = path.join(rootPath, 'styles');
+      mkdirp(userScriptsPath, noop);
+      mkdirp(userStylesPath, noop);
+      const styleFiles = await mzFS.readdir(userStylesPath);
+      const styles = styleFiles.filter(f => f.endsWith('.css'));
+      for (const style of styles) {
+        const cssPath = path.join(userStylesPath, style);
+        const css = await mzFS.readFile(cssPath, 'utf8');
+        win.webContents.insertCSS(css);
+      }
+      const scriptFiles = await mzFS.readdir(userScriptsPath);
+      const scripts = scriptFiles.filter(f => f.endsWith('.js'));
+      for (const script of scripts) {
+        const jsPath = path.join(userScriptsPath, script);
+        const js = await mzFS.readFile(jsPath, 'utf8');
+        win.webContents.executeJavaScript(js);
+      }
+    };
+    loadUserAssets();
+  });
+
+  win.on('close', e => {
+    try {
+      Config.load();
+
+      Config.data.isMaximized = win.isMaximized();
+      Config.data.isFullScreen = win.isFullScreen();
+
+      e.sender.hide();
+      if (e.sender.isMaximized()) {
+        e.sender.unmaximize();
+      }
+      if (e.sender.isFullScreen()){
+        e.sender.setFullScreen(false);
+      }
+
+      Config.data.bounds = win.getBounds();
+      if (popup) {
+        Config.data.popup_bounds = popup.getBounds();
+
+        popup.sender.hide();
+        if (popup.sender.isMaximized()) {
+          popup.sender.unmaximize();
+        }
+        if (popup.sender.isFullScreen()){
+          popup.sender.setFullScreen(false);
+        }
+      }
+      Config.save();
+      win = null;
+    } catch (e) { };
+  });
+
+  win.webContents.on('new-window', (e, url, target) => {
+    e.preventDefault();
+    if (Config.data.openURLInInternalBrowser && !global.keyState.shift ||
+        target === 'popup') {
+      openPopup(url);
+    } else {
+      shell.openExternal(url);
+    }
+  });
 
   // MacOS Application menu
-  const template = [
+  template = [
     {
       label: 'Edit',
       submenu: [
@@ -653,7 +892,7 @@ app.on('ready', () => {
     });
   }
 
-  const menu = Menu.buildFromTemplate(template);
+  menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
 });
 
@@ -711,289 +950,6 @@ const versionCompare = (v1, v2, options) => {
   }
 
   return 0;
-};
-
-// 시현님 기여어
-// Special Thanks for @uto_correction, @Gar_ella
-
-// 트윗덱 플레이어 실행 프로시저
-const run = chk_win => {
-  const preference = (Config.data && Config.data.bounds) ? Config.data.bounds : {};
-  preference.icon = path.join(__dirname, 'tweetdeck.ico');
-  preference.autoHideMenuBar = true;
-  preference.webPreferences = {
-    nodeIntegration: false,
-    preload: path.join(__dirname, 'preload.js'),
-  };
-  win = new BrowserWindow(preference);
-  win.loadURL('https://tweetdeck.twitter.com');
-  win.setAlwaysOnTop(Config.data.defaultTopmost && true || false);
-
-  if (Config.data.isMaximized) {
-    win.maximize();
-  }
-
-  if (Config.data.isFullScreen) {
-    win.setFullScreen(true);
-  }
-
-  // 체크를 위한 윈도우가 존재하는 경우 닫기
-  if (chk_win) {
-    chk_win.close();
-    chk_win = null;
-  }
-
-  // application menu
-  const template = [
-    {
-      label: 'File',
-      submenu: [
-        {
-          label: 'Setting...',
-          click () {
-            openSetting(win);
-          },
-        },
-        {
-          role: 'quit',
-        },
-      ],
-    },
-    {
-      label: 'Edit',
-      submenu: [
-        {
-          role: 'undo',
-        },
-        {
-          role: 'redo',
-        },
-        {
-          type: 'separator',
-        },
-        {
-          role: 'cut',
-        },
-        {
-          role: 'copy',
-        },
-        {
-          role: 'paste',
-        },
-        {
-          role: 'selectall',
-        },
-        {
-          role: 'delete',
-        },
-      ],
-    },
-    {
-      label: 'View',
-      submenu: [
-        {
-          label: 'Reload',
-          accelerator: 'CmdOrCtrl+R',
-          click (item, focusedWindow) {
-            if (focusedWindow) focusedWindow.reload();
-          },
-        },
-        {
-          role: 'togglefullscreen',
-        },
-        {
-          type: 'separator',
-        },
-        {
-          role: 'resetzoom',
-        },
-        {
-          role: 'zoomin',
-        },
-        {
-          role: 'zoomout',
-        },
-        {
-          type: 'separator',
-        },
-        {
-          label: 'Toggle Developer Tools',
-          accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
-          click (item, focusedWindow) {
-            if (focusedWindow) focusedWindow.webContents.toggleDevTools();
-          },
-        },
-      ],
-    },
-    {
-      role: 'window',
-      submenu: [
-        {
-          label: 'Always on top',
-          type: 'checkbox',
-          checked: win.isAlwaysOnTop(),
-          click () {
-            var flag = !win.isAlwaysOnTop();
-            win.setAlwaysOnTop(flag);
-            if (popup) popup.setAlwaysOnTop(flag);
-          },
-        },
-        {
-          role: 'minimize',
-        },
-      ],
-    },
-    {
-      role: 'help',
-      submenu: [
-        {
-          label: 'About TweetDeck Player...',
-          click () {
-            require('electron').shell.openExternal('https://github.com/sokcuri/TweetDeckPlayer');
-          },
-        },
-      ],
-    },
-  ];
-
-  const menu = Menu.buildFromTemplate(template);
-  win.setMenu(menu);
-
-  // devtool 열기
-  //win.webContents.openDevTools()
-
-  // electron post 리다이렉트 문제 해결 코드
-  win.webContents.on('did-get-redirect-request', (e, oldURL, newURL, isMainFrame) => {
-    if (isMainFrame) {
-      setTimeout(() => win.webContents.send('redirect-url', newURL), 100);
-      e.preventDefault();
-    }
-  });
-
-  win.webContents.on('did-finish-load', () => {
-    //let paceCSS = fs.readFileSync(path.join(__dirname, 'css/pace.css'), 'utf8');
-    //win.webContents.insertCSS(paceCSS);
-    const extraCSS = fs.readFileSync(path.join(__dirname, 'css/extra.css'), 'utf8');
-    win.webContents.insertCSS(extraCSS);
-    win.webContents.insertCSS(`
-      .no-pointer {
-        pointer-events: none;
-      }
-    `);
-    if (Config.data.blockGoogleAnalytics) {
-      const gaurl = ['*://*.google-analytics.com'];
-      const ses = win.webContents.session;
-      ses.webRequest.onBeforeRequest(gaurl, (details, callback) => {
-        const block = /google-analytics/i.test(details.url);
-        callback({
-          cancel: block,
-          requestHeaders: details.requestHeaders,
-        });
-      });
-    }
-  });
-
-  ipcMain.on('page-ready-tdp', (event, arg) => {
-    // 업데이트 체크
-    if (Config.data.detectUpdate) {
-      setTimeout(updateCheck, 0, (err, latest) => {
-        if (err) {
-          // error check
-          win.webContents.send('toast-message', 'Update check failed');
-          return ;
-        }
-
-        const current = VERSION.value;
-        if (versionCompare(current, latest) < 0) {
-          win.webContents.send('toast-message', 'Update required: newest version is ' + latest);
-        } else {
-          win.webContents.send('toast-message', VERSION.message);
-        }
-      });
-    }
-
-    // destroyed contents when loading
-    const emojipadCSS = fs.readFileSync(path.join(__dirname, 'css/emojipad.css'), 'utf8');
-    win.webContents.insertCSS(emojipadCSS);
-    win.webContents.insertCSS(`
-      .list-account .emoji {
-        width: 1em;
-        height: 1em;
-      }
-      .customize-columns .column {
-        width: var(--column-size) !important;
-        margin-right: 6px;
-      }
-    `);
-    win.webContents.send('apply-config');
-
-    // 유저 스크립트 로딩
-    const noop = () => {};
-    const loadUserAssets = async () => {
-      const rootPath = Util.getWritableRootPath();
-      const userScriptsPath = path.join(rootPath, 'scripts');
-      const userStylesPath = path.join(rootPath, 'styles');
-      mkdirp(userScriptsPath, noop);
-      mkdirp(userStylesPath, noop);
-      const styleFiles = await mzFS.readdir(userStylesPath);
-      const styles = styleFiles.filter(f => f.endsWith('.css'));
-      for (const style of styles) {
-        const cssPath = path.join(userStylesPath, style);
-        const css = await mzFS.readFile(cssPath, 'utf8');
-        win.webContents.insertCSS(css);
-      }
-      const scriptFiles = await mzFS.readdir(userScriptsPath);
-      const scripts = scriptFiles.filter(f => f.endsWith('.js'));
-      for (const script of scripts) {
-        const jsPath = path.join(userScriptsPath, script);
-        const js = await mzFS.readFile(jsPath, 'utf8');
-        win.webContents.executeJavaScript(js);
-      }
-    };
-    loadUserAssets();
-  });
-
-  win.on('close', e => {
-    try {
-      Config.load();
-
-      Config.data.isMaximized = win.isMaximized();
-      Config.data.isFullScreen = win.isFullScreen();
-
-      e.sender.hide();
-      if (e.sender.isMaximized()) {
-        e.sender.unmaximize();
-      }
-      if (e.sender.isFullScreen()){
-        e.sender.setFullScreen(false);
-      }
-
-      Config.data.bounds = win.getBounds();
-      if (popup) {
-        Config.data.popup_bounds = popup.getBounds();
-
-        popup.sender.hide();
-        if (popup.sender.isMaximized()) {
-          popup.sender.unmaximize();
-        }
-        if (popup.sender.isFullScreen()){
-          popup.sender.setFullScreen(false);
-        }
-      }
-      Config.save();
-      win = null;
-    } catch (e) { };
-  });
-
-  win.webContents.on('new-window', (e, url, target) => {
-    e.preventDefault();
-    if (Config.data.openURLInInternalBrowser && !global.keyState.shift ||
-        target === 'popup') {
-      openPopup(url);
-    } else {
-      shell.openExternal(url);
-    }
-  });
 };
 
 // 컨텍스트 메뉴

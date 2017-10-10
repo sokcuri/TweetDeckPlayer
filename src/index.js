@@ -194,6 +194,9 @@ function openGoogleTranslatorWindow (text) {
         webSecurity: true,
       },
     });
+    gTranslatorWin.on('close', e => {
+      gTranslatorWin = null;
+    });
   }
   const encodedText = encodeURIComponent(text);
   gTranslatorWin.loadURL(`https://translate.google.com/#auto/ko/${encodedText}`);

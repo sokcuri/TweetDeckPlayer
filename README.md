@@ -1,6 +1,6 @@
 # 트윗덱 플레이어
 Copyright (c) 2016-2017 Sokcuri, Dalgona, Gaeulbyul and other contributors  
-http://github.com/sokcuri/TweetDeckPlayer
+https://github.com/sokcuri/TweetDeckPlayer
 
 > 최신 릴리즈는 [트윗덱 플레이어 릴리즈 페이지](https://github.com/sokcuri/TweetDeckPlayer/releases)에서 다운로드할 수 있습니다.  
 > 버전 확인 및 업데이트 이력은 [ChangeLog.md](ChangeLog.md) 파일을 확인하거나 릴리즈 페이지를 참고하세요.
@@ -9,7 +9,7 @@ http://github.com/sokcuri/TweetDeckPlayer
 
 ---
 
-트윗덱 플레이어는 [Electron](http://electron.atom.io/) 기반 데스크톱 웹앱으로, 기존 트윗덱보다 더 많은 부가 기능과 퍼포먼스를 제공합니다. 
+트윗덱 플레이어는 [Electron](https://electron.atom.io/) 기반 데스크톱 웹앱으로, 기존 트윗덱보다 더 많은 부가 기능과 퍼포먼스를 제공합니다. 
 웹 브라우저와 독립적인 세션을 유지하기 때문에 각각 다른 아이디로 트윗덱을 로그인할 수 있습니다.
 
 
@@ -26,7 +26,7 @@ http://github.com/sokcuri/TweetDeckPlayer
   - 이미지를 끌어서 바탕화면에 저장
   - 이미지를 원본(orig) 사이즈로 다운받기
   - 마음을 누르면 이미지 바로 저장
-    (MAC은 alt, 윈도우 또는 리눅스는 ctrl를 누르고 마음을 찍으면 저정하지 않습니다)
+    (MAC은 Alt 키를, 윈도우 또는 리눅스는 Ctrl 키를 누르고 마음을 찍으면 저정하지 않습니다)
 
 - 트윗 관련 부가기능
   - 엔터 키로 트윗하기
@@ -47,15 +47,14 @@ http://github.com/sokcuri/TweetDeckPlayer
     - shift 키를 누르고 링크를 클릭하면 외부 브라우저로 띄웁니다
   - 단축키 `Ctrl+<0-9>`를 통한 손쉬운 기본 계정 전환
   - 웹 브라우저와 독립된 세션 제공
-  - 
 
 * unlink.is, 정규식 트윗 필터 기능은 페이지를 한번 새로고침해야 적용됩니다. 
-* 페이지 새로고침은 아무곳에 우클릭 후 reload 메뉴를 누르시거나 alt를 누르고 View의 Reload 메뉴를 눌러주세요.
+* 페이지 새로고침은 아무곳에 우클릭 후 Reload 메뉴를 누르시거나 Alt 키를 누르고 View의 Reload 메뉴를 눌러주세요.
 
 사용법
 ------
 - **설정창 여는 법**
- - 트윗덱 플레이어 화면에서 alt를 누르고 File의 Setting 메뉴로 들어가세요.
+ - 트윗덱 플레이어 화면에서 Alt 키를 누르고 File의 Setting 메뉴로 들어가세요.
  - 트윗덱 설정 아이콘에 마우스를 대고 우클릭한 후 Setting 메뉴를 클릭하세요.
 
 - **데이터 폴더**

@@ -62,7 +62,7 @@ var autoReload = () => {
   switch (autoReload_alermed) {
     case 0:
       if (window.toastMessage && checkTime(0)) {
-        window.toastMessage('Automatically reload in one minute');
+        window.toastMessage(MESSAGES.preload.autoreload_min);
         loadTimeStamp += 60000;
         autoReload_alermed++;
         break;
@@ -73,7 +73,7 @@ var autoReload = () => {
 
     case 1:
       if (checkTime(50000)) {
-        window.toastMessage('Automatically reload in a few seconds');
+        window.toastMessage(MESSAGES.preload.autoreload_sec);
         autoReload_alermed++;
       }
       break;
@@ -359,13 +359,13 @@ ipcRenderer.on('command', (event, cmd) => {
       document.execCommand('selectall');
       break;
     case 'copyimage':
-      window.toastMessage('Image downloading..');
+      window.toastMessage(MESSAGES.preload.copyimage_dl);
       const nativeImage = require('electron').nativeImage;
       var request = require('request').defaults({ encoding: null });
       request.get(Addr.img, function (error, response, body) {
         if (!error && response.statusCode === 200) {
           clipboard.writeImage(nativeImage.createFromBuffer(body));
-          window.toastMessage('Image copied to clipboard');
+          window.toastMessage(MESSAGES.preload.copyimage_complete);
         }
       });
       break;
@@ -407,7 +407,7 @@ ipcRenderer.on('command', (event, cmd) => {
     case 'copy-tweet': {
       const text = Addr.text;
       clipboard.writeText(text);
-      window.toastMessage(window.TD.i('Copied text "{{text}}" ! ', { text }));
+      window.toastMessage(window.TD.i(MESSAGES.preload.copytweet_copied, { text }));
     } break;
     case 'copy-tweet-with-author': {
       const el = document.querySelector(`article[data-tweet-id="${Addr.id}"]`);
@@ -417,7 +417,7 @@ ipcRenderer.on('command', (event, cmd) => {
         text += ` (by ${userid.textContent})`;
       }
       clipboard.writeText(text);
-      window.toastMessage(window.TD.i('Copied text "{{text}}" ! ', { text }));
+      window.toastMessage(window.TD.i(MESSAGES.preload.copytweet_copied, { text }));
     } break;
     case 'open-google-translator': {
       ipcRenderer.send('open-google-translator', {
@@ -705,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
       var s = function (e) {
         var t = TD.core.defer.fail();
         if (403 === e.status || 404 === e.status) {
-          window.toastErrorMessage((r ? TD.i('Failed: Unretweet -') : TD.i('Failed: Retweet -')) + ' ' + JSON.parse(e.responseText).errors[0].message);
+          window.toastErrorMessage((r ? TD.i(MESSAGES.preload.fastrt_unrt_failed) : TD.i(MESSAGES.preload.fastrt_rt_failed)) + ' ' + JSON.parse(e.responseText).errors[0].message);
         }
         403 !== e.status && 404 !== e.status || (t = this.refreshRetweet(o)),
         t.addErrback(function () {
@@ -832,3 +832,15 @@ ipcRenderer.on('redirect-url', function (event, url) {
 ipcRenderer.on('toast-message', function (event, message) {
   window.toastMessage(message);
 });
+
+const MESSAGES = {
+  'preload': {
+    'autoreload_min': 'This window will be automatically reloaded in one minute',
+    'autoreload_sec': 'This window will be automatically reloaded in a few seconds',
+    'copyimage_dl': 'Downloading image...',
+    'copyimage_complete': 'Image copied to the clipboard',
+    'copytweet_copied': 'Copied text "{{text}}" ! ',
+    'fastrt_rt_failed': 'Failed: Retweet -',
+    'fastrt_unrt_failed': 'Failed: Unretweet -',
+  }
+};

@@ -84,21 +84,21 @@ function onload () {
             const ext = elem.files[0].name.substr(elem.files[0].name.lastIndexOf('.'));
             fs.createReadStream(elem.files[0].path).pipe(fs.createWriteStream(path.join(Util.getUserDataPath(), 'alarmfile')))
               .on('error', function (e) {
-                vex.dialog.alert({ message: 'Cannot copy audio file'} );
+                vex.dialog.alert({ message: MESSAGES.settings.alarm_copy_failed } );
               });
-            vex.dialog.alert({ message: 'Successfully registered alarm file'} );
+            vex.dialog.alert({ message: MESSAGES.settings.alarm_succeeded } );
             config['notiAlarmSoundExt'] = ext;
             elem.value = '';
           });
           audio.addEventListener('error', e => {
-            vex.dialog.alert({ message: 'Invalid or not supported audio file'} );
+            vex.dialog.alert({ message: MESSAGES.settings.alarm_invalid } );
             URL.revokeObjectURL(blobUrl);
             audio.remove();
             elem.value = '';
           });
         } catch (e) {
           /* eslint-disable quotes */
-          vex.dialog.alert({ message: 'Can\'t load file'} );
+          vex.dialog.alert({ message: MESSAGES.settings.alarm_load_failed } );
           URL.revokeObjectURL(blobUrl);
           elem.value = '';
         }
@@ -206,21 +206,21 @@ const buttonHandlers = {
     const r = JSON.parse(c) || {};
     if (r && Array.prototype.toString.call(r) === '[object Object]' && r.saved_timestamp) {
       vex.dialog.confirm({
-        unsafeMessage: `The settings will be restored from the backup saved in the cloud storage.<br /><br /><strong>WARNING: All settings including regular expression mute settings will be overwritten.<br />This action cannot be undone. Proceed with caution.</strong>${r.saved_timestamp ? `<br /><br />Latest saved: ${new Date(r.saved_timestamp)} ${(r.saved_title) ? `(${r.saved_title})` : ''}` : ``}`,
+        unsafeMessage: MESSAGES.settings.cloud_load_confirm + MESSAGES.settings.cloud_last_saved(r),
         callback: function (value) {
           if (value) { // yes
             cloudSaveFlag = true;
             config = r;
             saveConfig(config);
             ipcRenderer.send('apply-config');
-            vex.dialog.alert({ message: 'Config restored.', callback: function () { remote.getCurrentWindow().reload(); }} );
+            vex.dialog.alert({ message: MESSAGES.settings.cloud_load_succeeded, callback: function () { remote.getCurrentWindow().reload(); }} );
           } else { // no
             //vex.dialog.alert({ message: 'User canceled.'} );
           }
         }
       });
     } else {
-      vex.dialog.alert({ message: 'No data on the cloud. Nothing changed.'} );
+      vex.dialog.alert({ message: MESSAGES.settings.cloud_nodata } );
     }
   },
   'cloudSaveConfig': (e) => {
@@ -234,16 +234,16 @@ const buttonHandlers = {
     }
 
     vex.dialog.prompt({
-      unsafeMessage: `Do you really want to save the settings?<br />Existing settings on the cloud storage will be overwritten.${r.saved_timestamp ? `<br /><br />Latest saved: ${new Date(r.saved_timestamp)} ${(r.saved_title) ? `(${r.saved_title})` : ''}` : ``}`,
+      unsafeMessage: MESSAGES.settings.cloud_save_confirm + MESSAGES.settings.cloud_last_saved(r),
       callback: function (value) {
         if (value !== false) { // yes
           saveFunction();
           saveConfig(config);
           const result = ipcRenderer.sendSync('cloud-save-config', value);
           if (result) {
-            vex.dialog.alert({ message: 'Successfully saved on cloud.'} );
+            vex.dialog.alert({ message: MESSAGES.settings.cloud_save_succeeded } );
           } else {
-            vex.dialog.alert({ message: 'Failed to save the settings.'} );
+            vex.dialog.alert({ message: MESSAGES.settings.cloud_save_failed} );
           }
         } else { // no
           //vex.dialog.alert({ message: 'User canceled.'} );
@@ -257,16 +257,16 @@ const buttonHandlers = {
     const r = JSON.parse(c) || {};
     if (r && Array.prototype.toString.call(r) === '[object Object]' && r.saved_timestamp) {
       vex.dialog.confirm({
-        unsafeMessage: `Are you sure you want to delete the data on cloud storage? Deleting data will not delete local settings.${r.saved_timestamp ? `<br /><br />Latest saved: ${new Date(r.saved_timestamp)} ${(r.saved_title) ? `(${r.saved_title})` : ''}` : ``}`,
+        unsafeMessage: MESSAGES.settings.cloud_remove_confirm + MESSAGES.settings.cloud_last_saved(r),
         callback: function (value) {
           if (value) { // yes
             saveFunction();
             saveConfig(config);
             const result = ipcRenderer.sendSync('cloud-remove-config', value)
             if (result) {
-              vex.dialog.alert({ message: 'Successfully removed data on cloud.'} );
+              vex.dialog.alert({ message: MESSAGES.settings.cloud_remove_succeeded } );
             } else {
-              vex.dialog.alert({ message: 'Remove failed.'} );
+              vex.dialog.alert({ message: MESSAGES.settings.cloud_remove_failed } );
             }
           } else { // no
             //vex.dialog.alert({ message: 'User canceled.'} );
@@ -274,7 +274,7 @@ const buttonHandlers = {
         }
       });
     } else {
-      vex.dialog.alert({ message: 'No data on the cloud. Nothing changed.'} );
+      vex.dialog.alert({ message: MESSAGES.settings.cloud_nodata } );
     }
   }
 };
@@ -310,3 +310,22 @@ function createSlider (entry, slider, text) {
     slider.noUiSlider.set(e.target.value);
   });
 }
+
+const MESSAGES = {
+  'settings': {
+    'alarm_copy_failed': 'Cannot copy audio file',
+    'alarm_invalid': 'Invalid or not supported audio file',
+    'alarm_load_failed': 'Couldn\'t load file',
+    'alarm_succeeded': 'Successfully registered alarm file',
+    'cloud_last_saved': (r) => r.saved_timestamp ? `<br /><br />Last saved: ${new Date(r.saved_timestamp)} ${(r.saved_title) ? `(${r.saved_title})` : ''}` : '',
+    'cloud_load_confirm': 'The settings will be restored from the backup saved in the cloud storage.<br /><br /><strong>WARNING: All settings including regular expression mute settings will be overwritten.<br />This action cannot be undone. Proceed with caution.</strong>',
+    'cloud_load_succeeded': 'Config restored.',
+    'cloud_nodata': 'No data on the cloud. Nothing changed.',
+    'cloud_remove_confirm': 'Are you sure you want to delete the data on cloud storage? Deleting data will not delete local settings.',
+    'cloud_remove_succeeded': 'Successfully removed data on cloud.',
+    'cloud_remove_failed': 'Remove failed.',
+    'cloud_save_confirm': 'Do you really want to save the settings?<br />Existing settings on the cloud storage will be overwritten.',
+    'cloud_save_succeeded': 'Successfully saved on cloud.',
+    'cloud_save_failed': 'Failed to save the settings.',
+  }
+};

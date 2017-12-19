@@ -83,7 +83,7 @@ function tossElement (e) {
   ) {
     return;
   } else if (config.enableAutoSaveFav) {
-    favoriteAutoSave(window.$(`[data-key="${e}"]`));
+    favoriteAutoSave(window.$(`[data-key="${e}"]`).eq(0));
   }
 }
 

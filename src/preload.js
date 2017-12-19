@@ -503,7 +503,7 @@ window.addEventListener('contextmenu', e => {
     target = 'main';
   }
 
-    // 컨텍스트 메뉴를 띄우라고 메인 스레드에 요청
+  // 컨텍스트 메뉴를 띄우라고 메인 스레드에 요청
   ipcRenderer.send('context-menu', target, is_range, Addr);
 }, false);
 
@@ -554,18 +554,43 @@ document.addEventListener('DOMContentLoaded', () => {
   const TD = window.TD;
   const $ = window.$;
 
-  window.toastMessage = message => {
-    window.webpackJsonp([0], [(a, b, c) => {
-      const toaster = c(7);
-      toaster.showNotification({ message });
-    }]);
+  window.Webhack = webpack => {
+    webpack([], {
+      webhack (_module, _exports, _require) {
+        const modules = _require.c;
+        // `modules`는 (key가 숫자임에도) 배열이 아닌 JS 오브젝트이며, 직접 iterate할 수 없다.
+        // 따라서 Object.keys로 key의 배열을 구하고 이걸 iterate한다.
+        const keys = Object.keys(modules);
+        _module.exports = {
+          _require,
+          extractModuleByMethodName (name) {
+            let result = null;
+            for (const key of keys) {
+              const mod = modules[key].exports;
+              if (typeof mod === 'object' && typeof mod[name] === 'function') {
+                result = mod;
+                break;
+              }
+            }
+            return result;
+          },
+        };
+      },
+    });
+    return webpack([], [], ['webhack']);
   };
-
+  const webhack = window.Webhack(window.webpackJsonp);
+  const toaster = webhack.extractModuleByMethodName('showNotification');
+  if (!toaster) {
+    console.warn('Warning!, failed to load "toaster" module.');
+  }
+  window.toastMessage = message => {
+    if (!toaster) return;
+    toaster.showNotification({ message });
+  };
   window.toastErrorMessage = message => {
-    window.webpackJsonp([0], [(a, b, c) => {
-      const toaster = c(7);
-      toaster.showErrorNotification({ message });
-    }]);
+    if (!toaster) return;
+    toaster.showErrorNotification({ message });
   };
 
   function patchContentEditable () {
